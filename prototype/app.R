@@ -4,14 +4,16 @@ library(dplyr)
 library(mcmc)
 library(Rcpp)
 library(ggplot2)
-Rcpp::sourceCpp("mh_sampler.cpp")
+library(shinythemes)
+
+Rcpp::sourceCpp("prototype/mh_sampler.cpp")
 
 # Load starting dataframe 
 
 df0 <- data.frame(round = c(1:10), 
                   num_cog = c(3, 4, 4, 3, 2, 2, 2, 2, 2,2),
                   total = rep(9, 10), 
-                  cog = c(0, 1, 1, 1, 1, 0, 0, 0, 1,0),
+                  cog = c(0, 1, 1, 1, 1, 0, 1, 1, 1,0),
                   party = rep(c("PP","PD"),5)
                   )
 
@@ -21,6 +23,8 @@ party_choices <- c("PP","PD")
 
 ui <- fluidPage(
 
+    theme = shinytheme("cerulean"),
+    
     # Application title
     titlePanel("Batson App"),
 
@@ -52,6 +56,9 @@ server <- function(input, output, session) {
     })
     
 # Calculate and Plot the Posterior Distribution
+    
+    # set seed for consistent results when data don't change
+    set.seed(1234)
     
     output$plot <- renderPlot({
         if(is.null(input$hot)) return(NULL)
@@ -95,7 +102,7 @@ server <- function(input, output, session) {
             labs (title = "Posterior density of d",
                   subtitle = "80% HDI") +
             xlab("") + ylab("") + 
-            xlim(-6,6) +
+            xlim(c(-4,4)) +
             scale_color_manual("Group",values = c("blue","darkred")) +
             scale_fill_manual("Group", values = c("blue","darkred"))
         
@@ -108,9 +115,16 @@ server <- function(input, output, session) {
         pplot + geom_vline(data=CI, aes(xintercept=q1, colour=party),
                            linetype="dashed", size = 0.9)+
                 geom_vline(data=CI, aes(xintercept=q2,colour=party),
-                       linetype="dashed", size = 0.9)
+                       linetype="dashed", size = 0.9) +
+            # add line at zero for reference
+            geom_vline(xintercept = 0, color = "black", lwd=1.5)+
+            # edit text sizes for plot
+            theme(axis.text = element_text(size = 16), 
+                  strip.text = element_text(size = 18), 
+                  plot.title = element_text(size = 24))
 
-    })
+
+    }, height = 400, width = 600)
 }
 
 # Run the application 

@@ -74,8 +74,8 @@ server <- function(input, output, session) {
             select(-c(party)) %>%
             as.matrix()
         
-        out_p <- make_posterior(x = df_md, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
-        out_d <- make_posterior(x = df_mp, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
+        out_p <- make_posterior(x = df_mp, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
+        out_d <- make_posterior(x = df_md, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
         
         # add back the party variable and combine into single dataframe
         
@@ -102,7 +102,7 @@ server <- function(input, output, session) {
             labs (title = "Posterior density of d",
                   subtitle = "80% HDI") +
             xlab("") + ylab("") + 
-            xlim(c(-4,4)) +
+            xlim(c(-5,5)) +
             scale_color_manual("Group",values = c("blue","darkred")) +
             scale_fill_manual("Group", values = c("blue","darkred"))
         

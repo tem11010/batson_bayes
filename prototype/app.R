@@ -4,14 +4,16 @@ library(dplyr)
 library(mcmc)
 library(Rcpp)
 library(ggplot2)
-Rcpp::sourceCpp("mh_sampler.cpp")
+library(shinythemes)
 
-# Load starting dataframe 
+Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
+
+# Load starting dataframe
 
 df0 <- data.frame(round = c(1:10), 
                   num_cog = c(3, 4, 4, 3, 2, 2, 2, 2, 2,2),
                   total = rep(9, 10), 
-                  cog = c(0, 1, 1, 1, 1, 0, 0, 0, 1,0),
+                  cog = c(0, 1, 1, 1, 1, 0, 1, 1, 1,0),
                   party = rep(c("PP","PD"),5)
                   )
 
@@ -21,6 +23,8 @@ party_choices <- c("PP","PD")
 
 ui <- fluidPage(
 
+    theme = shinytheme("cerulean"),
+    
     # Application title
     titlePanel("Batson App"),
 
@@ -53,6 +57,9 @@ server <- function(input, output, session) {
     
     # Calculate and Plot the Posterior Distribution
     
+    # set seed for consistent results when data don't change
+    set.seed(1234)
+    
     output$plot <- renderPlot({
         if(is.null(input$hot)) return(NULL)
         df0 <- hot_to_r(input$hot)
@@ -67,8 +74,8 @@ server <- function(input, output, session) {
             select(-c(party)) %>%
             as.matrix()
         
-        out_p <- make_posterior(x = df_md, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
-        out_d <- make_posterior(x = df_mp, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
+        out_p <- make_posterior(x = df_mp, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
+        out_d <- make_posterior(x = df_md, niter = 11000, theta_start_val = 0,theta_proposal_sd =.5)
         
         # add back the party variable and combine into single dataframe
         
@@ -92,19 +99,28 @@ server <- function(input, output, session) {
         
         # plot
         
-        pplot <- ggplot(dat, aes(x = theta, fill = party)) + 
+        pplot <- ggplot(dat, aes(x = theta, fill = party, height = 400, width = 600)) + 
             geom_density(alpha = 0.3) +
             facet_grid(rows = vars(party))
         
         ## labels and theme
         
         pplot <- pplot  + theme_minimal() +
-            theme(legend.position="none") +
             labs (title = "Posterior density of d") +
-            xlab("") + ylab("") + 
-            xlim(-6,6) +
+            xlab("") + 
+            ylab("") + 
+            xlim(c(-6,6)) +
             scale_color_manual("Group",values = c("blue","darkred")) +
-            scale_fill_manual("Group", values = c("blue","darkred"))
+            scale_fill_manual("Group", values = c("blue","darkred")) +
+            
+            # edit text sizes for plot
+            theme(legend.position="none",
+                  axis.text = element_text(size = 16), 
+                  strip.text = element_text(size = 18), 
+                  plot.title = element_text(size = 24),
+                  plot.subtitle = element_text(size = 16)) +
+            # add line at zero for reference
+            geom_vline(xintercept = 0, color = "black", lwd=1.5)
         
         # add 80% credible interval
 
@@ -114,7 +130,6 @@ server <- function(input, output, session) {
                        linetype="dashed", size = 0.9) +
                 labs(subtitle = paste("80% HDI: Defense = ",CI$bias[1],
                                       "; Prosecution = ", CI$bias[2]))
-
     })
     
 }

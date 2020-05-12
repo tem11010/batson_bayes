@@ -30,7 +30,7 @@ ui <- fluidPage(
         ),
         column(6,
                plotOutput("plot"),
-               "Explanatory text here",
+               "Explanatory text here."
                
         )
             )
@@ -39,7 +39,7 @@ ui <- fluidPage(
 # Define server logic 
 server <- function(input, output, session) {
     
-    output$hot = renderRHandsontable({
+    output$hot <- renderRHandsontable({
         
         rhandsontable(df0, width = 600, height = 300) %>%
             hot_col("round", format = "0") %>%
@@ -51,7 +51,7 @@ server <- function(input, output, session) {
             hot_context_menu(allowRowEdit = TRUE)
     })
     
-# Calculate and Plot the Posterior Distribution
+    # Calculate and Plot the Posterior Distribution
     
     output$plot <- renderPlot({
         if(is.null(input$hot)) return(NULL)
@@ -82,35 +82,41 @@ server <- function(input, output, session) {
         
         dat <- rbind(d_p,d_d)
         
+        ## calculate credible intervals
+        
+        CI <- dat %>%
+            group_by(party) %>%
+            summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9)) %>%
+            mutate(bias = ifelse(
+                q1 <= 0 & q2 >= q2, "No Bias", "Bias"))
+        
         # plot
         
         pplot <- ggplot(dat, aes(x = theta, fill = party)) + 
             geom_density(alpha = 0.3) +
             facet_grid(rows = vars(party))
         
-        # labels and theme
+        ## labels and theme
         
         pplot <- pplot  + theme_minimal() +
             theme(legend.position="none") +
-            labs (title = "Posterior density of d",
-                  subtitle = "80% HDI") +
+            labs (title = "Posterior density of d") +
             xlab("") + ylab("") + 
             xlim(-6,6) +
             scale_color_manual("Group",values = c("blue","darkred")) +
             scale_fill_manual("Group", values = c("blue","darkred"))
         
         # add 80% credible interval
-        
-        CI <- dat %>%
-            group_by(party) %>%
-            summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9))
-        
+
         pplot + geom_vline(data=CI, aes(xintercept=q1, colour=party),
                            linetype="dashed", size = 0.9)+
                 geom_vline(data=CI, aes(xintercept=q2,colour=party),
-                       linetype="dashed", size = 0.9)
+                       linetype="dashed", size = 0.9) +
+                labs(subtitle = paste("80% HDI: Defense = ",CI$bias[1],
+                                      "; Prosecution = ", CI$bias[2]))
 
     })
+    
 }
 
 # Run the application 

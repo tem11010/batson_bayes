@@ -8,20 +8,12 @@ library(shinythemes)
 
 Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
     
-    # Load starting dataframe
+# Load dummy dataframe and strike history
+source(here::here("prototype","dummy_strike_data.R"))
+ 
+# Define UI for application
     
-    df0 <- data.frame(round = c(1:10), 
-                      num_cog = c(3, 4, 4, 3, 2, 2, 2, 2, 2,2),
-                      total = rep(9, 10), 
-                      cog = c(0, 1, 1, 1, 1, 0, 1, 1, 1,0),
-                      party = rep(c("PP","PD"),5)
-                      )
-    
-    party_choices <- c("PP","PD")
-    
-    # Define UI for application
-    
-    ui <- fluidPage(
+ui <- fluidPage(
     
         theme = shinytheme("cerulean"),
         
@@ -30,6 +22,12 @@ Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
     
         fluidRow(
             column(4,
+                   "Prior Strike History by Attorney",
+                   selectInput("atty_levels_p", "Prosecution:", choices=atty_levels),
+                   selectInput("atty_levels_d", "Defense:", choices=atty_levels),
+                   #helpText("helper text"),
+                   hr(),
+                   "Current Strike Tally",
                    rHandsontableOutput("hot")
             ),
             column(6,
@@ -40,8 +38,8 @@ Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
                 )
     )
     
-    # Define server logic 
-    server <- function(input, output, session) {
+# Define server logic 
+server <- function(input, output, session) {
         
         output$hot <- renderRHandsontable({
             
@@ -134,5 +132,5 @@ Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
         
     }
     
-    # Run the application 
-    shinyApp(ui = ui, server = server)
+# Run the application 
+shinyApp(ui = ui, server = server)

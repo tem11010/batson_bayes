@@ -86,7 +86,7 @@ List make_posterior(NumericMatrix x, int niter,
 }
 
 
-
+//this is a comment
 
 
 

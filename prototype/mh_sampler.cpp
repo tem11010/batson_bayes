@@ -43,7 +43,7 @@ double Priorcpp(double theta, double mu, double std) {
 
 // [[Rcpp::export]]
 List make_posterior(NumericMatrix x, int niter, 
-                             double theta_start_val, double theta_proposal_sd){
+                             double theta_start_val, double theta_proposal_sd, double prior_mean, double prior_sd){
   NumericVector theta(niter);
   double current_theta;
   double new_theta;
@@ -61,7 +61,7 @@ List make_posterior(NumericMatrix x, int niter,
     new_theta = rnorm(1,current_theta, theta_proposal_sd)[0];
     
     
-    r = log(Priorcpp(new_theta,0,2))+Lk_cpp(new_theta,x, 1)-log(Priorcpp(current_theta,0,2))-
+    r = log(Priorcpp(new_theta,prior_mean,prior_sd))+Lk_cpp(new_theta,x, 1)-log(Priorcpp(current_theta,prior_mean,prior_sd))-
       Lk_cpp(current_theta,x,1);
     
     
@@ -86,7 +86,7 @@ List make_posterior(NumericMatrix x, int niter,
 }
 
 
-
+//this is a comment
 
 
 

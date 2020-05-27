@@ -72,21 +72,51 @@ server <- function(input, output, session) {
                 select(-c(party)) %>%
                 as.matrix()
             
-            out_p <- make_posterior(x = df_mp, niter = 110000, theta_start_val = 0,theta_proposal_sd =.5)
-            out_d <- make_posterior(x = df_md, niter = 110000, theta_start_val = 0,theta_proposal_sd =.5)
+            # specify prior values
+            pp_prior_mean = 0
+            pp_prior_sd = 2
+            pd_prior_mean = 0
+            pd_prior_sd = 2
+            
+            out_p <- make_posterior(x = df_mp, niter = 110000, 
+                                    theta_start_val = 0, theta_proposal_sd =.5, 
+                                    prior_mean = pp_prior_mean, prior_sd = pp_prior_sd)
+            out_d <- make_posterior(x = df_md, niter = 110000, 
+                                    theta_start_val = 0, theta_proposal_sd =.5, 
+                                    prior_mean = pd_prior_mean, prior_sd = pd_prior_sd)
             
             # add back the party variable and combine into single dataframe
             
             d_p <- data.frame(
                 theta = out_p$theta[10001:110000],
-                party = "Prosecution")
+                party = "Prosecution", 
+                posterior = "Posterior")
+            
             
             d_d <- data.frame(
                 theta = out_d$theta[10001:110000],
-                party = "Defense")
+                party = "Defense", 
+                posterior = "Posterior")
             
             dat <- rbind(d_p,d_d)
             
+            
+            ## generate priors
+            
+            pp_prior <- data.frame(theta = rnorm(10000, mean = pp_prior_mean, sd = pp_prior_sd), 
+                                   party = "Prosecution", 
+                                   posterior = "Prior")
+            pd_prior <- data.frame(theta = rnorm(10000, mean = pd_prior_mean, sd = pd_prior_sd), 
+                                   party = "Defense", 
+                                   posterior = "Prior")
+                              
+            priors <- rbind(pp_prior, pd_prior)
+        
+
+            ## merge priors and posteriors
+            dat <- rbind(dat, priors)
+            
+
             ## calculate credible intervals
             
             CI <- dat %>%
@@ -97,34 +127,39 @@ server <- function(input, output, session) {
             
             # plot
             
-            pplot <- ggplot(dat, aes(x = theta, fill = party, height = 400, width = 600)) + 
-                geom_density(alpha = 0.3) +
-                facet_grid(rows = vars(party))
+            pplot <- ggplot(data=dat) + 
+                geom_density(aes(x = theta, 
+                                 fill = interaction(party, posterior),
+                                 color = interaction(party, posterior),
+                                 alpha = interaction(party, posterior), 
+                                 ..scaled..))+
+                facet_wrap(~party, nrow =2)
             
             ## labels and theme
             
-            pplot <- pplot  + theme_minimal() +
-                labs (title = "Posterior density of d") +
-                xlab("") + 
-                ylab("") + 
-                xlim(c(-6,6)) +
-                scale_color_manual("Group",values = c("blue","darkred")) +
-                scale_fill_manual("Group", values = c("blue","darkred")) +
+             pplot <- pplot  + theme_minimal() +
+                 labs (title = "Posterior density of d") +
+                 xlab("") + 
+                 ylab("") + 
+            #     xlim(c(-6,6)) +
+                 scale_fill_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_color_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_alpha_manual("Group", values = c(0.3, 0.3, 0.1, 0.1)) +
                 
-                # edit text sizes for plot
-                theme(legend.position="none",
-                      axis.text = element_text(size = 16), 
-                      strip.text = element_text(size = 18), 
-                      plot.title = element_text(size = 24),
-                      plot.subtitle = element_text(size = 16)) +
-                # add line at zero for reference
-                geom_vline(xintercept = 0, color = "black", lwd=1.5)
+                  # edit text sizes for plot
+                 theme(legend.position="none",
+                       axis.text = element_text(size = 16), 
+                       strip.text = element_text(size = 18), 
+                       plot.title = element_text(size = 24),
+                       plot.subtitle = element_text(size = 16)) +
+                  # add line at zero for reference
+                 geom_vline(xintercept = 0, color = "black", lwd=1.5)
             
             # add 80% credible interval
     
-            pplot + geom_vline(data=CI, aes(xintercept=q1, colour=party),
+            pplot + geom_vline(data=CI, aes(xintercept=q1), color = c("blue", "darkred"),
                                linetype="dashed", size = 0.9)+
-                    geom_vline(data=CI, aes(xintercept=q2,colour=party),
+                    geom_vline(data=CI, aes(xintercept=q2), color = c("blue", "darkred"),
                            linetype="dashed", size = 0.9) +
                     labs(subtitle = paste("80% HDI: Defense = ",CI$bias[1],
                                           "; Prosecution = ", CI$bias[2]))

@@ -1,0 +1,58 @@
+Application Outline
+================
+
+## Application aims
+
+The aim of this application is to provide a statistical foundation for
+Bateson challenges on the basis of race and gender. Building on the work
+of Kadane\[1\] and Barrett\[2\], this application makes use of *Bayesian
+statistical methods* to identify potential baises in jury selection,
+while taking into account historical (from previous trials) jury
+selection behavior by both prosecutor and defense attorneys.
+
+## Components of the analysis
+
+This application relies on two components. The **first component** is
+historical jury selection data (stored in a compiled database) that is
+used to inform our ‘prior expectations’ about jury selection behavior by
+a given attorney. The **second component** is the jury selection pattern
+observed in the trial at hand (and entered into this application). The
+combination of these two elements allow us to make determinations of
+bias, based on the current trials data that are *conditioned*, or
+accounting for, historical jury selection practices. Combining
+information from the current trial with historical information is the
+essence of the Bayesian analysis: we have updated our prior beliefs
+based on the new data presented to us.
+
+## Interpreting the results
+
+Looking at the plots above, we can see this playing out. In these plots
+\(d\) is our measure of bias: **positive** values of \(d\) reflect bias
+*against* the cognizable class, while **negative** values of \(d\)
+reflect bias *for* the cognizable class. If \(d\) is **zero**, then jury
+selection is *neutral*. Given that we are interested in accounting for
+uncertainty (or, our degree of confidence) in our estimates, we
+represent \(d\) as a distribution rather than a single value.
+
+The greyed-out distribution in the background represents our ‘prior
+expectation’ of what the value of \(d\) should be based on historical
+trial data. Here we have one prior expectation for prosecutors and for
+the defense. The blue (for prosecution) and red (for the defense)
+distributions in the foreground represent our *updated expectations*
+based on the data entered into the application. This updated information
+is simply the product of the prior information and the information
+contained in the table on the left. The dashed lines indicate *credible
+intervals*\[3\] for each of our distributions of \(d\). These intervals
+indicate the regions of the distributions that we have a high degree of
+confidence contain the true values of \(d\). If these credible intervals
+do not contain zero, this suggests evidence of bias for or against the
+cognizable class. Alternatively, if these credible intervals do contain
+zero, we have less confidence that the true value of \(d\) is not, in
+fact zero, and so have no evidence of bias.
+
+1.  Kadane, 2018. *Statistics for Bateson Challenges*, **17**, 1-13.
+
+2.  Barrett, 2007. *The American Statistician*, **61**, 4, 296–301.
+
+3.  These are 95% credible intervals, i.e., they contain 95% of the
+    values of \(d\).

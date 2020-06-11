@@ -1,58 +1,74 @@
 Application Outline
 ================
 
-## Application aims
+## Aim
 
-The aim of this application is to provide a statistical foundation for
-Bateson challenges on the basis of race and gender. Building on the work
-of Kadane\[1\] and Barrett\[2\], this application makes use of *Bayesian
-statistical methods* to identify potential baises in jury selection,
-while taking into account historical (from previous trials) jury
-selection behavior by both prosecutor and defense attorneys.
+This application estimates how likely an attorney used peremptory
+challenges during jury selection to strike potential jurors based on
+their race or gender. The analysis builds on prior work by Kadane (2018)
+and Barrett (2007) on statistical analysis for *Batson* challenges.
 
-## Components of the analysis
+## Analysis
 
-This application relies on two components. The **first component** is
-historical jury selection data (stored in a compiled database) that is
-used to inform our ‘prior expectations’ about jury selection behavior by
-a given attorney. The **second component** is the jury selection pattern
-observed in the trial at hand (and entered into this application). The
-combination of these two elements allow us to make determinations of
-bias, based on the current trials data that are *conditioned*, or
-accounting for, historical jury selection practices. Combining
-information from the current trial with historical information is the
-essence of the Bayesian analysis: we have updated our prior beliefs
-based on the new data presented to us.
+To estimate bias, this application relies on two kinds of data: (1)
+user-inputted data on how an attorney has used strikes in the case
+before them; and (2) if available, pre-compiled historical data on that
+attorney’s use of strikes in past cases.
 
-## Interpreting the results
+In the above plots, ![d](https://latex.codecogs.com/png.latex?d "d") is
+our measure of bias: **positive** values of
+![d](https://latex.codecogs.com/png.latex?d "d") reflect bias *against*
+the cognizable class, while **negative** values of
+![d](https://latex.codecogs.com/png.latex?d "d") reflect bias *for* the
+cognizable class. If ![d](https://latex.codecogs.com/png.latex?d "d") is
+exactly **zero**, we can be completely certain that there is zero bias.
 
-Looking at the plots above, we can see this playing out. In these plots
-\(d\) is our measure of bias: **positive** values of \(d\) reflect bias
-*against* the cognizable class, while **negative** values of \(d\)
-reflect bias *for* the cognizable class. If \(d\) is **zero**, then jury
-selection is *neutral*. Given that we are interested in accounting for
-uncertainty (or, our degree of confidence) in our estimates, we
-represent \(d\) as a distribution rather than a single value.
+Here, we represent ![d](https://latex.codecogs.com/png.latex?d "d") as a
+distribution of how likely each possible value of
+![d](https://latex.codecogs.com/png.latex?d "d") is, given the data we
+have. This lets us depict how confident we should be in inferring bias
+from the data we have.
 
-The greyed-out distribution in the background represents our ‘prior
-expectation’ of what the value of \(d\) should be based on historical
-trial data. Here we have one prior expectation for prosecutors and for
-the defense. The blue (for prosecution) and red (for the defense)
-distributions in the foreground represent our *updated expectations*
-based on the data entered into the application. This updated information
-is simply the product of the prior information and the information
-contained in the table on the left. The dashed lines indicate *credible
-intervals*\[3\] for each of our distributions of \(d\). These intervals
-indicate the regions of the distributions that we have a high degree of
-confidence contain the true values of \(d\). If these credible intervals
-do not contain zero, this suggests evidence of bias for or against the
-cognizable class. Alternatively, if these credible intervals do contain
-zero, we have less confidence that the true value of \(d\) is not, in
-fact zero, and so have no evidence of bias.
+The dashed lines indicate a pre-set *credible interval*, i.e., here the
+values of ![d](https://latex.codecogs.com/png.latex?d "d") between which
+80% of the likely values of ![d](https://latex.codecogs.com/png.latex?d
+"d") fall. If zero falls within this interval, then we should be wary
+about (have low confidence in) inferring bias (for or against the
+cognizable class) from the strike data. If zero falls outside this
+interval, we should feel confident in inferring bias from the strike
+data. As we get more data, we should feel more (or less) confident about
+particular values of ![d](https://latex.codecogs.com/png.latex?d "d").
 
-1.  Kadane, 2018. *Statistics for Bateson Challenges*, **17**, 1-13.
+The grey graph is the distribution of
+![d](https://latex.codecogs.com/png.latex?d "d") values based *only* on
+a pre-set distribution of ![d](https://latex.codecogs.com/png.latex?d
+"d") to reflect a starting point that bias is unlikely, as adjusted by
+historical strike data, if available. This represents our *prior
+beliefs* about an attorney’s possible bias in using peremptory
+challenges, before we know anything about how any attorney uses
+peremptory strikes in the case before us. The blue (for prosecution) and
+red (for the defense) distributions in the foreground represent our
+*updated* expectations after accounting for the user-inputted strike
+data (in the table on the left).
 
-2.  Barrett, 2007. *The American Statistician*, **61**, 4, 296–301.
+# References
 
-3.  These are 95% credible intervals, i.e., they contain 95% of the
-    values of \(d\).
+<div id="refs" class="references">
+
+<div id="ref-Barrett2007">
+
+Barrett, Bruce E. 2007. “Detecting Bias in Jury Selection.” *The
+American Statistician* 61 (4): 296–301.
+<https://doi.org/10.1198/000313007X243629>.
+
+</div>
+
+<div id="ref-Kadane2018">
+
+Kadane, Joseph B. 2018. “Statistics for Batson Challenges.” *Law,
+Probability and Risk* 17 (1): 1–13.
+<https://doi.org/10.1093/lpr/mgx016>.
+
+</div>
+
+</div>

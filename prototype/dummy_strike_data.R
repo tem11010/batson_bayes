@@ -22,3 +22,5 @@ shist <- data.frame(round = c(1:10),
 atty_levels <- c("None",levels(shist$atty))
 atty_levels_p <- atty_levels
 atty_levels_d <- atty_levels
+
+cog_c_levels <- c("race","gender")

@@ -25,7 +25,7 @@ ui <- fluidPage(
                    "Prior Strike History by Attorney",
                    selectInput("atty_levels_p", "Prosecution:", choices=atty_levels),
                    selectInput("atty_levels_d", "Defense:", choices=atty_levels),
-                   #helpText("helper text"),
+                   selectInput("cog_c_levels", "Cognizable Class:", choices=cog_c_levels),
                    hr(),
                    "Current Strike Tally",
                    rHandsontableOutput("hot")

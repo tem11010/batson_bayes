@@ -8,10 +8,14 @@ library(shinythemes)
 
 Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
     
-# Load dummy dataframe and strike history
+# Load dummy dataframe
 source(here::here("prototype","dummy_strike_data.R"))
 
 source(here::here("prototype","calc_prior"))
+
+# Define Cognitive Class choices
+
+cog_c_levels <- c("race","gender")
  
 # Define UI for application
     

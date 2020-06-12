@@ -1,11 +1,14 @@
 ### assume dat0 is all the historical data we have
 
 library(dplyr)
+library(mcmc)
+library(Rcpp)
+Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
 
 dat0 <- readRDS("jury_data_cleaned_new.RDS")
 
 
-#### extract_atny() function extract the subset of jury_data_cleaned that corresponding to 
+#### extract_atny() function extracts the subset of jury_data_cleaned that corresponds to 
 #### the attorney name inputed in 'atny_name' parameter. 
 #### if attorney name is from PP, set 'pp' parameter as TRUE
 #### if attorney name is from PD, set 'pp' parameter as FALSE
@@ -56,8 +59,8 @@ organize_input <- function(dat,pp){
 }
 
 ### function calc_prior will return prior mean and sd using the subset data containing the attorney name
-### to get the prior mean and sd corresponding to a prosecuter attorney, we need to input 
-### attorney name of the prosecuter to parameter 'atny_name', and TRUE for 'pp' and jury_data_cleaned_new (which is the one with strike_seq) for 'dat'
+### to get the prior mean and sd corresponding to a prosecutor attorney, we need to input 
+### attorney name of the prosecutor to parameter 'atny_name', and TRUE for 'pp' and jury_data_cleaned_new (which is the one with strike_seq) for 'dat'
 ### to get the prior mean and sd corresponding to a defense attorney, we put the according name and set 'pp' as FALSE.
 
 
@@ -73,4 +76,5 @@ calc_prior <- function(atny_name,pp,dat){
 }
 
 ##### test whether the function works #####
-test_prior = calc_prior('Brian P. Leaming',TRUE,dat0)
+#test_prior = calc_prior('Brian P. Leaming',TRUE,dat0)
+

@@ -10,6 +10,8 @@ Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
     
 # Load dummy dataframe and strike history
 source(here::here("prototype","dummy_strike_data.R"))
+
+source(here::here("prototype","calc_prior"))
  
 # Define UI for application
     
@@ -23,9 +25,9 @@ ui <- fluidPage(
         fluidRow(
             column(4,
                    "Prior Strike History by Attorney",
-                   selectInput("atty_levels_p", "Prosecution:", choices=atty_levels),
-                   selectInput("atty_levels_d", "Defense:", choices=atty_levels),
-                   selectInput("cog_c_levels", "Cognizable Class:", choices=cog_c_levels),
+                   selectInput("atty_p", "Prosecution:", choices=atty_levels),
+                   selectInput("atty_d", "Defense:", choices=atty_levels),
+                   selectInput("cog_c", "Cognizable Class:", choices=cog_c_levels),
                    hr(),
                    "Current Strike Tally",
                    rHandsontableOutput("hot")
@@ -73,10 +75,26 @@ server <- function(input, output, session) {
                 as.matrix()
             
             # specify prior values
-            pp_prior_mean = 0
-            pp_prior_sd = 2
-            pd_prior_mean = 0
-            pd_prior_sd = 2
+            
+            if (atty_p != "None"){
+                infrmtve_prior_p <- calc_prior(atty_p,TRUE,dat0)
+                pp_prior_mean <- infrmtve_prior_p[[1]] 
+                pp_prior_sd <- infrmtve_prior_p[[2]]  
+            }
+            else{
+                pp_prior_mean = 0 
+                pp_prior_sd = 2    
+            }
+            
+            if (atty_d != "None"){
+                infrmtve_prior_d <- calc_prior(atty_d,FALSE,dat0)
+                pd_prior_mean <- infrmtve_prior_d[[1]] 
+                pd_prior_sd <- infrmtve_prior_d[[2]]  
+            }
+            else{
+                pd_prior_mean = 0
+                pd_prior_sd = 2  
+            }
             
             out_p <- make_posterior(x = df_mp, niter = 110000, 
                                     theta_start_val = 0, theta_proposal_sd =.5, 
@@ -101,7 +119,7 @@ server <- function(input, output, session) {
             dat <- rbind(d_p,d_d)
             
             
-            ## generate priors
+            ## generate prior probability distributions
             
             pp_prior <- data.frame(theta = rnorm(10000, mean = pp_prior_mean, sd = pp_prior_sd), 
                                    party = "Prosecution", 

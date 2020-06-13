@@ -29,26 +29,38 @@ extract_atny <- function(atny_name,pp,dat){
 #### round, num of female, total number, and whether the strike is from cognizable class
 #### here I assume cognizable class is female 
 #### the return matrix is of the form of the input of make_posterior function
+#### input of cog should be either 'gender' or 'race'
 
-organize_input <- function(dat,pp){
-  dat_strikes <- dat %>% filter(!is.na(strike_seq)) %>% filter(!is.na(sex))
+organize_input <- function(dat,pp,cog){
+  dat_strikes <- dat %>% filter(!is.na(strike_seq)) 
+  if(cog=='gender'){
+    dat_strikes <- dat_strikes %>% filter(!is.na(sex))
+  }else{
+    dat_strikes <- dat_strikes %>% filter(!is.na(race))
+  }
+  
   dat_strikes <- dat_strikes[order(dat_strikes$strike_seq),]
-  dat_strikes$sexb <- ifelse(dat_strikes$sex=="F", 1, 0)
-  num_female <- sum(dat_strikes$sexb)
+  if(cog=='gender'){
+    dat_strikes$cogb <- ifelse(dat_strikes$sex=="F", 1, 0)
+  }else{
+    dat_strikes$cogb <- ifelse(dat_strikes$race !=3, 1, 0)
+  }
+  
+  num_cog <- sum(dat_strikes$cogb)
   num_t <- nrow(dat_strikes)
   subs <- data.frame(round = c(1:num_t), 
-                     num_female = NA, 
+                     num_cog = NA, 
                      total = NA)
-  subs$num_female[1] <- num_female
+  subs$num_cog[1] <- num_cog
   subs$total[1] <- num_t
   for ( j in 2:num_t){
-    num_female = num_female-dat_strikes$sexb[j-1]
+    num_cog = num_cog-dat_strikes$cogb[j-1]
     num_total = num_t - dat_strikes$strike_seq[j-1]
-    subs$num_female[j] <- num_female
+    subs$num_cog[j] <- num_cog
     # number of females struck in this and previous rounds
     subs$total[j] <- num_total
   }
-  subs <- cbind(subs,dat_strikes$sexb)
+  subs <- cbind(subs,dat_strikes$cogb)
   colnames(subs)[4] = 'cognizable'
   if(pp){
     df_m <- as.matrix(subs[which(dat_strikes$Disp=='PP'),])
@@ -64,10 +76,10 @@ organize_input <- function(dat,pp){
 ### to get the prior mean and sd corresponding to a defense attorney, we put the according name and set 'pp' as FALSE.
 
 
-calc_prior <- function(atny_name,pp,dat){
+calc_prior <- function(atny_name,pp,dat,cog){
   dat_sub <- extract_atny(atny_name,pp,dat)
   sub1 <- dat_sub %>% group_split(ID)
-  sub1_l <- lapply(1:length(sub1), function(x) organize_input(sub1[[x]],pp))
+  sub1_l <- lapply(1:length(sub1), function(x) organize_input(sub1[[x]],pp,cog))
   df_m = do.call(rbind.data.frame,sub1_l)
   df_m <- as.matrix(df_m)
   out <- make_posterior(x = df_m, niter = 110000, theta_start_val = 0,theta_proposal_sd =.5,prior_mean = 0,prior_sd=2)

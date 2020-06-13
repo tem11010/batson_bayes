@@ -8,14 +8,16 @@ library(shinythemes)
 
 Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
     
-# Load dummy dataframe
+# Load dummy strike dataframe
 source(here::here("prototype","dummy_strike_data.R"))
 
-source(here::here("prototype","calc_prior"))
+# Load calc_prior function
+
+source(here::here("prototype","calc_prior.R"))
 
 # Define Cognitive Class choices
 
-cog_c_levels <- c("race","gender")
+cog_c_levels <- c("racial minority","women")
  
 # Define UI for application
     
@@ -29,8 +31,12 @@ ui <- fluidPage(
         fluidRow(
             column(4,
                    "Prior Strike History by Attorney",
-                   selectInput("atty_p", "Prosecution:", choices=atty_levels),
-                   selectInput("atty_d", "Defense:", choices=atty_levels),
+                   selectInput("atty_p", "Prosecution:", 
+                               choices=atty_levels_p,
+                               selected = "None"),
+                   selectInput("atty_d", "Defense:", 
+                               choices=atty_levels_d,
+                               selected = "None"),
                    selectInput("cog_c", "Cognizable Class:", choices=cog_c_levels),
                    hr(),
                    "Current Strike Tally",
@@ -80,8 +86,8 @@ server <- function(input, output, session) {
             
             # specify prior values
             
-            if (atty_p != "None"){
-                infrmtve_prior_p <- calc_prior(atty_p,TRUE,dat0)
+            if (input$atty_p != "None"){
+                infrmtve_prior_p <- calc_prior(input$atty_p,TRUE,dat0)
                 pp_prior_mean <- infrmtve_prior_p[[1]] 
                 pp_prior_sd <- infrmtve_prior_p[[2]]  
             }
@@ -90,8 +96,8 @@ server <- function(input, output, session) {
                 pp_prior_sd = 2    
             }
             
-            if (atty_d != "None"){
-                infrmtve_prior_d <- calc_prior(atty_d,FALSE,dat0)
+            if (input$atty_d != "None"){
+                infrmtve_prior_d <- calc_prior(input$atty_d,FALSE,dat0)
                 pd_prior_mean <- infrmtve_prior_d[[1]] 
                 pd_prior_sd <- infrmtve_prior_d[[2]]  
             }
@@ -133,12 +139,10 @@ server <- function(input, output, session) {
                                    posterior = "Prior")
                               
             priors <- rbind(pp_prior, pd_prior)
-        
 
             ## merge priors and posteriors
             dat <- rbind(dat, priors)
             
-
             ## calculate credible intervals
             
             CI <- dat %>%
@@ -163,7 +167,7 @@ server <- function(input, output, session) {
                  labs (title = "Posterior density of d") +
                  xlab("") + 
                  ylab("") + 
-            #     xlim(c(-6,6)) +
+                 xlim(c(-6,6)) +
                  scale_fill_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
                  scale_color_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
                  scale_alpha_manual("Group", values = c(0.3, 0.3, 0.1, 0.1)) +

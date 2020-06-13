@@ -14,7 +14,19 @@ party_choices <- c("PP","PD")
 
 dat0 <- readRDS(here::here("prototype","jury_data_cleaned_new.rds"))
 
-atty_levels_p <- factor(dat0$P_atty_l)
-atty_levels_d <- factor(dat0$D_atty_l)
+atty_levels_p <- dat0 %>%
+  pull("P_atty_l") %>%
+  unlist() %>%
+  unique() %>%
+  str_trim() %>%
+  factor()
 
-atty_levels <- c("None",levels(shist$atty))
+atty_levels_d <- dat0 %>%
+  pull("D_atty_l") %>%
+  unlist() %>%
+  unique() %>%
+  str_trim() %>%
+  factor()
+
+atty_levels_p <- c("None",levels(atty_levels_p))
+atty_levels_d <- c("None",levels(atty_levels_d))

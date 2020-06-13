@@ -3,7 +3,7 @@
 df0 <- data.frame(round = c(1:10), 
                   num_cog = c(3, 4, 4, 3, 2, 2, 2, 2, 2,2),
                   total = rep(9, 10), 
-                  cog = c(0, 1, 1, 1, 1, 0, 1, 1, 1,0),
+                  cog = c(0, 1, 1, 0, 0, 1, 1, 0, 0,0),
                   party = rep(c("PP","PD"),5)
 )
 

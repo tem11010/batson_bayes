@@ -9,7 +9,7 @@ dat0 <- readRDS("jury_data_cleaned_new.RDS")
 
 
 #### extract_atny() function extracts the subset of jury_data_cleaned that corresponds to 
-#### the attorney name inputed in 'atny_name' parameter. 
+#### the attorney name inputted in 'atny_name' parameter. 
 #### if attorney name is from PP, set 'pp' parameter as TRUE
 #### if attorney name is from PD, set 'pp' parameter as FALSE
 #### parameter 'pp' is the same for the following functions, used to control whether the case is from PP or PD

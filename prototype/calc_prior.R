@@ -26,8 +26,7 @@ extract_atny <- function(atny_name,pp,dat){
 } 
 
 #### function organize_input will return a matrix with four columns:
-#### round, num of female, total number, and whether the strike is from cognizable class
-#### here I assume cognizable class is female 
+#### round, num of cog_class, total number, and whether the strike is from cognizable class
 #### the return matrix is of the form of the input of make_posterior function
 #### input of cog should be either 'gender' or 'race'
 

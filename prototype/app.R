@@ -166,7 +166,7 @@ server <- function(input, output, session) {
             ## labels and theme
             
              pplot <- pplot  + theme_minimal() +
-                 labs (title = "Posterior density of d") +
+                 labs (title = "Posterior density of b") +
                  xlab("") + 
                  ylab("") + 
                  xlim(c(-6,6)) +

@@ -18,7 +18,7 @@ source(here::here("prototype","calc_prior.R"))
 
 # Define Cognitive Class choices
 
-cog_c_levels <- c("racial minority","women")
+cog_c_levels <- c("race","gender")
  
 # Define UI for application
     
@@ -86,8 +86,10 @@ server <- function(input, output, session) {
             
             # specify prior values
             
+            # Note: same priors regardless of cognizable class if atty = "None"
+            
             if (input$atty_p != "None"){
-                infrmtve_prior_p <- calc_prior(input$atty_p,TRUE,dat0)
+                infrmtve_prior_p <- calc_prior(input$atty_p,TRUE,dat0,input$cog_c)
                 pp_prior_mean <- infrmtve_prior_p[[1]] 
                 pp_prior_sd <- infrmtve_prior_p[[2]]  
             }
@@ -97,9 +99,9 @@ server <- function(input, output, session) {
             }
             
             if (input$atty_d != "None"){
-                infrmtve_prior_d <- calc_prior(input$atty_d,FALSE,dat0)
-                pd_prior_mean <- infrmtve_prior_d[[1]] 
-                pd_prior_sd <- infrmtve_prior_d[[2]]  
+                infrmtve_prior_d <- calc_prior(input$atty_d,FALSE,dat0,input$cog_c)
+                pd_prior_mean <- infrmtve_prior_d[[1]]
+                pd_prior_sd <- infrmtve_prior_d[[2]]
             }
             else{
                 pd_prior_mean = 0

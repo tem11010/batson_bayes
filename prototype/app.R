@@ -5,6 +5,7 @@ library(mcmc)
 library(Rcpp)
 library(ggplot2)
 library(shinythemes)
+library(markdown)
 
 Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
     
@@ -22,14 +23,13 @@ cog_c_levels <- c("racial minority","women")
 # Define UI for application
     
 ui <- fluidPage(
+
+    #Navbar structure for UI
     
-        theme = shinytheme("cerulean"),
-        
-        # Application title
-        titlePanel("Batson App"),
-    
-        fluidRow(
-            column(4,
+    navbarPage("Batson App", theme = shinytheme("paper"),
+               
+        tabPanel("Prototype", fluid = TRUE,
+            sidebarPanel(
                    "Prior Strike History by Attorney",
                    selectInput("atty_p", "Prosecution:", 
                                choices=atty_levels_p,
@@ -41,14 +41,14 @@ ui <- fluidPage(
                    hr(),
                    "Current Strike Tally",
                    rHandsontableOutput("hot")
-            ),
-            column(6,
-                   plotOutput("plot"),
-                   "Explanatory text here."
-                   
-            )
-                )
-    )
+                ),
+            mainPanel(plotOutput("plot"))
+                ),
+        
+        tabPanel("About", fluid = TRUE,
+                 includeMarkdown("explanatory-text.md"))
+        ))
+
     
 # Define server logic 
 server <- function(input, output, session) {

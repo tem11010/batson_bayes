@@ -18,14 +18,14 @@ atty_levels_p <- dat0 %>%
   pull("P_atty_l") %>%
   unlist() %>%
   unique() %>%
-  str_trim() %>%
+  stringr::str_trim() %>%
   factor()
 
 atty_levels_d <- dat0 %>%
   pull("D_atty_l") %>%
   unlist() %>%
   unique() %>%
-  str_trim() %>%
+  stringr::str_trim() %>%
   factor()
 
 atty_levels_p <- c("None",levels(atty_levels_p))

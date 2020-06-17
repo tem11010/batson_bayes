@@ -1,19 +1,18 @@
-Application Outline
+About this Prototype
 ================
 
-## Aim
+### Aim
 
 This application estimates how likely an attorney used peremptory
 challenges during jury selection to strike potential jurors based on
 their race or gender. The analysis builds on prior work by Kadane (2018)
-and Barrett (2007) on statistical analysis for *Batson* challenges.
-
-## Analysis
-
-To estimate bias, this application relies on two kinds of data: (1)
+and Barrett (2007) on statistical analysis for *Batson* challenges. To
+estimate such bias, this application relies on two kinds of data: (1)
 user-inputted data on how an attorney has used strikes in the case
 before them; and (2) if available, pre-compiled historical data on that
 attorney’s use of strikes in past cases.
+
+### Analysis
 
 In the above plots, ![d](https://latex.codecogs.com/png.latex?d "d") is
 our measure of bias: **positive** values of
@@ -26,8 +25,10 @@ exactly **zero**, we can be completely certain that there is zero bias.
 Here, we represent ![d](https://latex.codecogs.com/png.latex?d "d") as a
 distribution of how likely each possible value of
 ![d](https://latex.codecogs.com/png.latex?d "d") is, given the data we
-have. This lets us depict how confident we should be in inferring bias
-from the data we have.
+have. This lets us use the curve’s width (the distribution’s *standard
+deviation*) to depict how confident we should be in inferring bias from
+the data we have: The narrower the curve, the more confident we should
+be.
 
 The dashed lines indicate a pre-set *credible interval*, i.e., here the
 values of ![d](https://latex.codecogs.com/png.latex?d "d") between which
@@ -46,12 +47,12 @@ a pre-set distribution of ![d](https://latex.codecogs.com/png.latex?d
 historical strike data, if available. This represents our *prior
 beliefs* about an attorney’s possible bias in using peremptory
 challenges, before we know anything about how any attorney uses
-peremptory strikes in the case before us. The blue (for prosecution) and
-red (for the defense) distributions in the foreground represent our
+peremptory strikes in the case before us. The red (for prosecution) and
+blue (for the defense) distributions in the foreground represent our
 *updated* expectations after accounting for the user-inputted strike
 data (in the table on the left).
 
-# References
+### References
 
 <div id="refs" class="references">
 

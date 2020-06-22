@@ -3,14 +3,12 @@ About
 
 This application estimates how likely an attorney used peremptory
 challenges during jury selection to strike potential jurors based on
-their race or gender. The analysis builds on prior work by Kadane (2018)
-and Barrett (2007) on statistical analysis for *Batson* challenges.
-
-To estimate such bias, this application relies on (1) user-inputted data
-on how an attorney has used strikes in the case before them; and (2) if
-available, jury-selection data on that attorney’s use of strikes in some
-past cases during 2013-2017 in the federal district court for the
-District of Connecticut.
+their race or gender. The analysis builds on prior work on statistical
+analysis for *Batson* challenges. To estimate such bias, this
+application relies on (1) user-inputted data on how an attorney has used
+strikes in the case before them; and (2) if available, jury-selection
+data on that attorney’s use of strikes in some past cases during
+2013-2017 in the federal district court for the District of Connecticut.
 
 Based on this data, this application graphs
 ![b](https://latex.codecogs.com/png.latex?b "b") – our measure of bias –
@@ -46,25 +44,3 @@ peremptory strikes in the case before us. The red (for prosecution) and
 blue (for the defense) distributions in the foreground represent our
 *updated* expectations after accounting for the user-inputted strike
 data.
-
-### References
-
-<div id="refs" class="references">
-
-<div id="ref-Barrett2007">
-
-Barrett, Bruce E. 2007. “Detecting Bias in Jury Selection.” *The
-American Statistician* 61 (4): 296–301.
-<https://doi.org/10.1198/000313007X243629>.
-
-</div>
-
-<div id="ref-Kadane2018">
-
-Kadane, Joseph B. 2018. “Statistics for Batson Challenges.” *Law,
-Probability and Risk* 17 (1): 1–13.
-<https://doi.org/10.1093/lpr/mgx016>.
-
-</div>
-
-</div>

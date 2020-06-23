@@ -23,11 +23,16 @@ This way, if it is equally likely that a member and non-member of the cognizable
 
 In turn, let $c$ denote the number of cognizable class members; and $m$ denote the number of cognizable class non-members, such that $c+m$ is the total number of jurors potentially subject to strike.
 
-$$Pr(X_{ij}) =
+$$
+Pr(X_{ij}) =
 \begin{cases}
   \frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}} & \text{for }X=1\\    
   \frac{m_{ij}}{(e^b)c_{ij}+m_{ij}} & \text{for }X=0  
 \end{cases}
 $$
+
+The likelihood function of b is 
+$$L(b|X) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}$$
+where $n_{i}$ is the total number of jury selections and $n_j$ is the total number of peremptory strikes. $\delta_{ij} = 1$ when $X_{ij} = 1$ and $\delta_{ij} = 0$ when $X_{ij}=0$ 
 
 ### References

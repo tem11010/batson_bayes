@@ -149,6 +149,10 @@ server <- function(input, output, session) {
             
             ## calculate credible intervals
             
+            ## specify party as factor
+            dat$party <- factor(dat$party, levels = c("Defense", "Prosecution"), 
+                                ordered = TRUE)
+            
             CI <- dat %>%
                 group_by(party) %>%
                 summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9)) %>%

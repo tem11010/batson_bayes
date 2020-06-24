@@ -2,13 +2,13 @@ Model
 ================
 
 Like Kadane (2018) and Barrett (2007), we model the probability that the
-struck person belonged (or not) to the cognitive class as a function of
+struck person belonged (or not) to the cognizable class as a function of
 (1) the number of cognizable class members (e.g., racial minorities,
 women) and non-class members (e.g., White people, men) in the set of
 people who could have been struck; and (2) an unobserved variable
 ![b](https://latex.codecogs.com/png.latex?b "b") that indicates how much
 weight the striking party placed on the struck juror’s membership in the
-cognitive class (e.g., whether that juror was racial minority or White;
+cognizable class (e.g., whether that juror was racial minority or White;
 women or man).
 
 For any given jury selection ![i](https://latex.codecogs.com/png.latex?i
@@ -33,7 +33,7 @@ We are interested in estimating the likely values of
 ![b](https://latex.codecogs.com/png.latex?b "b"), given the strike data
 we have. There is zero bias only if the probability of striking a
 cognizable class member is the same as the probability of striking a
-non-cognitive class member. Accordingly,
+non-cognizable class member. Accordingly,
 
   
 ![w = \\frac{Pr(X=1)}{Pr(X
@@ -44,8 +44,15 @@ non-cognitive class member. Accordingly,
 "w = e^b")  
   
 ![b \\sim
-\\text{Normal}(0, 2)](https://latex.codecogs.com/png.latex?b%20%5Csim%20%5Ctext%7BNormal%7D%280%2C%202%29
-"b \\sim \\text{Normal}(0, 2)")  
+\\text{Normal}(\\mu\_b,\\sigma\_b)](https://latex.codecogs.com/png.latex?b%20%5Csim%20%5Ctext%7BNormal%7D%28%5Cmu_b%2C%5Csigma_b%29
+"b \\sim \\text{Normal}(\\mu_b,\\sigma_b)")  
+  
+![\\mu\_b = 0](https://latex.codecogs.com/png.latex?%5Cmu_b%20%3D%200
+"\\mu_b = 0")  
+  
+![\\sigma\_b
+= 2](https://latex.codecogs.com/png.latex?%5Csigma_b%20%3D%202
+"\\sigma_b = 2")  
 
 This way, if it is equally likely that a member and non-member of the
 cognizable class will be stricken, then ![w = \\frac{Pr(X=1)=0.50}{Pr(X
@@ -57,11 +64,11 @@ bias is zero: given
 ![b=log(1)=0](https://latex.codecogs.com/png.latex?b%3Dlog%281%29%3D0
 "b=log(1)=0"). If ![b\>1](https://latex.codecogs.com/png.latex?b%3E1
 "b\>1"), we infer that the the party has bias favoring a strike against
-a juror falling within the cognitive class
+a juror falling within the cognizable class
 (![X=1](https://latex.codecogs.com/png.latex?X%3D1 "X=1"), e.g., the
 juror is a racial minority). Where
 ![b\<1](https://latex.codecogs.com/png.latex?b%3C1 "b\<1"), the party
-has bias toward striking a juror falling outside the cognitive class
+has bias toward striking a juror falling outside the cognizable class
 (![X=0](https://latex.codecogs.com/png.latex?X%3D0 "X=0"), e.g., the
 juror is White).
 

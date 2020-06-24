@@ -10,17 +10,20 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Like @Kadane2018 and @Barrett2007, we model the probability that the struck person belonged (or not) to the cognitive class as a function of (1) the number of cognizable class members (e.g., racial minorities, women) and non-class members (e.g., White people, men) in the set of people who could have been struck; and (2) an unobserved variable $b$ that indicates how much weight the striking party placed on the struck juror's membership in the cognitive class (e.g., whether that juror was racial minority or White; women or man). 
+Like @Kadane2018 and @Barrett2007, we model the probability that the struck person belonged (or not) to the cognizable class as a function of (1) the number of cognizable class members (e.g., racial minorities, women) and non-class members (e.g., White people, men) in the set of people who could have been struck; and (2) an unobserved variable $b$ that indicates how much weight the striking party placed on the struck juror's membership in the cognizable class (e.g., whether that juror was racial minority or White; women or man). 
 
 For any given jury selection $i$, let $j$ denote a peremptory strike used, and let $X_{ij}$ denote whether a party used that strike on a person who belongs to a "cognizable class", _i.e._, $X_{ij} = 0$ if no, and $X_{ij} = 1$ if yes. If "race" is the bias type of interest, the cognizable class ($X = 1$) is racial minority jurors ($X = 0$ for White jurors).  If "gender" is the bias of interest, the cognizable class is female jurors ($X=0$ for male jurors).
 
-We are interested in estimating the likely values of $b$, given the strike data we have. There is zero bias only if the probability of striking a cognizable class member is the same as the probability of striking a non-cognitive class member.  Accordingly,
+We are interested in estimating the likely values of $b$, given the strike data we have. There is zero bias only if the probability of striking a cognizable class member is the same as the probability of striking a non-cognizable class member.  Accordingly,
 
 $$w = \frac{Pr(X=1)}{Pr(X = 0)}$$
 $$w = e^b$$
-$$b \sim \text{Normal}(0, 2)$$
+$$b \sim \text{Normal}(\mu_b,\sigma_b)$$
+$$\mu_b = 0$$
+$$\sigma_b = 2$$
 
-This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>1$, we infer that the the party has bias favoring a strike against a juror falling within the cognitive class ($X=1$, e.g., the juror is a racial minority). Where $b<1$, the party has bias toward striking a juror falling outside the cognitive class ($X=0$, e.g., the juror is White). 
+
+This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>1$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class ($X=1$, e.g., the juror is a racial minority). Where $b<1$, the party has bias toward striking a juror falling outside the cognizable class ($X=0$, e.g., the juror is White). 
 
 In turn, let $c$ denote the number of cognizable class members; and $m$ denote the number of cognizable class non-members, such that $c+m$ is the total number of jurors potentially subject to strike.
 
@@ -34,7 +37,7 @@ $$
 
 The likelihood function of b is 
 $$L(b|X) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}$$
-where $n_{i}$ is the total number of jury selections and $n_j$ is the total number of peremptory strikes; and where $\delta_{ij} = 1$ when $X_{ij} = 1$ and $\delta_{ij} = 0$ when $X_{ij}=0$.
+where $n_{i}$ is the total number of jury selections; $n_j$ is the total number of peremptory strikes; $\delta_{ij} = 1$ when $X_{ij} = 1$; and $\delta_{ij} = 0$ when $X_{ij}=0$.
 
 The posterior probability distribution is estimated with R 4.0 [@R] and mcmc 0.9-7 [@mcmc].
 

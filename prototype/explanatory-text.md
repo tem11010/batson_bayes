@@ -25,7 +25,7 @@ confident we should be in any particular value of
 ![b](https://latex.codecogs.com/png.latex?b "b") from the data we have.
 
 The dashed lines indicate a pre-set *credible interval*, i.e., here the
-values of ![d](https://latex.codecogs.com/png.latex?d "d") between which
+values of ![b](https://latex.codecogs.com/png.latex?b "b") between which
 80% of the likely values of ![b](https://latex.codecogs.com/png.latex?b
 "b") fall. If zero falls within this interval, then we should be wary
 about (have low confidence in) inferring bias (for or against the

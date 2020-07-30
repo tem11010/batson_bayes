@@ -26,7 +26,7 @@ ui <- fluidPage(
 
     #Navbar structure for UI
     
-    navbarPage("Batson App", theme = shinytheme("paper"),
+    navbarPage("Batson App - Proof of Concept", theme = shinytheme("paper"),
                
         tabPanel("Prototype", fluid = TRUE,
             sidebarPanel(
@@ -46,9 +46,10 @@ ui <- fluidPage(
                 ),
         
         tabPanel("About", fluid = TRUE,
-                 includeMarkdown("explanatory-text.md")),
-        tabPanel("Model", fluid = TRUE,
-                 includeMarkdown("model_text.md"))
+                 includeMarkdown("explanatory-text.md"))
+        #,
+        #tabPanel("Model", fluid = TRUE,
+        #         includeMarkdown("model_text.md"))
         ))
 
     

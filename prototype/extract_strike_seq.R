@@ -5,7 +5,10 @@
 
 library(dplyr)
 
-dat0 <- readRDS("jury_data_cleaned.RDS")
+load_path <- here::here("prototype","jury_data_cleaned.RDS")
+save_path <- here::here("prototype","jury_data_cleaned_new.rds")
+
+dat0 <- readRDS(load_path)
 
 extract_seq <- function(dat){
   dat$strike_num <- as.numeric(dat$strike_num)
@@ -20,5 +23,5 @@ dat1 <- dat0 %>% group_split(ID)
 test_l <- lapply(1:length(dat1), function(x) extract_seq(dat1[[x]]))
 dat1 = do.call(rbind.data.frame,test_l)
 
-saveRDS(dat1, file = "jury_data_cleaned_new.rds")
+saveRDS(dat1, file = save_path)
 

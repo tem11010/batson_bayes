@@ -42,7 +42,9 @@ ui <- fluidPage(
                    "Current Strike Tally",
                    rHandsontableOutput("hot")
                 ),
-            mainPanel(plotOutput("plot"))
+            mainPanel(
+                actionButton("updateButton", "Update"),
+                plotOutput("plot"))
                 ),
         
         tabPanel("About", fluid = TRUE,

@@ -47,6 +47,9 @@ post3 <- make_posterior_p(x = df0_m,x_p=sub1,a0=0, niter = 11000,
                           theta_start_val = 0, theta_proposal_sd =.5, 
                           prior_mean = 0, prior_sd = 2)
 
+test = make_posterior_prior(x_p=sub1,a0=0, niter = 11000, 
+                        theta_start_val = 0, theta_proposal_sd =.5, 
+                        prior_mean = 0, prior_sd = 2)
 
 ### create density plot to compare posterior density with different priors ###
 d1 <- density(post1$theta[1001:11000])

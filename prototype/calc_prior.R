@@ -74,13 +74,16 @@ organize_input <- function(dat,pp,cog){
 ### attorney name of the prosecutor to parameter 'atny_name', and TRUE for 'pp' and jury_data_cleaned_new (which is the one with strike_seq) for 'dat'
 ### to get the prior mean and sd corresponding to a defense attorney, we put the according name and set 'pp' as FALSE.
 
-
-calc_prior <- function(atny_name,pp,dat,cog){
+subset <- function(atny_name,pp,dat,cog){
   dat_sub <- extract_atny(atny_name,pp,dat)
   sub1 <- dat_sub %>% group_split(ID)
   sub1_l <- lapply(1:length(sub1), function(x) organize_input(sub1[[x]],pp,cog))
   df_m = do.call(rbind.data.frame,sub1_l)
   df_m <- as.matrix(df_m)
+}
+
+calc_prior <- function(atny_name,pp,dat,cog){
+  df_m <- subset(atny_name,pp,dat,cog)
   out <- make_posterior(x = df_m, niter = 110000, theta_start_val = 0,theta_proposal_sd =.5,prior_mean = 0,prior_sd=2)
   d1 <- out$theta[1001:11000]
   return(list(prior_mean = mean(d1),prior_sd = sd(d1)))

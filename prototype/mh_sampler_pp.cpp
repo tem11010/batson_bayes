@@ -85,6 +85,48 @@ List make_posterior_p(NumericMatrix x,NumericMatrix x_p,double a0, int niter,
   return List::create(Named("theta")=theta,Named("accept_rate")=acpt);
 }
 
+// [[Rcpp::export]]
+List make_posterior_prior(NumericMatrix x_p,double a0, int niter, 
+                      double theta_start_val, double theta_proposal_sd, double prior_mean, double prior_sd){
+  NumericVector theta(niter);
+  double current_theta;
+  double new_theta;
+  double r;
+  double thresh;
+  double acpt;
+  int acptn=0;
+  
+  theta[0] = theta_start_val;
+  
+  for(int i = 1; i < niter; ++i){
+    
+    current_theta = theta[i-1];
+    
+    new_theta = rnorm(1,current_theta, theta_proposal_sd)[0];
+    
+    
+    r = log(Priorcpp_p(new_theta,prior_mean,prior_sd,x_p,a0))-log(Priorcpp_p(current_theta,prior_mean,prior_sd,x_p,a0));
+    
+    thresh = log(runif(1)[0]);
+    
+    
+    
+    if(thresh<r){
+      theta[i] = new_theta;
+      acptn+=1;
+      //std::cout << acptn << std::endl;
+    } else{
+      theta[i] = current_theta;
+    }
+    
+    
+  }
+  //std::cout << acptn << std:: endl;
+  acpt = static_cast<double>(acptn)/niter;
+  //std::cout << acpt << std:: endl;
+  return List::create(Named("theta")=theta,Named("accept_rate")=acpt);
+}
+
 
 //this is a comment
 

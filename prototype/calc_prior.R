@@ -3,7 +3,7 @@
 library(dplyr)
 library(mcmc)
 library(Rcpp)
-Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
+Rcpp::sourceCpp(here::here("prototype","mh_sampler_pp.cpp"))
 
 dat0 <- readRDS("jury_data_cleaned_new.RDS")
 

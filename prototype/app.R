@@ -43,7 +43,8 @@ ui <- fluidPage(
                    rHandsontableOutput("hot")
                 ),
             mainPanel(
-                actionButton("updateButton", "Update"),
+                actionButton("updateButton", "Update",
+                             icon = icon("refresh")),
                 plotOutput("plot"))
                 ),
         
@@ -57,7 +58,7 @@ ui <- fluidPage(
     
 # Define server logic 
 server <- function(input, output, session) {
-        
+
         output$hot <- renderRHandsontable({
             
             rhandsontable(df0, width = 600, height = 700) %>%
@@ -76,9 +77,12 @@ server <- function(input, output, session) {
         set.seed(1234)
         
         output$plot <- renderPlot({
+            
             if(is.null(input$hot)) return(NULL)
             df0 <- hot_to_r(input$hot)
-            
+
+            input$updateButton
+                        
             df_mp <- df0 %>%
                 filter(party == "PP") %>%
                 select(-c(party)) %>%
@@ -202,7 +206,7 @@ server <- function(input, output, session) {
                     labs(subtitle = paste("80% HDI: Defense = ",CI$bias[1],
                                           "; Prosecution = ", CI$bias[2]))
         })
-        
+
     }
     
 # Run the application 

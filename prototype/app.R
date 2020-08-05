@@ -112,10 +112,10 @@ server <- function(input, output, session) {
             }
             
             
-            out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = 0, niter = 110000, 
+            out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = 1, niter = 110000, 
                                     theta_start_val = 0, theta_proposal_sd =.5, 
                                     prior_mean = 0, prior_sd = 2)
-            out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0=0, niter = 110000, 
+            out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0=1, niter = 110000, 
                                     theta_start_val = 0, theta_proposal_sd =.5, 
                                     prior_mean = 0, prior_sd = 2)
             
@@ -136,10 +136,10 @@ server <- function(input, output, session) {
             
             
             ## generate prior probability distributions
-            pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0=0, niter = 110000, 
+            pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0=1, niter = 110000, 
                                                theta_start_val = 0, theta_proposal_sd =.5, 
                                                prior_mean = 0, prior_sd = 2)
-            pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0=0, niter = 110000, 
+            pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0=1, niter = 110000, 
                                                theta_start_val = 0, theta_proposal_sd =.5, 
                                                prior_mean = 0, prior_sd = 2)
             

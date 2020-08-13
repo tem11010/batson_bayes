@@ -38,7 +38,7 @@ ui <- fluidPage(
                                choices=atty_levels_p,
                                selected = "None"),
                    selectInput("cog_c", "Cognizable Class:", choices=cog_c_levels),
-                   radioButtons("weight", "Weight:", inline=TRUE, selected = 1,
+                   radioButtons("weight", "Prior Strike History Weight:", inline=TRUE, selected = 1,
                                 choiceValues = c(1, 0.5, 0.2),
                                 choiceNames = c("Equal","Half","Minimal") 
                                     ),
@@ -114,7 +114,7 @@ server <- function(input, output, session) {
               sub_d = df_md
             }
             
-            weight <- as.numeric(input$weight)
+            weight<- as.numeric(input$weight)
             
             out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = weight, niter = 110000, 
                                     theta_start_val = 0, theta_proposal_sd =.5, 

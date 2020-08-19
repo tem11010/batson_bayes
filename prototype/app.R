@@ -8,7 +8,8 @@ library(shinythemes)
 library(markdown)
 
 Rcpp::sourceCpp(here::here("prototype","mh_sampler_pp.cpp"))
-    
+Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
+
 # Load dummy strike dataframe
 source(here::here("prototype","dummy_strike_data.R"))
 
@@ -101,27 +102,55 @@ server <- function(input, output, session) {
             # Note: same priors regardless of cognizable class if atty = "None"
             # In the following function, we may add one line to take input value of a0,
             # which used to control the weight of historical information
+            # if procecuter or defense is none, we use the vague norm prior and the posterior is calculated
+            # use the function in mh_sampler.cpp. if procecuter or defense is not none, we use power prior 
+            # and use function in mh_sampler_pp.cpp to draw posteriors
+            
+            weight<- as.numeric(input$weight)
             
             if (input$atty_p != "None"){
                 sub_p <- subset(input$atty_p,TRUE,dat0,input$cog_c)
+                out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = weight, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+                pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0 = weight, niter = 110000, 
+                                                       theta_start_val = 0, theta_proposal_sd =.5, 
+                                                       prior_mean = 0, prior_sd = 2)
+                pp_prior <- data.frame(theta = pp_prior_theta$theta[10001:110000], 
+                                       party = "Prosecution", 
+                                       posterior = "Prior")
             }else{
-              sub_p = df_mp
+              out_p <- make_posterior(x = df_mp,niter = 110000,theta_start_val = 0, theta_proposal_sd =.5, 
+                                      prior_mean = 0, prior_sd = 2)
+              pp_prior_theta <- rnorm(100000,0,2)
+              pp_prior <- data.frame(theta = pp_prior_theta, 
+                                     party = "Prosecution", 
+                                     posterior = "Prior")
+              
             }
             
             if (input$atty_d != "None"){
                 sub_d <- subset(input$atty_d,FALSE,dat0,input$cog_c)
+                out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0= weight, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+                pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0 = weight, niter = 110000, 
+                                                       theta_start_val = 0, theta_proposal_sd =.5, 
+                                                       prior_mean = 0, prior_sd = 2)
+                
+                
+                pd_prior <- data.frame(theta = pd_prior_theta$theta[10001:110000], 
+                                       party = "Defense", 
+                                       posterior = "Prior")
             }else{
-              sub_d = df_md
+              out_d <- make_posterior(x = df_md,niter = 110000,theta_start_val = 0, theta_proposal_sd =.5, 
+                                      prior_mean = 0, prior_sd = 2)
+              pd_prior_theta <- rnorm(100000,0,2)
+              pd_prior <- data.frame(theta = pd_prior_theta, 
+                                     party = "Defense", 
+                                     posterior = "Prior")
             }
             
-            weight<- as.numeric(input$weight)
-            
-            out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = weight, niter = 110000, 
-                                    theta_start_val = 0, theta_proposal_sd =.5, 
-                                    prior_mean = 0, prior_sd = 2)
-            out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0= weight, niter = 110000, 
-                                    theta_start_val = 0, theta_proposal_sd =.5, 
-                                    prior_mean = 0, prior_sd = 2)
             
             # add back the party variable and combine into single dataframe
             
@@ -140,19 +169,6 @@ server <- function(input, output, session) {
             
             
             ## generate prior probability distributions
-            pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0 = weight, niter = 110000, 
-                                               theta_start_val = 0, theta_proposal_sd =.5, 
-                                               prior_mean = 0, prior_sd = 2)
-            pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0 = weight, niter = 110000, 
-                                               theta_start_val = 0, theta_proposal_sd =.5, 
-                                               prior_mean = 0, prior_sd = 2)
-            
-            pp_prior <- data.frame(theta = pp_prior_theta$theta[10001:110000], 
-                                   party = "Prosecution", 
-                                   posterior = "Prior")
-            pd_prior <- data.frame(theta = pd_prior_theta$theta[10001:110000], 
-                                   party = "Defense", 
-                                   posterior = "Prior")
                               
             priors <- rbind(pp_prior, pd_prior)
 

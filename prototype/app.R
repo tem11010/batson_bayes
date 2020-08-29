@@ -87,11 +87,13 @@ server <- function(input, output, session) {
             if(is.null(input$hot)) return(NULL)
             df0 <- hot_to_r(input$hot)
 
+            # strike tally for prosecutor
             df_mp <- df0 %>%
                 filter(party == "PP") %>%
                 select(-c(party)) %>%
                 as.matrix()
             
+            # strike tally for defense
             df_md <- df0 %>%
                 filter(party == "PD") %>%
                 select(-c(party)) %>%
@@ -226,9 +228,10 @@ server <- function(input, output, session) {
             pplot + geom_vline(data=CI, aes(xintercept=q1), color = c("blue", "darkred"),
                                linetype="dashed", size = 0.9)+
                     geom_vline(data=CI, aes(xintercept=q2), color = c("blue", "darkred"),
-                           linetype="dashed", size = 0.9) +
-                    labs(subtitle = paste("80% HDI: Defense = ",CI$bias[1],
-                                          "; Prosecution = ", CI$bias[2]))
+                           linetype="dashed", size = 0.9) 
+                    #+
+                    #labs(subtitle = paste("80% HDI: Defense = ",CI$bias[1],
+                    #                      "; Prosecution = ", CI$bias[2]))
         })
 
     }

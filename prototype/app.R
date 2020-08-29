@@ -102,11 +102,13 @@ server <- function(input, output, session) {
             # Note: same priors regardless of cognizable class if atty = "None"
             # In the following function, we may add one line to take input value of a0,
             # which used to control the weight of historical information
-            # if procecuter or defense is none, we use the vague norm prior and the posterior is calculated
-            # use the function in mh_sampler.cpp. if procecuter or defense is not none, we use power prior 
+            # if prosecutor or defense is none, we use the vague norm prior and the posterior is calculated
+            # use the function in mh_sampler.cpp. if prosecutor or defense is not none, we use power prior 
             # and use function in mh_sampler_pp.cpp to draw posteriors
             
             weight<- as.numeric(input$weight)
+            
+            # prosecutor
             
             if (input$atty_p != "None"){
                 sub_p <- subset(input$atty_p,TRUE,dat0,input$cog_c)
@@ -128,6 +130,8 @@ server <- function(input, output, session) {
                                      posterior = "Prior")
               
             }
+            
+            # defense
             
             if (input$atty_d != "None"){
                 sub_d <- subset(input$atty_d,FALSE,dat0,input$cog_c)

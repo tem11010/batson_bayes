@@ -171,7 +171,7 @@ server <- function(input, output, session) {
                 party = "Defense", 
                 posterior = "Posterior")
             
-            dat0 <- rbind(d_p,d_d)
+            dat <- rbind(d_p,d_d)
             
             
             ## generate prior probability distributions
@@ -179,7 +179,7 @@ server <- function(input, output, session) {
             priors <- rbind(pp_prior, pd_prior)
 
             ## merge priors and posteriors
-            dat <- rbind(dat0, priors)
+            dat <- rbind(dat, priors)
             
             ## calculate credible intervals
             
@@ -187,9 +187,9 @@ server <- function(input, output, session) {
             dat$party <- factor(dat$party, levels = c("Defense", "Prosecution"), 
                                 ordered = TRUE)
             
-            CI <- dat %>%
+            CI <- dat %>% filter(posterior == 'Posterior') %>%
                 group_by(party) %>%
-                summarise(q1 = quantile(dat0$theta,0.1), q2 = quantile(dat0$theta,0.9)) %>%
+                summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9)) %>%
                 mutate(bias = ifelse(
                     q1 <= 0 & q2 >= 0, "No Bias", "Bias"))
             

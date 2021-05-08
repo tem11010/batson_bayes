@@ -52,13 +52,7 @@ ui <- fluidPage(
                 actionButton("updateButton", "Update",
                              icon = icon("refresh")),
                 plotOutput("plot"))
-                ),
-        
-        tabPanel("About", fluid = TRUE,
-                 includeMarkdown("explanatory-text.md"))
-        #,
-        #tabPanel("Model", fluid = TRUE,
-        #         includeMarkdown("model_text.md"))
+                )
         ))
 
     

@@ -80,7 +80,7 @@ Accordingly, we model the jury-selection process as follows.
 
 where $n_{i}$ is the total number of jury selections; and $n_j$ is the total number of peremptory strikes.
 
-This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>1$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class ($X=1$, e.g., the juror is a racial minority). Where $b<1$, the party has bias toward striking a juror falling outside the cognizable class ($X=0$, e.g., the juror is White). 
+This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>0$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class ($X=1$, e.g., the juror is a racial minority). Where $b<0$, the party has bias toward striking a juror falling outside the cognizable class ($X=0$, e.g., the juror is White). 
 
 # Model 2 - Sequential Strike Method
 
@@ -89,6 +89,20 @@ Under the "sequential strike" method of peremptory challenges, the trial judge r
 Accordingly, we model the sequential-strike process as follows.
 
 [insert statistical model]
+
+# Simulation 
+We conduct simulation study under different scenarios, including no bias, bias against cognizable class and preference for cognizable class, for both models. We have also studied the scenarios with different amount of historical data and whether the bias parameter of historical data is the same as current data. We show the model accuracy under different scenarios and how it improves the model accuracy by adding historical data and modifying the weight parameter.
+
+## Model 1
+As introduced in previous section, parameter b is used to measure the bias. We simulate data with 7 different values of $b = -3,-2,-1,0,1,2,3$ representing strong bias, bias, moderate bias toward striking a juror falling outside the cognizable class, no bias striking a juror and moderate bias, bias and strong bias favoring a strike against a juror falling within the cognizable. We also generate historical data with bias parameter from the 7 values. As for historical data, we consider it from one trial, two trials and three trials to represent different size of historical data. Consider the bias parameter of a person might change over time, we allow the historical data generated from a different bias parameter than the current data. When we use power prior incorporating the historical information, we can control the weight that we put on historical data by modifying the weight parameter. In the simulation study, we also try different values of the weight parameter to show the influence of the weight parameter on modeling accuracy. We summarize the results in the figure below.
+
+```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+knitr::include_graphics("dino_plots.pdf")
+```
+
+Historical b means the bias parameter for the generated historical data, b means the bias parameter for the current data. The values on the right side represent the size of the histrocial data. The values on the top of the plots represent the weight parameter of the power prior. Different color represents the estimated bias parameter.   
+
+From the plot, our model can capture strong bias and bias, when the bias parameter being -3,-2,2,3. When the bias is moderate, that is when the bias parameter b being -1 and 1, the model can detect it when we have historical data with the same direction bias parameter. If the bias parameter of historical data is in an ooposite direction, we might get a wrong estimate of current bias parameter. Thus if the historical data is not reliable, we should set a small weight parameter on them.  
 
 # The App
 

@@ -12,7 +12,7 @@ party_choices <- c("PP","PD")
 
 #### attorney name choices ####
 
-dat0 <- readRDS(here::here("prototype","jury_data_cleaned_new.rds"))
+dat0 <- readRDS("jury_data_cleaned_new.rds")
 
 atty_levels_p <- dat0 %>%
   pull("P_atty_l") %>%

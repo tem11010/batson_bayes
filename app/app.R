@@ -6,15 +6,15 @@ library(Rcpp)
 library(ggplot2)
 library(shinythemes)
 
-Rcpp::sourceCpp(here::here("prototype","mh_sampler_pp.cpp"))
-Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))
+Rcpp::sourceCpp("mh_sampler_pp.cpp")
+Rcpp::sourceCpp("mh_sampler.cpp")
 
 # Load dummy strike dataframe
-source(here::here("prototype","dummy_strike_data.R"))
+source("dummy_strike_data.R")
 
 # Load calc_prior function
 
-source(here::here("prototype","calc_prior.R"))
+source("calc_prior.R")
 
 # Define Cognitive Class choices
 

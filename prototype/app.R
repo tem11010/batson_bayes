@@ -49,8 +49,8 @@ ui <- fluidPage(
                    rHandsontableOutput("hot")
                 ),
             mainPanel(
-                actionButton("updateButton", "Update",
-                             icon = icon("refresh")),
+                #actionButton("updateButton", "Update",
+                #             icon = icon("refresh")),
                 plotOutput("plot"))
                 )
         ))

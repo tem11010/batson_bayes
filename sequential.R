@@ -86,33 +86,23 @@ sim_seq <- function(num_seat,num_strikep,num_striked,p0,p_c){
 
 
 #### test  ###
-a = sim_seq(14,7,7,0.2,0.9)
+#a = sim_seq(14,7,7,0.2,0.9)
 ### delete rows with 0 strikes left
-a = as.data.frame(a)
-if(min(which(a$num_strike_p==0))<nrow(a)){
+#a = as.data.frame(a)
+#if(min(which(a$num_strike_p==0))<nrow(a)){
   a1 = a[-which(a$num_strike_p==0 & a$att=='PP'),]
 }else{
   a1 = a[-which(a$num_strike_d==0 & a$att=='PD'),]
 }
 
-pp2 = a1[which(a1$att=='PP'),]
-pd2 <- a1[which(a1$att=='PD'),]
+#pp2 = a1[which(a1$att=='PP'),]
+#pd2 <- a1[which(a1$att=='PD'),]
 
-b = bayesglm(strike~cognizable,data=pp2,family='binomial',prior.scale.for.intercept=2.5)
-summary(b)
+#b = bayesglm(strike~cognizable,data=pp2,family='binomial',prior.scale.for.intercept=2.5)
+#summary(b)
 
 ### get the confidence interval of the estimated coefficient
-simulates <- coef(sim(b))
-hist(simulates[,1])
-quantile(simulates[,1],c(0.1,0.9))
-
-
-
-
-
-
-
-
-
-
+#simulates <- coef(sim(b))
+#hist(simulates[,1])
+#quantile(simulates[,1],c(0.1,0.9))
 

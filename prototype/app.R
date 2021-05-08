@@ -5,7 +5,6 @@ library(mcmc)
 library(Rcpp)
 library(ggplot2)
 library(shinythemes)
-library(markdown)
 
 Rcpp::sourceCpp(here::here("prototype","mh_sampler_pp.cpp"))
 Rcpp::sourceCpp(here::here("prototype","mh_sampler.cpp"))

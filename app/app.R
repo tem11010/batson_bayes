@@ -24,28 +24,33 @@ cog_c_levels <- c("race","gender")
     
 ui <- fluidPage(
 
-    #Navbar structure for UI
+    # Navbar structure for UI
     
     navbarPage("Batson App - Proof of Concept", theme = shinytheme("paper"),
                
         tabPanel("Prototype", fluid = TRUE,
             sidebarPanel(
-                   "Prior Strike History by Attorney",
-                   selectInput("atty_d", "Defense:", 
+
+                "Prior Strike History by Attorney",
+                 selectInput("atty_d", "Defense:", 
                                choices=atty_levels_d,
                                selected = "None"),
-                   selectInput("atty_p", "Prosecution:", 
+                
+                 selectInput("atty_p", "Prosecution:", 
                                choices=atty_levels_p,
                                selected = "None"),
-                   selectInput("cog_c", "Cognizable Class:", choices=cog_c_levels),
-                   radioButtons("weight", "Prior Strike History Weight:", inline=TRUE, selected = 1,
+                 
+                selectInput("cog_c", "Cognizable Class:", choices=cog_c_levels),
+                
+                radioButtons("weight", "Prior Strike History Weight:", inline=TRUE, selected = 1,
                                 choiceValues = c(1, 0.5, 0.2),
                                 choiceNames = c("Equal","Half","Minimal") 
                                     ),
-                   hr(),
-                   
-                   "Current Strike Tally",
-                   rHandsontableOutput("hot")
+                hr(),
+                
+                "Current Strike Tally",
+                rHandsontableOutput("hot"),
+                
                 ),
             mainPanel(
                 #actionButton("updateButton", "Update",

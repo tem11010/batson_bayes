@@ -1,59 +1,56 @@
 ---
-title: "Visualizing Bias for Batson Challenges Using Historical Selection Data"
+title: "Batson Challenges Using Historical Selection Data"
 date: "`r Sys.Date()`"
 bibliography: references.bib
-author: "Pandya, Li, Moore"
-output: 
-    html_document:
-    theme: readable
+author:
+  - name: "Sachin S. Pandya"
+    affiliation: "University of Connecticut"
+    orcid_id: 0000-0001-7387-1307
+  - name: "Xiaomeng Li"
+    affiliation: "University of Connecticut"
+  - name: "Timothy E. Moore"
+    affiliation: "University of Connecticut"
+    orcid_id: 0000-0002-9576-0517
+output: distill::distill_article
 ---
 
 # Introduction
 
-This paper demonstrates the use of a power prior as part of a software application that, during jury selection, attorneys can use in real time to estimate the probability that a prosecutor or defense attorney used peremptory challenges to strike potential jurors because of juror race or gender, in violation of _Batson v. Kentucky_ (1986), and its progeny.
+This paper demonstrates a prototype software application that, with both contemporaneous and historical jury-selection data, attorneys can use in real time to estimate the probability that an attorney has used peremptory challenges to strike potential jurors because of juror race or gender, in violation of _Batson v. Kentucky_ (1986), and its progeny.
 
-# Background
-
-## Power Prior
-
-The power prior is a way to create informative prior distributions based on
-historical data, or more precisely, by controlling how much historical data affects the posterior distribution of the unobserved variables of interest. For a review, see @Ibrahim2015. [MORE]
+# Background and Related Literature
 
 ## Jury Selection
 
-In the US, jury selection proceeds in three steps.  First, a court identifies individuals as part of a qualified jury pool, often based on voter registration and driver's license records.  Second, for a given case, a subset of individuals in the jury pool are summoned to appear for possible jury service. Upon their appearance, this group (the "venire") is subject to "voir dire", that is, they are questioned (by the parties or the trial judge) and are (1) excused by the trial judge for cause; (2) selected for the jury; or (3) dismissed upon the exercise (by one of the parties' attorneys) of a peremptory challenge. 
+In the US, once a group of individuals appear in court, this group is questioned by the parties' attorneys and the trial judge.  In turn, each individual may be (1) excused by the trial judge for cause; (2) selected for the jury; or (3) dismissed upon the exercise by one of the parties' attorneys of a peremptory challenge. The key feature of a peremptory challenge is that, with it, a party declares a prospective juror ineligible ("strikes" that juror) for a seat on the jury, but without the burden of explaining why. Each side is assigned a number of peremptory challenges and may use them to strike any potential juror without explanation. The number of peremptory challenges varies by jurisdiction, as does peremptory-challenge procedure, including the order of strikes and the number of peremptory strikes a party may exercise at a time [@nscs-jury2018; @Williams2017].
 
-The key feature of a peremptory challenge is that, with it, a party declare a prospective juror ineligible ("strikes" that juror) for a seat on the jury. Each side is assigned a number of peremptory challenges and may use them to strike any potential juror without explanation. The number of peremptory challenges varies by jurisdiction, as does how the procedure by which peremptory challenges are exercised. Where State law prescribes no uniform procedure, that procedure can vary by trial judge in that State. In federal court, practices vary by court and judge, because no federal rule specifies the procedure to be used [@Williams2017].
-
+<!--
 Courts also vary as to the number of peremptory strikes a party exercises at a time [@Williams2017, p. 297-298]. This particularly matters where each side does not have the same number of strikes.  For example, if the prosecution has six strikes and the defendant has ten, the custom may be to allow one prosecutor strike, then _two_ defense strikes, then the second prosecutor strike, then two more defense strikes, and so on, until all the strikes are exercised.
+-->
 
-Under _Batson v. Kentucky_ (1986)_, a party's exercise of a peremptory challenge violates the Equal Protection Clause of the US Constitution if motivated by a prospective juror's race, gender, or certain other characteristics. To raise a _Batson_ challenge during jury selection, the challenging party must typically establish a "prima facie case", that is, enough evidence to infer that a party struck a juror because of such juror's race, gender, or other protected status. Once established, the party exercising the strike bears the burden of producing a nondiscriminatory reason for that strike.  Thereafter, the challenger bears the burden of persuading the trial judge that the race or gender was the real motivation for the strike in question.^[Some jurisdictions adopt a modified version of _Batson_ that reduces or eliminates the challenger's burden to establish a prima facie case. E.g., State v. Holloway, 209 Conn. 636, 646 & n.4 (1989); State v. Chapman, 317 S.C. 302, 305-06 (1995); see also State v. Antwine, 743 S.W.2d 51, 64 (Mo. 1987) (trial judges must consider prosecutor's explanation to determine whether defendant established a prima facie case).]
+Under _Batson v. Kentucky_ (1986)_, however, a party's exercise of a peremptory challenge violates the Equal Protection Clause of the US Constitution if motivated by a prospective juror's race, gender, or certain other protected characteristics. When raising a _Batson_ challenge during jury selection, the challenging party must typically establish a "prima facie case", that is, enough evidence to infer that a party struck a juror because of such juror's race, gender, or other protected status. Once established, the party exercising the strike bears the burden of producing a nondiscriminatory reason for that strike.  Thereafter, the challenger bears the burden of persuading the trial judge that the race or gender, not the proffered nondiscriminatory reason, was more likely than not the real motivation for the challenged strike(s). For discussion, see [@LaFave2020, sec. 22.3].
 
-Evidence supporting a _Batson_ challenge may include not only the circumstances of the jury selection itself, but also historical data on peremptory challenges in past case. Though usually revealed after painstaking investigation of jury selection records [e.g., @Craft2018], such information, if routinely available, would be relevant, in any particular case, to whether (1) to conclude that the defendant has a prima facie case; (2) to believe a prosecutor from that office who has offered a race-neutral explanation for striking, say, an African-American juror in that case; and (3) to ultimately accept or reject a Batson challenge in any particular case.^[See, e.g., Miller-El v. Dretke, 545 U.S. 231, 253 (2005); Riley v. Taylor, 277 F.3d 261, 280-81, 283 (3d Cir. 2001); Cochran v. Herring, 43 F.3d 1404, 1412 (11th Cir. 1995).]
+By law, evidence supporting a _Batson_ challenge may include not only the circumstances of the jury selection itself, but also data on peremptory challenges in past cases. Such information would be relevant, in any particular case, to whether (1) to conclude that the defendant has a prima facie case; (2) to believe a prosecutor from that office who has offered a race-neutral explanation for striking, say, an African-American juror in that case; and (3) to ultimately accept or reject a Batson challenge in any particular case.^[See, e.g., Miller-El v. Dretke, 545 U.S. 231, 253 (2005); Riley v. Taylor, 277 F.3d 261, 280-81, 283 (3d Cir. 2001); Cochran v. Herring, 43 F.3d 1404, 1412 (11th Cir. 1995); see also Flowers v. Mississippi, 139 S. Ct. 2228, 2243 (2019) (kinds of evidence to support Batson challenge includes "relevant history of the State's peremptory strikes in past cases")]
 
-More recently, a few States (e.g., Washington State, California) have provided an independent basis to challenge peremptory strikes. For example, by court rule, a trial court in Washington State may deny a peremptory challenge if it determines that "an objective observer could view race or ethnicity as a factor in the use of the peremptory challenge."^[R. 37(e); see also Rule 37(f) ("an obiective obseryer is aware that implicit, institutional, and unconscious biases, in addition to purposeful discrimination, have resulted in the unfair exclusion of potential jurors in Washington State"); Rule 37(h) (identifying presumptively invalid reasons for a peremptory challenge).].
+Some States have adopted variants of _Batson_ that reduces or eliminates the challenger's burden to establish a prima facie case^[E.g., State v. Holloway, 209 Conn. 636, 646 & n.4 (1989); State v. Chapman, 317 S.C. 302, 305-06 (1995); see also State v. Antwine, 743 S.W.2d 51, 64 (Mo. 1987) (trial judges must consider prosecutor's explanation to determine whether defendant established a prima facie case).]; as well as, in a few States, replaced a focus on the motive for strikes with a query into whether a hypothetical "objective observer" would find that race or ethnicity was a "factor" in the use of strikes.^[Wash. R. 37(e)].
 
-Despite _Batson_ and its progeny, "prosecutors in criminal cases, and defense attorneys in civil case are more likely to use their challenges to dismiss African American jurors, whereas criminal defense attorneys and civil plaintiff's attorneys are more likely to exercise their strikes on white prospective jurors." [@Diamond2018]. This pattern persists, despite the fact that both sides' attorneys can often observe the race and gender of those in the venire who were and were not struck by peremptory challenge.
+Despite _Batson_ and its progeny, "prosecutors in criminal cases, and defense attorneys in civil case are more likely to use their challenges to dismiss African American jurors, whereas criminal defense attorneys and civil plaintiff's attorneys are more likely to exercise their strikes on white prospective jurors." [@Diamond2018]. This pattern persists, despite the fact that both sides' attorneys can often observe the race and gender of those in the venire who were and were not struck by peremptory challenge. The research literature suggests several explanations. These include a reluctance to raise a _Batson_ challenge on the premise that such a challenge raises with it the embarrassment, discomfort, and reputation costs with being challenged as racist [@OBrien2019, 29; @Offit2021]. Similarly, a trial judge deciding a _Batson_ challenge may similarly be reluctant to find against opposing counsel, particularly if that prosecutor repeatedly appears before that judge. Moreover, drawing inferences from historical data -- the use of perempetory challenges in _past_ cases -- is hard, because jury-selection records are not readily available and largely on paper, not electronic or machine-readable formats [@Grosso2017; @Wright2018], and otherwise require painstaking investigation [e.g., @Craft2018].
 
-The research literature suggests several explanations. These include a reluctance to raise a _Batson_ challenge on the premise that such a challenge raises with it the embarrassment, discomfort, and reputation costs with being challenged as racist [@OBrien2019, 29; @Offit2021, 148, 151, 158]. Similarly, a trial judge deciding a _Batson_ challenge may similarly be reluctant to find against opposing counsel, particularly if that prosecutor repeatedly appears before that judge. Moreover, drawing inferences from historical data is hard, because jury-selection records are not readily available and largely on paper, not electronic or machine-readable formats [@Grosso2017; @Wright2018].
+In theory, however, were an attorney's strike history in past cases easily available, such strike history can be compared to what we would expect to happen if, following the same procedure, venire members were struck at random [@Kadane2018; @Kadane2018a]. To do so, one would need to, for any peremptory-selection method, a corresponding likelihood function for how a prosecutor or defense attorney strikes prospective jurors of a protected class (e.g., racial-minorities). Yet, even with agreement on the appropriate statistical analysis, it is hard to complete the analysis in time to matter, unless "statisticans accompany attorneys in the jury selection process or a convenient programme or app is developed." [@Kadane2018, 12]
 
-In theory, however, were an attorney's strike history in past cases easily available, such strike history can be compared to what we would expect to happen if, following the same procedure, venire members were struck at random [@Kadane2018; @Kadane2018a]. To do so, one would need to, for any peremptory-selection method, a corresponding likelihood function for how a prosecutor or defense attorney strikes prospective jurors of a protected class (e.g., racial-minorities). Yet, even with agreement on the appropriate statistical analysis, it is hard to complete the analysis in time to matter to jury selection, unless "statisticans accompany attorneys in the jury selection process or a convenient programme or app is developed." [@Kadane2018, 12]
+# Discussion
 
-# Method
+Here, we discuss how we developed a software protoype for attorneys to assess whether one can credibly infer bias, for Batson purposes, based on an attorney's pattern of perempetory challenges in a particular case, either alone or in combination with historical data on that attorney's pattern of strikes in past cases. In doing so, we highlight two distinctive contributions. 
 
-[insert intro]
+First, we use the power prior to control how much the strike history in past cases affects the posterior distribution of the bias parameter $b$. The power prior is a way to create informative prior distributions based on historical data so as to control how much historical data affects the posterior distribution of the unobserved variables of interest. The key insight is to raise the likelihood function based on the historical data to a power parameter. For a review, see @Ibrahim2015.
 
-# Model 1 
+Second, we implement the analysis as prototype software that, in principle, an attorney could use in real time during jury selection to assess how likely an attorney striking prospective jurors in violation of _Batson_. 
 
-Under the "struck jury" method of peremptory challenges, the trial judge rules on all challenges for cause before the parties exercise any peremptories, so that the number of potential jurors who remain is the sum of number of seats on the jury (plus alternates, if any) and the number of peremptory challenges allotted to both sides. Accordingly, in a non-capital felony trial in federal district court using this method, the trial judge will, after excusing jurors for cause, make sure that there are 28 potential jurors remaining before the parties exercise their peremptory challenges (12 jurors plus 16 peremptories, assuming no alternate jurors). Then, the parties exercise their strikes on those 28 potential jurors.
+# Model
 
-In a typical variant of the "struck jury" method, the parties strike in an alternating sequence, with the prosecution striking first. Where the number of strikes are not the same for the parties, an alternating sequence may result in one party exercising multiple strikes per turn. If a party decides not to use all its strikes, the jurors are seated based on the order in which they were selected or at random.
-	
-Under "strike-and-replace" or "jury box" method, enough potential jurors are seated to fill the jury box. Some of them are excused for cause, and the parties decide whether or not to strike any of the remaining jurors with their peremptory challenges.  Once that is completed, new potential jurors take the seats of the excused or striken jurors, and the process repeats until all the jury seats are filled.  At any point, strikes can be used on anyone in the jury box, including those there previously but not struck.
+Under the "struck jury" method of peremptory challenges, the trial judge rules on all challenges for cause before the parties exercise any peremptories, so that the number of potential jurors who remain is the sum of number of seats on the jury (plus alternates, if any) and the number of peremptory challenges allotted to both sides. Accordingly, in a non-capital felony trial in federal district court using this method, the trial judge will, after excusing jurors for cause, make sure that there are 28 potential jurors remaining before the parties exercise their peremptory challenges (12 jurors plus 16 peremptories, assuming no alternate jurors). Then, the parties exercise their strikes on those 28 potential jurors. In a typical variant of the "struck jury" method, the parties strike in an alternating sequence, with the prosecution striking first. Where the number of strikes are not the same for the parties, an alternating sequence may result in one party exercising multiple strikes per turn. If a party decides not to use all its strikes, the jurors are seated based on the order in which they were selected or at random. Under "strike-and-replace" or "jury box" method, enough potential jurors are seated to fill the jury box. Some of them are excused for cause, and the parties decide whether or not to strike any of the remaining jurors with their peremptory challenges.  Once that is completed, new potential jurors take the seats of the excused or striken jurors, and the process repeats until all the jury seats are filled.  At any point, strikes can be used on anyone in the jury box, including those there previously but not struck.
 
-For these peremptory challenges, following @Kadane2018 and @Barrett2007, we model the probability that the struck person belonged (or not) to the cognizable class as a function of (1) the number of cognizable class members (e.g., racial minorities, women) and non-class members (e.g., White people, men) in the set of people who could have been struck; and (2) a parameter $b$ that indicates how much weight (or "bias") the striking party placed on the struck juror's membership in the cognizable class (e.g., whether that juror was a racial minority or White; women or man). 
-
-For any given jury selection $i$, let $j$ denote a peremptory strike used, and let $\delta_{ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class". If "race" is the bias type of interest, the cognizable class is racial minority jurors ($\delta_{ij} =1$, 0 for White jurors).  If "gender" is the bias of interest, the cognizable class is female jurors ($\delta_{ij} = 1$, 0 for male jurors). In turn, let $c_{ij}$ denote the number of cognizable class members subject to strike; and $m_{ij}$ denote the number of cognizable class non-members subject to strike, such that $c_{ij}+m_{ij}$ is the total number of jurors potentially subject to strike.
+Following @Kadane2018 and @Barrett2007, we model these peremptory-challenge processes as follows. For any given jury selection $i$, let $j$ denote a peremptory strike used, and let $\delta_{ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class". If "race" is the bias type of interest, the cognizable class is racial minority jurors ($\delta_{ij} =1$, 0 for White jurors).  If "gender" is the bias of interest, the cognizable class is female jurors ($\delta_{ij} = 1$, 0 for male jurors). In turn, let $c_{ij}$ denote the number of cognizable class members subject to strike; and $m_{ij}$ denote the number of cognizable class non-members subject to strike, such that $c_{ij}+m_{ij}$ is the total number of jurors potentially subject to strike.
 
 Accordingly, for any given value of the bias parameter $b$, the probability of strike, or $Pr(\delta_{ij})$, is:
 
@@ -71,16 +68,26 @@ $$Pr(\delta_{ij}| b) = \frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\f
 
 If $b = 0$, there is no bias, and the probability of strike is simply a function of the share of cognizable members (non-members) in the pool of prospective jurors that could be struck.
 
-Because $b$ is not directly observable, we are interested in estimating the likely values of $b$, given the strike data we have, i.e., $\delta_{ij}$, $c_{ij}$, and $m_{ij}$.
+Because $b$ is not directly observable, we estimate likely values of $b$, given the strike data we have, i.e., $\delta_{ij}$, $c_{ij}$, and $m_{ij}$.
 
-Accordingly, we model the jury-selection process as follows. 
+Accordingly, we model the strike-process as follows. 
 
 \[L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}\]
 \[b \sim \text{Normal}(0,2)\]
 
 where $n_{i}$ is the total number of jury selections; and $n_j$ is the total number of peremptory strikes.
 
-This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>0$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class ($X=1$, e.g., the juror is a racial minority). Where $b<0$, the party has bias toward striking a juror falling outside the cognizable class ($X=0$, e.g., the juror is White). 
+This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>0$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class (e.g., the juror is a racial minority). Where $b<0$, the party has a preference for a juror within the cognizable class. 
+
+The prior distribution for $b$ ($\sim \text{Normal}(0,2)$] is justified on the grounds that the party bringing the Batson challenge bears the ultimate burden of persuading the trial judge of an illegal use of strikes.
+
+Finally, to control how much weight the strike history in past cases has on the posterior distribution of $b$, we revise the likelihood function to include the power prior:
+
+\[L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}\]
+
+\[b \sim \text{Normal}(0,2)\]
+
+<!--
 
 # Model 2 - Sequential Strike Method
 
@@ -89,26 +96,35 @@ Under the "sequential strike" method of peremptory challenges, the trial judge r
 Accordingly, we model the sequential-strike process as follows.
 
 [insert statistical model]
+-->
 
 # Simulation 
-We conduct simulation study under different scenarios, including no bias, bias against cognizable class and preference for cognizable class, for both models. We have also studied the scenarios with different amount of historical data and whether the bias parameter of historical data is the same as current data. We show the model accuracy under different scenarios and how it improves the model accuracy by adding historical data and modifying the weight parameter.
 
-## Model 1
-As introduced in previous section, parameter b is used to measure the bias. We simulate data with 7 different values of $b = -3,-2,-1,0,1,2,3$ representing strong bias, bias, moderate bias toward striking a juror falling outside the cognizable class, no bias striking a juror and moderate bias, bias and strong bias favoring a strike against a juror falling within the cognizable. We also generate historical data with bias parameter from the 7 values. As for historical data, we consider it from one trial, two trials and three trials to represent different size of historical data. Consider the bias parameter of a person might change over time, we allow the historical data generated from a different bias parameter than the current data. When we use power prior incorporating the historical information, we can control the weight that we put on historical data by modifying the weight parameter. In the simulation study, we also try different values of the weight parameter to show the influence of the weight parameter on modeling accuracy. We summarize the results in the figure below.
+We conduct simulation study under different scenarios, including no bias, bias against cognizable class and preference for cognizable class. We have also studied the scenarios with different amount of historical data and whether the bias parameter of historical data is the same as current data. We show the model accuracy under different scenarios and how it improves the model accuracy by adding historical data and modifying the weight parameter.
 
-```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}
-knitr::include_graphics("dino_plots.pdf")
+In particular, we simulate data with 7 different values of $b = -3,-2,-1,0,1,2,3$ representing strong bias, bias, moderate bias toward striking a juror falling outside the cognizable class, no bias striking a juror and moderate bias, bias and strong bias favoring a strike against a juror falling within the cognizable. 
+
+We also generate historical data with bias parameter from the 7 values. As for historical data, we consider it from one trial, two trials and three trials to represent different sizes of historical data. 
+
+Finally, to let a person's bias parameter may change over time, we allow the historical data generated from a different bias parameter than the current data. When we use power prior incorporating the historical information, we can control the weight that we put on historical data by modifying the weight parameter. In the simulation study, we also try different values of the weight parameter to show the influence of the weight parameter on modeling accuracy. 
+
+Figure [X] depicts the results of these simulations.
+
+```{r pressure, eval = FALSE, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+
+# knitr::include_graphics("dino_plots.pdf")
+
+# INSERT simulation and plot code
+
 ```
 
-Historical b means the bias parameter for the generated historical data, b means the bias parameter for the current data. The values on the right side represent the size of the histrocial data. The values on the top of the plots represent the weight parameter of the power prior. Different color represents the estimated bias parameter.   
+_Historical b_ means the bias parameter for the generated historical data, $b$ means the bias parameter for the current data. The values on the right side represent the size of the historical data. The values on the top of the plots represent the weight parameter of the power prior. Different color represents the estimated bias parameter.
 
-From the plot, our model can capture strong bias and bias, when the bias parameter being -3,-2,2,3. When the bias is moderate, that is when the bias parameter b being -1 and 1, the model can detect it when we have historical data with the same direction bias parameter. If the bias parameter of historical data is in an ooposite direction, we might get a wrong estimate of current bias parameter. Thus if the historical data is not reliable, we should set a small weight parameter on them.  
+From the plot, our model can capture strong bias and bias, when the bias parameter being -3,-2,2,3. When the bias is moderate, that is when the bias parameter b being -1 and 1, the model can detect it when we have historical data with the same direction bias parameter. If the bias parameter of historical data is in an opposite direction, we might get a wrong estimate of current bias parameter. Thus if the historical data is not reliable, we should set a small weight parameter on them.
 
-# The App
+# The App Prototype
 
-[insert]
-
-The posterior probability distribution is estimated with R 4.0 [@R] and mcmc 0.9-7 [@mcmc]. The app was built using the shiny package [@shiny].
+The posterior probability distribution is estimated with R 4.0 [@R]. The app was built using the shiny package [@shiny].
 
 
 # Discussion

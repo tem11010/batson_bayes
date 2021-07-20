@@ -50,43 +50,51 @@ Second, we implement the analysis as prototype software that, in principle, an a
 
 Under the "struck jury" method of peremptory challenges, the trial judge rules on all challenges for cause before the parties exercise any peremptories, so that the number of potential jurors who remain is the sum of number of seats on the jury (plus alternates, if any) and the number of peremptory challenges allotted to both sides. Accordingly, in a non-capital felony trial in federal district court using this method, the trial judge will, after excusing jurors for cause, make sure that there are 28 potential jurors remaining before the parties exercise their peremptory challenges (12 jurors plus 16 peremptories, assuming no alternate jurors). Then, the parties exercise their strikes on those 28 potential jurors. In a typical variant of the "struck jury" method, the parties strike in an alternating sequence, with the prosecution striking first. Where the number of strikes are not the same for the parties, an alternating sequence may result in one party exercising multiple strikes per turn. If a party decides not to use all its strikes, the jurors are seated based on the order in which they were selected or at random. Under "strike-and-replace" or "jury box" method, enough potential jurors are seated to fill the jury box. Some of them are excused for cause, and the parties decide whether or not to strike any of the remaining jurors with their peremptory challenges.  Once that is completed, new potential jurors take the seats of the excused or striken jurors, and the process repeats until all the jury seats are filled.  At any point, strikes can be used on anyone in the jury box, including those there previously but not struck.
 
-Following @Kadane2018 and @Barrett2007, we model these peremptory-challenge processes as follows. For any given jury selection $i$, let $j$ denote a peremptory strike used, and let $\delta_{ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class". If "race" is the bias type of interest, the cognizable class is racial minority jurors ($\delta_{ij} =1$, 0 for White jurors).  If "gender" is the bias of interest, the cognizable class is female jurors ($\delta_{ij} = 1$, 0 for male jurors). In turn, let $c_{ij}$ denote the number of cognizable class members subject to strike; and $m_{ij}$ denote the number of cognizable class non-members subject to strike, such that $c_{ij}+m_{ij}$ is the total number of jurors potentially subject to strike.
+Following @Kadane2018 and @Barrett2007, we model these peremptory-challenge processes as follows. For any given jury selection $i$, let $j$ denote a peremptory strike used, and let $\delta_{ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class". If "race" is the bias type of interest, the cognizable class is racial minority jurors ($\delta_{ij} =1$, 0 for White jurors).  If "gender" is the bias of interest, the cognizable class is female jurors ($\delta_{ij} = 1$, 0 for male jurors). In turn, let $c_{ij}$ denote the number of cognizable class members subject to strike; and $m_{ij}$ denote the number of cognizable class non-members subject to strike, such that $c_{ij}+m_{ij}$ is the total number of jurors potentially subject to strike. If there is no bias, the probability is $\frac{c_{ij}}{c_{ij}+m_{ij}}$ for striking a cognizable class member, and $1-\frac{c_{ij}}{c_{ij}+m_{ij}}$. If we define the probability of a cognizable class member being struck to be $\frac{wc_{ij}}{wc_{ij}+m_{ij}}$ by adding one parameter $w$, we can measure the bias by different values of $w$. When $w=1$, it corresponds to the situation when there is no bias. When $w>1$, the probability of striking a cognizable class member is greater than non cognizable class, which means a discriminatory against cognizable class. On the contrary, when $w<1$, the probability of striking a cognizable class member is smaller than non cognizable class, which means a preference of cognizable class. However, under this set up, the weight of non cognizable class is the reciprocal of the weight of cognizable class, which is not a desirable character. Using $b = log(w)$ could avoid this issue. For any given value of the bias parameter $b$, the probability of strike od a member from either class, or $Pr(\delta_{ij})$, is shown in equation \@ref(eq:model1)
 
-Accordingly, for any given value of the bias parameter $b$, the probability of strike, or $Pr(\delta_{ij})$, is:
-
-$$
+\begin{equation}
 Pr(\delta_{ij} | b) = 
 \begin{cases}
   \frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}} & \text{for }\delta_{ij}=1\\    
   \frac{m_{ij}}{(e^b)c_{ij}+m_{ij}} & \text{for }\delta_{ij}=0  
-\end{cases}
-$$
+\end{cases} (\#eq:model1)
+\end{equation}
+
 This is equivalent to
 
 
-$$Pr(\delta_{ij}| b) = \frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}$$
+$$Pr(\delta_{ij}| b) = (\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}$$
 
-If $b = 0$, there is no bias, and the probability of strike is simply a function of the share of cognizable members (non-members) in the pool of prospective jurors that could be struck.
+Given the strike data we have, i.e., $\delta_{ij}$, $c_{ij}$, and $m_{ij}$, by estimating the value of $b$, we can measure whether there is bias when striking potential jurors. 
 
-Because $b$ is not directly observable, we estimate likely values of $b$, given the strike data we have, i.e., $\delta_{ij}$, $c_{ij}$, and $m_{ij}$.
+If $b = 0$, there is no bias, and the probability of strike is simply a function of the share of cognizable members (non-members) in the pool of prospective jurors that could be struck. If $b>0$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class (e.g., the juror is a racial minority). Where $b<0$, the party has a preference for a juror within the cognizable class. 
 
-Accordingly, we model the strike-process as follows. 
+The likelihood function of b is shown in equation \@ref(eq:model2)
 
-\[L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}\]
-\[b \sim \text{Normal}(0,2)\]
+\begin{equation}  
+L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}} (\#eq:model2)
+\end{equation}
+<!-- \[b \sim \text{Normal}(0,2)\] -->
 
-where $n_{i}$ is the total number of jury selections; and $n_j$ is the total number of peremptory strikes.
+where $n_{i}$ is the total number of jury selections; and $n_j$ is the total number of peremptory strikes. In @Kadane2018, $b$ is estimated under Bayesian framework with a uniform prior from -6 to 6. In this paper, we also would like to incorporate the historical information. In addition, we want to allow different weight for historical information, considering people's preference might change over time. For instance, we can set a smaller weight if the historical data is collected many years ago than recent information. Thus we use power prior to incorporate the historical information [@Ibrahim2000; @Ibrahim2015]. The formulation of the power prior is shown in equation \@ref(eq:model3)
 
-This way, if it is equally likely that a member and non-member of the cognizable class will be stricken, then $w = \frac{Pr(X=1)=0.50}{Pr(X = 0)=0.50}=1$. If so, our measure of bias is zero: given $w=e^b$, then $e^b=1$ and $b=log(1)=0$. If $b>0$, we infer that the the party has bias favoring a strike against a juror falling within the cognizable class (e.g., the juror is a racial minority). Where $b<0$, the party has a preference for a juror within the cognizable class. 
+\begin{equation}
+\pi(b|D_0,a_0) \propto L(b|D_0)^{a_0}\pi_0(b) (\#eq:model3)
+\end{equation}
 
-The prior distribution for $b$ ($\sim \text{Normal}(0,2)$] is justified on the grounds that the party bringing the Batson challenge bears the ultimate burden of persuading the trial judge of an illegal use of strikes.
+where $0 \le a_0 \le 1$ is the parameter controlling the weight of the historical information, and $D_0$ is the observed historical data. $L(b|D_0)$ is the likelihood function of $b$ given the historical data. $\pi_0(b)$ is the initial prior before the historical data is observed. In this paper, we assume a normal prior for $\pi_0(b)$ with mean 0 and standard deviation 2. 
 
-Finally, to control how much weight the strike history in past cases has on the posterior distribution of $b$, we revise the likelihood function to include the power prior:
+<!-- The prior distribution for $b$ ($\sim \text{Normal}(0,2)$] is justified on the grounds that the party bringing the Batson challenge bears the ultimate burden of persuading the trial judge of an illegal use of strikes. -->
 
-\[L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}\]
+The posterior distribution of $b$ after including the historical information through the power prior is proportional to the product of likelihood function of $b$ and the power prior of $b$ as shown in \@ref(eq:model4) 
 
-\[b \sim \text{Normal}(0,2)\]
+\begin{equation}
+L(b|\delta) = L(b|\delta)(L(b|\delta_0))^{a_0}\exp(-\frac{b^2}{8}) (\#eq:model4)
+\end{equation}
 
+where $L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}(\frac{(e^b)c_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{\delta_{0ij}} (\frac{m_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{1-\delta_{0ij}}$ is the likelihood function of $b$ given historical data. $n_{0i}$ is the total number of jury selections in the historical data, and $n_{0j}$ is the total number of peremptory strikes in the historical data. $\delta_{0ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class" in the historical trials.   
+
+The posterior distribution does not have a closed form, thus Metropolis-Hasting algorithm is implemented to sample $b$ from the posterior distribution. Traceplots, Gelman-Rubin convergence diagnostic [@Gelman1992; @Gelman1998} and Geweke’s diagnostics [@Gewe1992] were used to measure the convergence. 
 <!--
 
 # Model 2 - Sequential Strike Method
@@ -100,25 +108,140 @@ Accordingly, we model the sequential-strike process as follows.
 
 # Simulation 
 
-We conduct simulation study under different scenarios, including no bias, bias against cognizable class and preference for cognizable class. We have also studied the scenarios with different amount of historical data and whether the bias parameter of historical data is the same as current data. We show the model accuracy under different scenarios and how it improves the model accuracy by adding historical data and modifying the weight parameter.
+We conduct simulation study to measure model performances under different scenarios. Different scenarios considers different bias and preference for cognizable class member, different amount of historical information and whether the preference changes over time. As for different preference for cognizable class, we generate data using seven different values of the bias parameter $b = (-3,-2,-1,0,1,2,3)$. As introduced in previous section, $b<0$ represents a preference for a juror within the cognizable class, and $b>0$ represents a bias against the cognizable class. Greater absolute value of $b$ represents greater preference or bias for the cognizable class. $b=0$ represents no bias. As for the amount of historical data, we consider three sizes of historical data, the same size as current data, double size of current data and triple size of current data. We also consider seven different values of the bias parameter for generating the historical data and allow the bias parameter of historical data to be different from current data. The different value of bias parameter from historical data to current data represents a change of preference for cognizable class. 
 
-In particular, we simulate data with 7 different values of $b = -3,-2,-1,0,1,2,3$ representing strong bias, bias, moderate bias toward striking a juror falling outside the cognizable class, no bias striking a juror and moderate bias, bias and strong bias favoring a strike against a juror falling within the cognizable. 
+When we use power prior incorporating the historical information, we can control the weight that we put on historical data by modifying the weight parameter $a$. In the simulation study, we also try different values of the weight parameter $a = (0.1,0.3,0.5,0.7,1)$ to show the influence of the weight parameter on modeling accuracy. We consider 735 scenarios in total, which is the combination of 7 different bias parameter of current data and of historical data, 3 different amount of historical data and 5 different values of the power prior weight parameter $a$. For each scenario, we generate 1000 dataset and fit the model on the 1000 generated dataset. We record the mean value of the posterior mean and credible intervals of the 1000 model fits for each scenario. As for the credible interval, we tried three significance levels, 80\%, 90\% and 95\%. We also record the corresponding coverage rate. For instance, the 90\% coverage rate means the proportion of the 1000 model fits that the credible interval shows the true preference as we set. That is, if we set $b>0$, we calculate the proportion of the 90\% credible intervals that lie on the right of 0 among the 1000 model fits. We show the coverage rate under different scenarios in the figures.  
 
-We also generate historical data with bias parameter from the 7 values. As for historical data, we consider it from one trial, two trials and three trials to represent different sizes of historical data. 
+Figure \@ref(fig:b80) depicts the results of significance of estimated $b$ under 80\% credible interval. Figure \@ref(fig:b90) shows the results under 90\% credible interval and figure \@ref(fig:b95) shows the results under 95\% credible interval.
 
-Finally, to let a person's bias parameter may change over time, we allow the historical data generated from a different bias parameter than the current data. When we use power prior incorporating the historical information, we can control the weight that we put on historical data by modifying the weight parameter. In the simulation study, we also try different values of the weight parameter to show the influence of the weight parameter on modeling accuracy. 
+```{r b80,  echo=FALSE, fig.cap="80% significance of bias parameter", out.width = '100%'}
+library(ggplot2)
+# knitr::include_graphics("dino_plots.pdf")
 
-Figure [X] depicts the results of these simulations.
+# INSERT simulation and plot code
+sims <- read.csv("sim_resultc.csv")
+sims$a.f <- as.factor(sims$a)
+sims$sig <- ifelse(sims$L80 <0 & sims$U80 >0 , "ns", 1) 
+sims$sig <- ifelse(sims$L80 >0 & sims$U80 >0 , 
+                                    "pos", sims$sig) 
+sims$sig <- ifelse(sims$L80 <0 & sims$U80 <0 , 
+                                    "neg", sims$sig) 
+sims$sig.n <- 0
+sims$sig.n <- ifelse(sims$sig=="pos", 1, sims$sig.n)
+sims$sig.n <- ifelse(sims$sig=="neg", 1, sims$sig.n)
 
-```{r pressure, eval = FALSE, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+p = ggplot()+
+  geom_tile(data = sims, aes(x = d, y = d_h,
+                        fill = as.factor(sig.n)),
+            color="black")+
+  facet_grid(h~a)+
+  # scale_fill_gradient2(expression(hat(d)), 
+  #                      low = "darkred", mid = "white", 
+  #                      high = "blue", 
+  #                      breaks = c(-3, -2, -1, 0, 1, 2, 3), 
+  #                      limits = c(-3.2, 3.2),
+  #         labels = c("Neg bias", "", "", "NS","", "", "Bias"))+
+  scale_x_continuous(breaks = c(-3:3), expand = c(0,0))+
+  scale_y_continuous(breaks = c(-3:3), expand = c(0,0))+
+  xlab("Current b")+
+  ylab("Historical b")+
+  scale_fill_manual(values = c("white", "blue"))+
+  coord_equal()+
+  theme_classic()+
+  theme(axis.text = element_text(size =10), 
+        axis.title = element_text(size = 16), 
+        legend.title.align = 0.05, 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 14))
+p
+
+```
+
+
+```{r b90,  echo=FALSE, fig.cap="90% significance of bias parameter", out.width = '100%'}
 
 # knitr::include_graphics("dino_plots.pdf")
 
 # INSERT simulation and plot code
+sims$a.f <- as.factor(sims$a)
+sims$sig <- ifelse(sims$L90 <0 & sims$U90 >0 , "ns", 1) 
+sims$sig <- ifelse(sims$L90 >0 & sims$U90 >0 , 
+                                    "pos", sims$sig) 
+sims$sig <- ifelse(sims$L90 <0 & sims$U90 <0 , 
+                                    "neg", sims$sig) 
+sims$sig.n <- 0
+sims$sig.n <- ifelse(sims$sig=="pos", 1, sims$sig.n)
+sims$sig.n <- ifelse(sims$sig=="neg", 1, sims$sig.n)
 
+p = ggplot()+
+  geom_tile(data = sims, aes(x = d, y = d_h,
+                        fill = as.factor(sig.n)),
+            color="black")+
+  facet_grid(h~a)+
+  # scale_fill_gradient2(expression(hat(d)), 
+  #                      low = "darkred", mid = "white", 
+  #                      high = "blue", 
+  #                      breaks = c(-3, -2, -1, 0, 1, 2, 3), 
+  #                      limits = c(-3.2, 3.2),
+  #         labels = c("Neg bias", "", "", "NS","", "", "Bias"))+
+  scale_x_continuous(breaks = c(-3:3), expand = c(0,0))+
+  scale_y_continuous(breaks = c(-3:3), expand = c(0,0))+
+  xlab("Current b")+
+  ylab("Historical b")+
+  scale_fill_manual(values = c("white", "blue"))+
+  coord_equal()+
+  theme_classic()+
+  theme(axis.text = element_text(size =10), 
+        axis.title = element_text(size = 16), 
+        legend.title.align = 0.05, 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 14))
+p
 ```
 
-_Historical b_ means the bias parameter for the generated historical data, $b$ means the bias parameter for the current data. The values on the right side represent the size of the historical data. The values on the top of the plots represent the weight parameter of the power prior. Different color represents the estimated bias parameter.
+```{r b95,  echo=FALSE, fig.cap="95% significance of bias parameter", out.width = '100%'}
+
+# knitr::include_graphics("dino_plots.pdf")
+
+# INSERT simulation and plot code
+sims$a.f <- as.factor(sims$a)
+sims$sig <- ifelse(sims$L95 <0 & sims$U95 >0 , "ns", 1) 
+sims$sig <- ifelse(sims$L95 >0 & sims$U95 >0 , 
+                                    "pos", sims$sig) 
+sims$sig <- ifelse(sims$L95 <0 & sims$U95 <0 , 
+                                    "neg", sims$sig) 
+sims$sig.n <- 0
+sims$sig.n <- ifelse(sims$sig=="pos", 1, sims$sig.n)
+sims$sig.n <- ifelse(sims$sig=="neg", 1, sims$sig.n)
+
+p = ggplot()+
+  geom_tile(data = sims, aes(x = d, y = d_h,
+                        fill = as.factor(sig.n)),
+            color="black")+
+  facet_grid(h~a)+
+  # scale_fill_gradient2(expression(hat(d)), 
+  #                      low = "darkred", mid = "white", 
+  #                      high = "blue", 
+  #                      breaks = c(-3, -2, -1, 0, 1, 2, 3), 
+  #                      limits = c(-3.2, 3.2),
+  #         labels = c("Neg bias", "", "", "NS","", "", "Bias"))+
+  scale_x_continuous(breaks = c(-3:3), expand = c(0,0))+
+  scale_y_continuous(breaks = c(-3:3), expand = c(0,0))+
+  xlab("Current b")+
+  ylab("Historical b")+
+  scale_fill_manual(values = c("white", "blue"))+
+  coord_equal()+
+  theme_classic()+
+  theme(axis.text = element_text(size =10), 
+        axis.title = element_text(size = 16), 
+        legend.title.align = 0.05, 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 14))
+p
+```
+
+
+_Historical b_ means the bias parameter for the generated historical data, current $b$ means the bias parameter for the current data. The values on the right side represent the size of the historical data. The values on the top of the plots represent the weight parameter of the power prior. Blue means the credible interval of $b$ does not include zero, that is $b$ is significant. 
 
 From the plot, our model can capture strong bias and bias, when the bias parameter being -3,-2,2,3. When the bias is moderate, that is when the bias parameter b being -1 and 1, the model can detect it when we have historical data with the same direction bias parameter. If the bias parameter of historical data is in an opposite direction, we might get a wrong estimate of current bias parameter. Thus if the historical data is not reliable, we should set a small weight parameter on them.
 

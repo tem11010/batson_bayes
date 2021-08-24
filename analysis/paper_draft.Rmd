@@ -229,7 +229,7 @@ p = ggplot()+
 p
 ```
 
-```{r b95,  echo=FALSE, fig.cap="95% credible interval"}
+```{r b95,  echo=FALSE,fig.cap="95% credible interval"}
 
 # INSERT simulation and plot code
 sims$a.f <- as.factor(sims$a)
@@ -291,6 +291,472 @@ Here, we argue that a simultaneous-strikes process can be modeled as a special c
 # The App Prototype
 
 The posterior probability distribution is estimated with `r R.version$version.string'[@R]. The app was built using the shiny package [@shiny].
+
+There is currently historical information of some prosecutors and defendants. More historical information would be updated when available. Users can input the current trial information as shown in table \@ref(tab:inpts), and then select the name of the prosecutor and the defendant from the pull-down window if applicable. If the name of the prosecutor or the defendant cannot be found, it means the historical information is not available. Then the prior density plot and the posterior density plot would be displayed. 
+
+```{r inpts, echo=FALSE}
+df <- data.frame(round = c(1:10),
+                 num_cog = c(4,4,4,3,2,2,2,2,2,2),
+                 total = c(15,14,13,12,11,10,9,8,7,6),
+                 cog = c(0,1,1,0,0,1,1,0,0,0),
+                 party = rep(c("PP","PD"),5))
+knitr::kable(df)
+```
+
+For instance, if we collect the data of a new trial with prosecutor being "Brian P. Leaming" and defendant being "Frank J. Riccio II", and we would like to see if they are biased or not. We can select the name from the pull-down window of prosecutor and defendant to extract the historical information. Then we can input the current trial information, and select the weight that we would like to put on the historical information. Currently we provide three options for the weight, equal weight of historical information and current information, half weight of historical information and low weight of historical information. We can also select the cognizable class that we are interested in. There are currently two options of cognizable class, race and gender. Suppose the current trial information is as we show in table \@ref(tab:inpts), we put equal weight on historical information and we select cognizable class as race, then the posterior density as shown in figure \@ref(fig:brian) will be displayed. 
+
+```{r brian, echo=FALSE,fig.cap="Posterior Density Plot"}
+library(dplyr)
+library(Rcpp)
+load_path2 <- here::here("app/mh_sampler_pp.cpp")
+load_path3 <- here::here("app/jury_data_cleaned_new.rds")
+sourceCpp(load_path2)
+sourceCpp(load_path2)
+dat0 <- readRDS(load_path3)
+df <- data.frame(round = c(1:10),
+                 num_cog = c(4,4,4,3,2,2,2,2,2,2),
+                 total = c(15,14,13,12,11,10,9,8,7,6),
+                 cog = c(0,1,1,0,0,1,1,0,0,0),
+                 party = rep(c("PP","PD"),5))
+extract_atny <- function(atny_name,pp,dat){
+  if(pp){
+    idx = sapply(1:nrow(dat),function(x) grepl(atny_name, dat$P_atty_l[x], fixed=TRUE))
+    return(dat[which(idx),])
+  }
+  else{
+    idx = sapply(1:nrow(dat),function(x) grepl(atny_name, dat$D_atty_l[x], fixed=TRUE))
+    return(dat[which(idx),])
+  }
+} 
+organize_input <- function(dat,pp,cog){
+  dat_strikes <- dat %>% filter(!is.na(strike_seq)) 
+  if(cog=='gender'){
+    dat_strikes <- dat_strikes %>% filter(!is.na(sex))
+  }else{
+    dat_strikes <- dat_strikes %>% filter(!is.na(race))
+  }
+  
+  dat_strikes <- dat_strikes[order(dat_strikes$strike_seq),]
+  if(cog=='gender'){
+    dat_strikes$cogb <- ifelse(dat_strikes$sex=="F", 1, 0)
+  }else{
+    dat_strikes$cogb <- ifelse(dat_strikes$race !=3, 1, 0)
+  }
+  
+  num_cog <- sum(dat_strikes$cogb)
+  num_t <- nrow(dat_strikes)
+  subs <- data.frame(round = c(1:num_t), 
+                     num_cog = NA, 
+                     total = NA)
+  subs$num_cog[1] <- num_cog
+  subs$total[1] <- num_t
+  for ( j in 2:num_t){
+    num_cog = num_cog-dat_strikes$cogb[j-1]
+    num_total = num_t - dat_strikes$strike_seq[j-1]
+    subs$num_cog[j] <- num_cog
+    # number of females struck in this and previous rounds
+    subs$total[j] <- num_total
+  }
+  subs <- cbind(subs,dat_strikes$cogb)
+  colnames(subs)[4] = 'cognizable'
+  if(pp){
+    df_m <- as.matrix(subs[which(dat_strikes$Disp=='PP'),])
+  }else{
+    df_m <- as.matrix(subs[which(dat_strikes$Disp=='PD'),])
+  }
+  return(df_m)
+}
+subset <- function(atny_name,pp,dat,cog){
+  dat_sub <- extract_atny(atny_name,pp,dat)
+  sub1 <- dat_sub %>% group_split(ID)
+  sub1_l <- lapply(1:length(sub1), function(x) organize_input(sub1[[x]],pp,cog))
+  df_m = do.call(rbind.data.frame,sub1_l)
+  df_m <- as.matrix(df_m)
+}
+df_mp <- df %>%
+                filter(party == "PP") %>%
+                select(-c(party)) %>%
+                as.matrix()
+
+df_md <- df %>%
+                filter(party == "PD") %>%
+                select(-c(party)) %>%
+                as.matrix()
+
+sub_p <- subset("Brian P. Leaming",TRUE,dat0,"race")
+sub_d <- subset("Frank J. Riccio II",FALSE,dat0,"race")
+out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = 1, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0 = 1, niter = 110000, 
+                                        theta_start_val = 0, theta_proposal_sd =.5, 
+                                                       prior_mean = 0, prior_sd = 2)
+d_p <- data.frame(
+                theta = out_p$theta[10001:110000],
+                party = "Prosecution", 
+                posterior = "Posterior")
+pp_prior <- data.frame(theta = pp_prior_theta$theta[10001:110000], 
+                                       party = "Prosecution", 
+                                       posterior = "Prior")
+
+out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0= 1, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0 = 1, niter = 110000, 
+                                        theta_start_val = 0, theta_proposal_sd =.5, 
+                                        prior_mean = 0, prior_sd = 2)
+pd_prior <- data.frame(theta = pd_prior_theta$theta[10001:110000], 
+                                       party = "Defense", 
+                                       posterior = "Prior")
+d_d <- data.frame(
+                theta = out_d$theta[10001:110000],
+                party = "Defense", 
+                posterior = "Posterior")
+
+dat <- rbind(d_p,d_d)
+priors <- rbind(pp_prior, pd_prior)
+dat <- rbind(dat, priors)
+dat$party <- factor(dat$party, levels = c("Defense", "Prosecution"), 
+                                ordered = TRUE)
+CI <- dat %>% filter(posterior == 'Posterior') %>%
+                group_by(party) %>%
+                summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9)) %>%
+                mutate(bias = ifelse(
+                    q1 <= 0 & q2 >= 0, "No Bias", "Bias"))
+pplot <- ggplot(data=dat) + 
+                geom_density(aes(x = theta, 
+                                 fill = interaction(party, posterior),
+                                 color = interaction(party, posterior),
+                                 alpha = interaction(party, posterior), 
+                                 ..scaled..))+
+                facet_wrap(~party, nrow =2)
+
+pplot <- pplot  + theme_minimal() +
+                 labs (title = "Likely values of b") +
+                 xlab("") + 
+                 ylab("") + 
+                 xlim(c(-6,6)) +
+                 scale_fill_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_color_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_alpha_manual("Group", values = c(0.3, 0.3, 0.1, 0.1)) +
+                
+                  # edit text sizes for plot
+                 theme(legend.position="none",
+                       axis.text = element_text(size = 16), 
+                       strip.text = element_text(size = 18), 
+                       plot.title = element_text(size = 24),
+                       plot.subtitle = element_text(size = 16)) +
+                  # add line at zero for reference
+                 geom_vline(xintercept = 0, color = "black", lwd=1.5)
+
+ pplot + geom_vline(data=CI, aes(xintercept=q1), color = c("blue", "darkred"),
+                               linetype="dashed", size = 0.9)+
+                    geom_vline(data=CI, aes(xintercept=q2), color = c("blue", "darkred"),
+                           linetype="dashed", size = 0.9) 
+ 
+```
+
+The grey curve represents the probability density of the prior, the blue curve represents the posterior probability density of the defendant and the red curve represents the posterior probability density of the prosecutor. The two vertical dotted line represents the 80\% credible interval. We can find the majority part of both the prior and posterior density curve are on the right side of zero, and the 80\% credible interval is also on the right side of zero, indicating a bias of "Brian P. Leaming" and "Frank J. Riccio II" against the potential juror within the cognizable class of race. If we are interested in cognizable class of gender, we can modify our selection of cognizable class, and the density plot becomes figure \@ref(fig:brian2).
+
+```{r brian2, echo=FALSE,fig.cap="Posterior Density Plot"}
+load_path2 <- here::here("app/mh_sampler_pp.cpp")
+load_path3 <- here::here("app/jury_data_cleaned_new.rds")
+sourceCpp(load_path2)
+sourceCpp(load_path2)
+dat0 <- readRDS(load_path3)
+df <- data.frame(round = c(1:10),
+                 num_cog = c(4,4,4,3,2,2,2,2,2,2),
+                 total = c(15,14,13,12,11,10,9,8,7,6),
+                 cog = c(0,1,1,0,0,1,1,0,0,0),
+                 party = rep(c("PP","PD"),5))
+extract_atny <- function(atny_name,pp,dat){
+  if(pp){
+    idx = sapply(1:nrow(dat),function(x) grepl(atny_name, dat$P_atty_l[x], fixed=TRUE))
+    return(dat[which(idx),])
+  }
+  else{
+    idx = sapply(1:nrow(dat),function(x) grepl(atny_name, dat$D_atty_l[x], fixed=TRUE))
+    return(dat[which(idx),])
+  }
+} 
+organize_input <- function(dat,pp,cog){
+  dat_strikes <- dat %>% filter(!is.na(strike_seq)) 
+  if(cog=='gender'){
+    dat_strikes <- dat_strikes %>% filter(!is.na(sex))
+  }else{
+    dat_strikes <- dat_strikes %>% filter(!is.na(race))
+  }
+  
+  dat_strikes <- dat_strikes[order(dat_strikes$strike_seq),]
+  if(cog=='gender'){
+    dat_strikes$cogb <- ifelse(dat_strikes$sex=="F", 1, 0)
+  }else{
+    dat_strikes$cogb <- ifelse(dat_strikes$race !=3, 1, 0)
+  }
+  
+  num_cog <- sum(dat_strikes$cogb)
+  num_t <- nrow(dat_strikes)
+  subs <- data.frame(round = c(1:num_t), 
+                     num_cog = NA, 
+                     total = NA)
+  subs$num_cog[1] <- num_cog
+  subs$total[1] <- num_t
+  for ( j in 2:num_t){
+    num_cog = num_cog-dat_strikes$cogb[j-1]
+    num_total = num_t - dat_strikes$strike_seq[j-1]
+    subs$num_cog[j] <- num_cog
+    # number of females struck in this and previous rounds
+    subs$total[j] <- num_total
+  }
+  subs <- cbind(subs,dat_strikes$cogb)
+  colnames(subs)[4] = 'cognizable'
+  if(pp){
+    df_m <- as.matrix(subs[which(dat_strikes$Disp=='PP'),])
+  }else{
+    df_m <- as.matrix(subs[which(dat_strikes$Disp=='PD'),])
+  }
+  return(df_m)
+}
+subset <- function(atny_name,pp,dat,cog){
+  dat_sub <- extract_atny(atny_name,pp,dat)
+  sub1 <- dat_sub %>% group_split(ID)
+  sub1_l <- lapply(1:length(sub1), function(x) organize_input(sub1[[x]],pp,cog))
+  df_m = do.call(rbind.data.frame,sub1_l)
+  df_m <- as.matrix(df_m)
+}
+df_mp <- df %>%
+                filter(party == "PP") %>%
+                select(-c(party)) %>%
+                as.matrix()
+
+df_md <- df %>%
+                filter(party == "PD") %>%
+                select(-c(party)) %>%
+                as.matrix()
+
+sub_p <- subset("Brian P. Leaming",TRUE,dat0,"gender")
+sub_d <- subset("Frank J. Riccio II",FALSE,dat0,"gender")
+out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = 1, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0 = 1, niter = 110000, 
+                                        theta_start_val = 0, theta_proposal_sd =.5, 
+                                                       prior_mean = 0, prior_sd = 2)
+d_p <- data.frame(
+                theta = out_p$theta[10001:110000],
+                party = "Prosecution", 
+                posterior = "Posterior")
+pp_prior <- data.frame(theta = pp_prior_theta$theta[10001:110000], 
+                                       party = "Prosecution", 
+                                       posterior = "Prior")
+
+out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0= 1, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0 = 1, niter = 110000, 
+                                        theta_start_val = 0, theta_proposal_sd =.5, 
+                                        prior_mean = 0, prior_sd = 2)
+pd_prior <- data.frame(theta = pd_prior_theta$theta[10001:110000], 
+                                       party = "Defense", 
+                                       posterior = "Prior")
+d_d <- data.frame(
+                theta = out_d$theta[10001:110000],
+                party = "Defense", 
+                posterior = "Posterior")
+
+dat <- rbind(d_p,d_d)
+priors <- rbind(pp_prior, pd_prior)
+dat <- rbind(dat, priors)
+dat$party <- factor(dat$party, levels = c("Defense", "Prosecution"), 
+                                ordered = TRUE)
+CI <- dat %>% filter(posterior == 'Posterior') %>%
+                group_by(party) %>%
+                summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9)) %>%
+                mutate(bias = ifelse(
+                    q1 <= 0 & q2 >= 0, "No Bias", "Bias"))
+pplot <- ggplot(data=dat) + 
+                geom_density(aes(x = theta, 
+                                 fill = interaction(party, posterior),
+                                 color = interaction(party, posterior),
+                                 alpha = interaction(party, posterior), 
+                                 ..scaled..))+
+                facet_wrap(~party, nrow =2)
+
+pplot <- pplot  + theme_minimal() +
+                 labs (title = "Likely values of b") +
+                 xlab("") + 
+                 ylab("") + 
+                 xlim(c(-6,6)) +
+                 scale_fill_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_color_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_alpha_manual("Group", values = c(0.3, 0.3, 0.1, 0.1)) +
+                
+                  # edit text sizes for plot
+                 theme(legend.position="none",
+                       axis.text = element_text(size = 16), 
+                       strip.text = element_text(size = 18), 
+                       plot.title = element_text(size = 24),
+                       plot.subtitle = element_text(size = 16)) +
+                  # add line at zero for reference
+                 geom_vline(xintercept = 0, color = "black", lwd=1.5)
+
+ pplot + geom_vline(data=CI, aes(xintercept=q1), color = c("blue", "darkred"),
+                               linetype="dashed", size = 0.9)+
+                    geom_vline(data=CI, aes(xintercept=q2), color = c("blue", "darkred"),
+                           linetype="dashed", size = 0.9) 
+```
+
+When we consider cognizable class gender, we can find most of the density curve of both prior and posterior are on the left of zero, indicating the possible preference for the potential jurors within the cognizable class. However, the 80\% credible interval includes 0, thus the preference for the cognizable class of "Brian P. Leaming" and "Frank J. Riccio II" is not statistically significant. If we give low weight on historical information, the density plot will be as shown in figure \@ref(fig:brian3).
+
+```{r brian3, echo=FALSE,fig.cap="Posterior Density Plot"}
+load_path2 <- here::here("app/mh_sampler_pp.cpp")
+load_path3 <- here::here("app/jury_data_cleaned_new.rds")
+sourceCpp(load_path2)
+sourceCpp(load_path2)
+dat0 <- readRDS(load_path3)
+df <- data.frame(round = c(1:10),
+                 num_cog = c(4,4,4,3,2,2,2,2,2,2),
+                 total = c(15,14,13,12,11,10,9,8,7,6),
+                 cog = c(0,1,1,0,0,1,1,0,0,0),
+                 party = rep(c("PP","PD"),5))
+extract_atny <- function(atny_name,pp,dat){
+  if(pp){
+    idx = sapply(1:nrow(dat),function(x) grepl(atny_name, dat$P_atty_l[x], fixed=TRUE))
+    return(dat[which(idx),])
+  }
+  else{
+    idx = sapply(1:nrow(dat),function(x) grepl(atny_name, dat$D_atty_l[x], fixed=TRUE))
+    return(dat[which(idx),])
+  }
+} 
+organize_input <- function(dat,pp,cog){
+  dat_strikes <- dat %>% filter(!is.na(strike_seq)) 
+  if(cog=='gender'){
+    dat_strikes <- dat_strikes %>% filter(!is.na(sex))
+  }else{
+    dat_strikes <- dat_strikes %>% filter(!is.na(race))
+  }
+  
+  dat_strikes <- dat_strikes[order(dat_strikes$strike_seq),]
+  if(cog=='gender'){
+    dat_strikes$cogb <- ifelse(dat_strikes$sex=="F", 1, 0)
+  }else{
+    dat_strikes$cogb <- ifelse(dat_strikes$race !=3, 1, 0)
+  }
+  
+  num_cog <- sum(dat_strikes$cogb)
+  num_t <- nrow(dat_strikes)
+  subs <- data.frame(round = c(1:num_t), 
+                     num_cog = NA, 
+                     total = NA)
+  subs$num_cog[1] <- num_cog
+  subs$total[1] <- num_t
+  for ( j in 2:num_t){
+    num_cog = num_cog-dat_strikes$cogb[j-1]
+    num_total = num_t - dat_strikes$strike_seq[j-1]
+    subs$num_cog[j] <- num_cog
+    # number of females struck in this and previous rounds
+    subs$total[j] <- num_total
+  }
+  subs <- cbind(subs,dat_strikes$cogb)
+  colnames(subs)[4] = 'cognizable'
+  if(pp){
+    df_m <- as.matrix(subs[which(dat_strikes$Disp=='PP'),])
+  }else{
+    df_m <- as.matrix(subs[which(dat_strikes$Disp=='PD'),])
+  }
+  return(df_m)
+}
+subset <- function(atny_name,pp,dat,cog){
+  dat_sub <- extract_atny(atny_name,pp,dat)
+  sub1 <- dat_sub %>% group_split(ID)
+  sub1_l <- lapply(1:length(sub1), function(x) organize_input(sub1[[x]],pp,cog))
+  df_m = do.call(rbind.data.frame,sub1_l)
+  df_m <- as.matrix(df_m)
+}
+df_mp <- df %>%
+                filter(party == "PP") %>%
+                select(-c(party)) %>%
+                as.matrix()
+
+df_md <- df %>%
+                filter(party == "PD") %>%
+                select(-c(party)) %>%
+                as.matrix()
+
+sub_p <- subset("Brian P. Leaming",TRUE,dat0,"gender")
+sub_d <- subset("Frank J. Riccio II",FALSE,dat0,"gender")
+out_p <- make_posterior_p(x = df_mp,x_p =sub_p,a0 = 0.2, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+pp_prior_theta <- make_posterior_prior(x_p=sub_p,a0 = 0.2, niter = 110000, 
+                                        theta_start_val = 0, theta_proposal_sd =.5, 
+                                                       prior_mean = 0, prior_sd = 2)
+d_p <- data.frame(
+                theta = out_p$theta[10001:110000],
+                party = "Prosecution", 
+                posterior = "Posterior")
+pp_prior <- data.frame(theta = pp_prior_theta$theta[10001:110000], 
+                                       party = "Prosecution", 
+                                       posterior = "Prior")
+
+out_d <- make_posterior_p(x = df_md,x_p = sub_d,a0= 0.2, niter = 110000, 
+                                          theta_start_val = 0, theta_proposal_sd =.5, 
+                                          prior_mean = 0, prior_sd = 2)
+pd_prior_theta <- make_posterior_prior(x_p=sub_d,a0 = 0.2, niter = 110000, 
+                                        theta_start_val = 0, theta_proposal_sd =.5, 
+                                        prior_mean = 0, prior_sd = 2)
+pd_prior <- data.frame(theta = pd_prior_theta$theta[10001:110000], 
+                                       party = "Defense", 
+                                       posterior = "Prior")
+d_d <- data.frame(
+                theta = out_d$theta[10001:110000],
+                party = "Defense", 
+                posterior = "Posterior")
+
+dat <- rbind(d_p,d_d)
+priors <- rbind(pp_prior, pd_prior)
+dat <- rbind(dat, priors)
+dat$party <- factor(dat$party, levels = c("Defense", "Prosecution"), 
+                                ordered = TRUE)
+CI <- dat %>% filter(posterior == 'Posterior') %>%
+                group_by(party) %>%
+                summarise(q1 = quantile(theta,0.1), q2 = quantile(theta,0.9)) %>%
+                mutate(bias = ifelse(
+                    q1 <= 0 & q2 >= 0, "No Bias", "Bias"))
+pplot <- ggplot(data=dat) + 
+                geom_density(aes(x = theta, 
+                                 fill = interaction(party, posterior),
+                                 color = interaction(party, posterior),
+                                 alpha = interaction(party, posterior), 
+                                 ..scaled..))+
+                facet_wrap(~party, nrow =2)
+
+pplot <- pplot  + theme_minimal() +
+                 labs (title = "Likely values of b") +
+                 xlab("") + 
+                 ylab("") + 
+                 xlim(c(-6,6)) +
+                 scale_fill_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_color_manual("Group", values = c("blue", "darkred", "grey", "grey")) +
+                 scale_alpha_manual("Group", values = c(0.3, 0.3, 0.1, 0.1)) +
+                
+                  # edit text sizes for plot
+                 theme(legend.position="none",
+                       axis.text = element_text(size = 16), 
+                       strip.text = element_text(size = 18), 
+                       plot.title = element_text(size = 24),
+                       plot.subtitle = element_text(size = 16)) +
+                  # add line at zero for reference
+                 geom_vline(xintercept = 0, color = "black", lwd=1.5)
+
+ pplot + geom_vline(data=CI, aes(xintercept=q1), color = c("blue", "darkred"),
+                               linetype="dashed", size = 0.9)+
+                    geom_vline(data=CI, aes(xintercept=q2), color = c("blue", "darkred"),
+                           linetype="dashed", size = 0.9) 
+```
+
+We can find both the prior and posterior density become more flat, and the posterior density looks like symmetric around zero now.
 
 
 # Discussion

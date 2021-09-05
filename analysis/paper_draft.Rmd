@@ -286,7 +286,104 @@ where $x = 0, 1, 2, 3, . . . s$; $c_{i}$ denotes the number of cognizable class 
 
 Here, we argue that a simultaneous-strikes process can be modeled as a special case of our model of an alternating-strikes process above, i.e, one party engages in an uninterrupted sequence of strikes against members of the venire. The premise: Regardless of the order in which a party announced those strikes, the posterior for the bias parameter would be the same.
 
-To show this, we conducted the following simulation study. [MORE]
+To show this, we conducted the following simulation study. We first generate a trial and then shuffle the order of the strikes to generate 50 trials with the same proportion of struck cognizable class members but different orders. We then use the model to fit the 50 trials to see if the estimated bias parameter are close to each other. We conduct the simulation study under three scenarios from moderate bias to strong bias, that is $b=1,2,3$. The results are shown in figure \@ref(fig:simltns).
+
+```{r simltns, echo=FALSE,fig.cap="simultaneous case"}
+library(dplyr)
+library(ggplot2)
+#library(conflicted)
+#conflict_prefer("select", "dplyr")
+#conflict_prefer("filter", "dplyr")
+load_path_b1 <- here::here("b1.csv")
+load_path_b2 <- here::here("b2.csv")
+load_path_b3 <- here::here("b3.csv")
+
+b1 <- read.csv(load_path_b1)
+b2 <- read.csv(load_path_b2)
+b3 <- read.csv(load_path_b3)
+  
+
+b1.t <- b1 %>% select(-X) %>%
+  t() %>% data.frame() %>% 
+  dplyr::rename_with(~b1$X) %>%
+      mutate(sim = as.character(1:50))
+#b1.t$sim <- factor(b1.t$sim, levels = b1.t$sim, ordered = TRUE)
+
+b2.t <- b2 %>% select(-X) %>%
+  t() %>% data.frame() %>% 
+  dplyr::rename_with(~b2$X) %>%
+  mutate(sim =  as.character(1:50))
+#b2.t$sim <- factor(b2.t$sim, levels = b2.t$sim, ordered = TRUE)
+
+b3.t <- b3 %>% select(-X) %>%
+  t() %>% data.frame() %>% 
+  dplyr::rename_with(~b2$X) %>%
+  mutate(sim = as.character(1:50))
+#b3.t$sim <- factor(b3.t$sim, levels = b3.t$sim, ordered = TRUE)
+
+colnames(b1.t)[1:3] = c('b_s','2.5%','97.5%')
+colnames(b2.t)[1:3] = c('b_s','2.5%','97.5%')
+colnames(b3.t)[1:3] = c('b_s','2.5%','97.5%')
+
+b1.t$b = "1"
+b2.t$b = "2"
+b3.t$b = "3"
+b.com <- rbind(b1.t, b2.t, b3.t)
+b.com$sig <- ifelse(b.com$`2.5%`>0, "Bias", 
+                                  "No Bias")
+b.com$b.num <- as.numeric(b.com$b)
+
+b1.mean <-data.frame(b_s = mean(b1.t$b_s), 
+                     `2.5%` =  mean(b1.t$`2.5%`),
+                     `97.5%` = mean(b1.t$`97.5%`),
+                     sim = "mean", 
+                     b = "1", 
+                     sig = "No Bias", 
+                     b.num = 1)
+b2.mean <-data.frame(b_s = mean(b2.t$b_s), 
+                     `2.5%` =  mean(b2.t$`2.5%`),
+                     `97.5%` = mean(b2.t$`97.5%`),
+                     sim = "mean", 
+                     b = "2", 
+                     sig = "Bias", 
+                     b.num = 2)
+b3.mean <-data.frame(b_s = mean(b3.t$b_s), 
+                     `2.5%` =  mean(b3.t$`2.5%`),
+                     `97.5%` = mean(b3.t$`97.5%`),
+                     sim = "mean", 
+                     b = "3", 
+                     sig = "Bias", 
+                     b.num = 3)
+
+
+names(b1.mean)<- colnames(b.com)
+names(b2.mean)<- colnames(b.com)
+names(b3.mean)<- colnames(b.com)
+b.com<- rbind(b.com,b1.mean[1,], b2.mean[1,], b3.mean[1,])
+b.com$sim.n <- as.numeric(b.com$sim)
+b.com$sim.n[151:153] <- 52.5
+
+ggplot(data = b.com, aes(x = sim.n, y = b_s, color = sig))+
+  facet_grid(~b)+
+  geom_point(size = 3)+
+  geom_errorbar(aes(x = sim.n, ymin = `2.5%`, 
+                    ymax = `97.5%`), width = 0.4)+
+  geom_hline(data = b.com, aes(yintercept = b.num), col = "red", lwd = 1.1) +
+  geom_hline(yintercept = 0, col = "black", lwd = 1, lty = 1) +
+  geom_vline(xintercept = 51.25, col = "black", lwd = 1, lty = 2) +
+  xlab("Simulation")+
+  scale_color_manual("Bias", values = c("blue", "grey"))+
+  ylab("Posterior Bias Value")+
+  ylim(c(-0.5, 5))+
+  scale_x_continuous(breaks = c(1:50, 52.5), labels = c(1:50, "Average"))+
+  coord_flip()+
+  theme_classic()+
+  theme(axis.title = element_text(size = 16), 
+        axis.text.x = element_text(size = 12), 
+        axis.text.y = element_text(size = 9))
+```
+The points represent the estimated posterior mean and the lines represent the 95\% credible interval. The blue line means the credible interval does not include zero, thus indicating a bias, while the grey line means the credible interval includes zero and indicating no bias. We can find the estimated bias parameter of the 50 trials with different orders are close to each other for all of the three scenarios, indicating the order does not influence the estimate of the bias parameter. This is consistent with our previous premise and confirms that the simultaneous-strikes process can be modeled as a special case of our model of an alternating-strikes process.  
+
 
 # The App Prototype
 

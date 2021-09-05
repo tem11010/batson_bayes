@@ -22,9 +22,7 @@ In the US, individuals selected for jury-service appear in court as scheduled an
 
 # Background and Related Literature
 
-With a peremptory challenge, a party declares a prospective juror ineligible ("strikes" that juror) for a seat on the jury without the burden of explaining why. While some countries have abolished peremptory strikes (Criminal Justice Act 1988, s 118(1) (UK); S.C. 2019, c. 25, s 269 (Canada)), federal and State law in the United States continue to authorize their use during jury selection in criminal and civil cases. 
-
-In the US, peremptory-challenge procedure can vary not only by State, but also by court and judge, including the number of peremptory challenges assigned to each side, the order of strikes, and the number of peremptory strikes each party may exercise at a time [@nscs-jury2018; @Williams2017]. 
+With a peremptory challenge, a party declares a prospective juror ineligible ("strikes" that juror) for a seat on the jury without the burden of explaining why. While some jurisdictions have abolished peremptory strikes (Criminal Justice Act 1988, s 118(1) (UK); S.C. 2019, c. 25, s 269 (Canada)), federal and State law in the United States (except in Arizona^[Arizona Rule of Criminal Procedure XX]) authorize their use during jury selection in criminal and civil cases. In these cases, peremptory-challenge procedure can vary not only by State, but also by court and judge, including the number of peremptory challenges assigned to each side, the order of strikes, and the number of peremptory strikes each party may exercise at a time [@nscs-jury2018; @Williams2017].
 
 Under the "struck jury" method of peremptory challenges, the trial judge decides whether to accept or reject all challenges for cause - for which a reason must be given -- before the parties exercise any peremptories. Thereafter, the number of potential jurors who remain is typically the sum of number of seats on the jury (plus alternates, if any) and the number of peremptory challenges allotted to both sides. 
 

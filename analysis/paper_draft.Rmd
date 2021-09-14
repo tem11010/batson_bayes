@@ -289,11 +289,15 @@ Here, we argue that a simultaneous-strikes process can be modeled as a special c
 To show this, we conducted the following simulation study. We first generate a trial and then shuffle the order of the strikes to generate 50 trials with the same proportion of struck cognizable class members but different orders. We then use the model to fit the 50 trials to see if the estimated bias parameter are close to each other. We conduct the simulation study under three scenarios from moderate bias to strong bias, that is $b=1,2,3$. The results are shown in figure \@ref(fig:simltns).
 
 ```{r simltns, echo=FALSE,fig.cap="simultaneous case"}
+
 library(dplyr)
 library(ggplot2)
 #library(conflicted)
 #conflict_prefer("select", "dplyr")
 #conflict_prefer("filter", "dplyr")
+
+# ADD SCRIPT FOR GENERATING b1.csv, b2.csv, b3.csv
+
 load_path_b1 <- here::here("b1.csv")
 load_path_b2 <- here::here("b2.csv")
 load_path_b3 <- here::here("b3.csv")
@@ -301,7 +305,6 @@ load_path_b3 <- here::here("b3.csv")
 b1 <- read.csv(load_path_b1)
 b2 <- read.csv(load_path_b2)
 b3 <- read.csv(load_path_b3)
-  
 
 b1.t <- b1 %>% select(-X) %>%
   t() %>% data.frame() %>% 

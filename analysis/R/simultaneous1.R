@@ -1,5 +1,5 @@
 library(Rcpp)
-sourceCpp('app/mh_sampler.cpp')
+sourceCpp('mh_sampler.cpp')
 ##### b = 1  #####
 a1 <- sim_data(1,15,32,10)
 n_1 = sum(a1$cog)

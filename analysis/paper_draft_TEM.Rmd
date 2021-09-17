@@ -221,6 +221,90 @@ In these figures, _historical b_ denotes the bias parameter for the generated hi
 
 These plots indicate that our model can detect strong bias ($b = \{-3, -2, 2,3\}$). When bias is moderate ($b = \{1, -1\}$), the model can detect it if the historical data has a bias parameter in the same direction. If the bias parameter of historical data is in the opposite direction, the model may provide a wrong estimate of current bias parameter [is this true, even for the 80% CI?]. 
 
+We also show the coverage rate of using the three credible intervals below. The coverage rate is calculated as the proportion of correctly estimated bias among the 1000 simulations. The coverage rate of 80\% credible interval is shown in figure \@ref(fig:c80).
+
+```{r c80, echo=FALSE, fig.cap="80% credible interval"}
+ggplot()+
+  geom_tile(data = sims, aes(x = d, y = d_h,fill = C80),
+            color="black")+
+  facet_grid(h~a)+
+   scale_fill_gradient2('C80', 
+                        low = "darkred", mid = "white", 
+                        high = "blue", 
+                        breaks = c(0,0.5,0.7,0.9, 1), 
+                        limits = c(0,1),
+           labels = c("low", "", "moderate", "","high"))+
+  scale_x_continuous(breaks = c(-3:3), expand = c(0,0))+
+  scale_y_continuous(breaks = c(-3:3), expand = c(0,0))+
+  xlab("Current d")+
+  ylab("Historical d")+
+  coord_equal()+
+  theme_classic()+
+  theme(axis.text = element_text(size =10), 
+        axis.title = element_text(size = 16), 
+        legend.title.align = 0.05, 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 14))
+
+```
+
+We can first take a look at the first column, for which the weight parameter of historical information is 0.1. It means we mostly rely on current information. When the bias parameter is 3, 2 or -2, -3, the coverage rate is high, very close to 1. Thus if the bias is obvious, we can always detect it using our model with 80\% credible interval. However, when the bias parameter is 1, the coverage rate drop below 0.8. If the bias is not strong, our model can detect it with a lower accuracy. This lower accuracy comes from the small sample size. We can find when we incorporate the historical information, and when the historical information is consistent with current information, the accuracy of detecting the bias is also close to 1 when the bias parameter is 1. On the other hand, when the bias parameter is 0, that is when there is no bias, the coverage rate is also around 80\%. It indicates that if we use the 80\% credible interval, we have around 20\% chance mistakenly concluding one is biased. If we want to be conservative and lower this mistake rate, it would be better to use a wider credible interval. The coverage rate of 90\% credible interval is shown in figure \@ref(fig:c90).
+
+```{r c90, echo=FALSE, fig.cap="90% credible interval"}
+ggplot()+
+  geom_tile(data = sims, aes(x = d, y = d_h,fill = C90),
+            color="black")+
+  facet_grid(h~a)+
+   scale_fill_gradient2('C90', 
+                        low = "darkred", mid = "white", 
+                        high = "blue", 
+                        breaks = c(0,0.5,0.7,0.9, 1), 
+                        limits = c(0,1),
+           labels = c("low", "", "moderate", "","high"))+
+  scale_x_continuous(breaks = c(-3:3), expand = c(0,0))+
+  scale_y_continuous(breaks = c(-3:3), expand = c(0,0))+
+  xlab("Current d")+
+  ylab("Historical d")+
+  coord_equal()+
+  theme_classic()+
+  theme(axis.text = element_text(size =10), 
+        axis.title = element_text(size = 16), 
+        legend.title.align = 0.05, 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 14))
+
+```
+
+When the color is dark, it means a higher coverage rate. While the color is light, it shows a lower coverage rate. We can find when the bias parameter is 2, the color is lighter than using a 80\% credible interval, while the color is darker when the bias parameter is 0. Thus when using a 90\% credible interval, we lower the probability that we mistakenly concluding a bias, but the accuracy of detecting a bias is also lower when the bias parameter is 2. When the bias parameter is 3, the coverage rate is still high.
+
+```{r c95, echo=FALSE, fig.cap="90% credible interval"}
+ggplot()+
+  geom_tile(data = sims, aes(x = d, y = d_h,fill = C95),
+            color="black")+
+  facet_grid(h~a)+
+   scale_fill_gradient2('C95', 
+                        low = "darkred", mid = "white", 
+                        high = "blue", 
+                        breaks = c(0,0.5,0.7,0.9, 1), 
+                        limits = c(0,1),
+           labels = c("low", "", "moderate", "","high"))+
+  scale_x_continuous(breaks = c(-3:3), expand = c(0,0))+
+  scale_y_continuous(breaks = c(-3:3), expand = c(0,0))+
+  xlab("Current d")+
+  ylab("Historical d")+
+  coord_equal()+
+  theme_classic()+
+  theme(axis.text = element_text(size =10), 
+        axis.title = element_text(size = 16), 
+        legend.title.align = 0.05, 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 14))
+
+```
+
+The coverage rate plot when using a 95\% credible interval is shown in figure \@ref(fig:c95). When we use a 95\% credible interval, the coverage rate when there is no bias is very close to 1. Thus we can ensure that we will not mistakenly conclude a bias. When the bias parameter is 3, the coverage rate is still high, thus we can still accurately detect the bias when it is strong. However, when the bias is moderate, like $b=2$ or $b=-2$, the coverage rate is only high when we have consistent historical information. Thus by observing the coverage rate plot, we conclude that our model can always accurately detect strong bias. As for moderate bias, more information is needed for accurate detection. The width of the credible interval depends on how conservative we want to be.
+
+
 ## R Shiny Application to real data
 
 Even with agreement on the appropriate statistical analysis, it is often hard to complete the analysis in real time _during_ jury selection, unless "statisticians accompany attorneys in the jury selection process or a convenient programme or app is developed." [@Kadane2018, 12] Following this suggestion, we describe here a prototype software application ("app") that implements the approach described above using `r R.version$version.string`[@R] and shiny [@shiny]. We demonstrate the use of the app on some real data obtained from trials conducted in the state of Connecticut and compiled by the authors. For [privacy?] reasons, the attorney names have been changed, using (package name). 

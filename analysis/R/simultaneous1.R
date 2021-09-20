@@ -1,5 +1,6 @@
 library(Rcpp)
-sourceCpp('mh_sampler.cpp')
+sourceCpp('R/mh_sampler.cpp')
+source('R/sim_data.R')
 ##### b = 1  #####
 a1 <- sim_data(1,15,32,10)
 n_1 = sum(a1$cog)
@@ -27,7 +28,8 @@ idx1 = bs_l[1,]<3
 idx2 = bs_l[2,]>3
 sum(idx1&idx2)/50
 b_s1 <- rbind(b_s,bs_l)
-write.csv(b_s1,'b1.csv')
+save_path_b1 <- here::here("data-sim","b1.csv")
+write.csv(b_s1, save_path_b1)
 
 ##### b=2 #####
 a1 <- sim_data(2,15,32,10)
@@ -56,7 +58,8 @@ idx1 = bs_l[1,]<3
 idx2 = bs_l[2,]>3
 sum(idx1&idx2)/50
 b_s1 <- rbind(b_s,bs_l)
-write.csv(b_s1,'b2.csv')
+save_path_b2 <- here::here("data-sim","b2.csv")
+write.csv(b_s1, save_path_b2)
 
 ###### b=3  ######
 a1 <- sim_data(3,15,32,10)
@@ -85,5 +88,5 @@ idx1 = bs_l[1,]<3
 idx2 = bs_l[2,]>3
 sum(idx1&idx2)/50
 b_s1 <- rbind(b_s,bs_l)
-write.csv(b_s1,'b3.csv')
-
+save_path_b3 <- here::here("data-sim","b3.csv")
+write.csv(b_s1,save_path_b3 )

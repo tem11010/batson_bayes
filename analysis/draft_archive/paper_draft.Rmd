@@ -1,18 +1,28 @@
 ---
-title: "Detecting Bias in Peremptory Challenges Using Historical Strike Data"
+title: "Bayesian Detection of Bias in Peremptory Challenges Using Historical Strike Data"
 date: "`r Sys.Date()`"
-bibliography: references.bib
 author:
-  - name: "Sachin S. Pandya"
-    affiliation: "University of Connecticut"
-    orcid_id: 0000-0001-7387-1307
-  - name: "Xiaomeng Li"
-    affiliation: "University of Connecticut | Ernest & Young"
-  - name: "Timothy E. Moore"
-    affiliation: "University of Connecticut"
-    orcid_id: 0000-0002-9576-0517
-output: distill::distill_article
+  - Sachin S. Pandya, University of Connecticut
+#    orcid_id: 0000-0001-7387-1307
+  - Xiaomeng Li, University of Connecticut | Ernest & Young
+  - Timothy E. Moore, University of Connecticut
+#    orcid_id: 0000-0002-9576-0517
+#output: distill::distill_article
+output: pdf_document
+bibliography: references.bib
+abstract: |
+  US constitutional law bars using peremptory strikes during jury selection because of race, gender, or another cognizable classes. Here, we propose a Bayesian approach for detecting such illegal bias based on an attorney's pattern of peremptory challenges in both a current trial as well that attorney's use of strikes in past cases. Specifically, we show how to use historical data on an attorney's use of peremptory strikes in past trials to estimate, in a current trial, how likely an attorney has used peremptory challenges because of the cognizable class of prospective jurors. We also introduce the use of a _power prior_ to provide flexibility in the use of such historical data. We show the utility of our model on simulated data. Finally, we extend our approach by presenting an R Shiny application that can be used to examine jury selection data in real time. We demonstrate the app using actual jury-selection data from a convenience sample of criminal trials in the federal district court of Connecticut from YYYY to YYYY.
+
 ---
+
+```{r setup, include=FALSE}
+
+library(ggplot2)
+library(dplyr)
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+
+```
 
 # Introduction
 
@@ -22,7 +32,9 @@ In the US, individuals selected for jury-service appear in court as scheduled an
 
 # Background and Related Literature
 
-With a peremptory challenge, a party declares a prospective juror ineligible ("strikes" that juror) for a seat on the jury without the burden of explaining why. While some jurisdictions have abolished peremptory strikes (Criminal Justice Act 1988, s 118(1) (UK); S.C. 2019, c. 25, s 269 (Canada)), federal and State law in the United States (except in Arizona^[Arizona Rule of Criminal Procedure XX]) authorize their use during jury selection in criminal and civil cases. In these cases, peremptory-challenge procedure can vary not only by State, but also by court and judge, including the number of peremptory challenges assigned to each side, the order of strikes, and the number of peremptory strikes each party may exercise at a time [@nscs-jury2018; @Williams2017].
+With a peremptory challenge, a party declares a prospective juror ineligible ("strikes" that juror) for a seat on the jury without the burden of explaining why.^[While some jurisdictions have abolished peremptory strikes (Criminal Justice Act 1988, s 118(1) (UK); S.C. 2019, c. 25, s 269 (Canada)), federal and State law in the United States authorize their use during jury selection in criminal and civil cases. The current exception is Arizona. Arizona Rule of Criminal Procedure XX.] Peremptory-challenge procedure can vary not only by State, but also by court and judge, including the number of peremptory challenges assigned to each side, the order of strikes, and the number of peremptory strikes each party may exercise at a time [@nscs-jury2018; @Williams2017].
+
+This paper focuses on _Batson_ challenges to a party's use of peremptory challenges.
 
 Under the "struck jury" method of peremptory challenges, the trial judge decides whether to accept or reject all challenges for cause - for which a reason must be given -- before the parties exercise any peremptories. Thereafter, the number of potential jurors who remain is typically the sum of number of seats on the jury (plus alternates, if any) and the number of peremptory challenges allotted to both sides. 
 
@@ -40,23 +52,27 @@ Courts also vary as to the number of peremptory strikes a party exercises at a t
 
 This paper focuses on _Batson_ challenges to a party's use of peremptory challenges. Under the US Supreme Court's decision in _Batson v. Kentucky_ (1986), a party's exercise of a peremptory challenge against one or more prospective jurors violates the Equal Protection Clause of the US Constitution if motivated by such jurors' race, ethnicity, gender, or certain other protected characteristics. 
 
-For a _Batson_ challenge, the challenging party must typically establish a "prima facie case", that is, enough evidence to infer that a party struck a juror because of such juror's race, gender, or other protected status. If so, the burden shifts to the challenged party to produce one or more nondiscriminatory reasons for that strike. Thereafter, the challenger must persuade the trial judge that prospective jurors' race or gender, not the proffered nondiscriminatory reason(s), was more likely than not the real motivation for the challenged strike(s) [@LaFave2020, sec. 22.3]. For similar challenges under State law, some States have reduced or eliminated the challenger's burden to establish a prima facie case [e.g., State v. Holloway, 209 Conn. 636, 646 & n.4 (1989); State v. Chapman, 317 S.C. 302, 305-06 (1995)], while other States have shifted the inquiry away from the striking party's motives to whether a hypothetical "objective observer" would find that race or ethnicity was a "factor" in that party's use of strikes [e.g., Wash. R. 37(e)].
+For a _Batson_ challenge, the challenging party must typically establish a "prima facie case", that is, enough evidence to infer that a party struck a juror because of such juror's race, gender, or other protected status. If so, the burden shifts to the challenged party to produce one or more nondiscriminatory reasons for that strike. Thereafter, the challenger must persuade the trial judge that prospective jurors' race or gender, not the proffered nondiscriminatory reason(s), was more likely than not the real motivation for the challenged strike(s) [@LaFave2020, sec. 22.3]. 
+
+For some similar challenges under State law, some States have reduced or eliminated the challenger's burden to establish a prima facie case [e.g., State v. Holloway, 209 Conn. 636, 646 & n.4 (1989); State v. Chapman, 317 S.C. 302, 305-06 (1995)], while other States require proving not motive, only that an "objective observer" would find that race or ethnicity was a "factor" in that party's use of strikes [e.g., Wash. R. 37(e)].
 
 Despite _Batson_ and its progeny, "prosecutors in criminal cases, and defense attorneys in civil case are more likely to use their challenges to dismiss African American jurors, whereas criminal defense attorneys and civil plaintiff's attorneys are more likely to exercise their strikes on white prospective jurors." [@Diamond2018]. Possible explanations include attorney fear that even raising a _Batson_ challenge raises with it the embarrassment and discomfort associated with accusing another attorney of being racist [@OBrien2019, 29; @Offit2021]. Similarly, a trial judge deciding a _Batson_ challenge may similarly be reluctant to find against opposing counsel, particularly if that prosecutor repeatedly appears before that judge.
 
-By law, evidence supporting a _Batson_ challenge may include not only the circumstances of the jury selection itself, but also data on peremptory challenges in past cases. For example, in a _Batson_ challenge against a prosecutor in a criminal case, such historical data would be relevant to whether (1) to conclude that the defendant has a prima facie case; (2) to believe a prosecutor from that office who has offered a race-neutral explanation for striking, say, an African-American juror in that case; and (3) to ultimately accept or reject a Batson challenge in that case [e.g., Miller-El v. Dretke, 545 U.S. 231, 253 (2005); Riley v. Taylor, 277 F.3d 261, 280-81, 283 (3d Cir. 2001); Cochran v. Herring, 43 F.3d 1404, 1412 (11th Cir. 1995)]. The US Supreme Court recently identified evidence for a _Batson_ challenge as including the "relevant history of the State's peremptory strikes in past cases" [Flowers v. Mississippi, 139 S. Ct. 2228, 2243 (2019)].
+By law, evidence supporting such challenges may include aggregate data on peremptory challenges in past cases. For example, in a _Batson_ challenge against a prosecutor in a criminal case, such historical data would be relevant to whether (1) to conclude that the defendant has a prima facie case; (2) to believe a prosecutor from that office who has offered a race-neutral explanation for striking, say, an African-American juror in that case; and (3) to ultimately accept or reject a Batson challenge in that case [e.g., Miller-El v. Dretke, 545 U.S. 231, 253 (2005); Riley v. Taylor, 277 F.3d 261, 280-81, 283 (3d Cir. 2001); Cochran v. Herring, 43 F.3d 1404, 1412 (11th Cir. 1995)]. The US Supreme Court recently identified evidence for a _Batson_ challenge as including the "relevant history of the State's peremptory strikes in past cases" [Flowers v. Mississippi, 139 S. Ct. 2228, 2243 (2019)].
 
-Prior work on statistical methods for _Batson_ challenges, however, has largely focused on strike data from a single case [e.g. @Barrett2007; @Gastwirth2016; @Kadane2018; @Kadane2018a], perhaps because strike data from past cases is hard to collect. Jury-selection records are often not readily available, because they are kept, if at all, by court staff somewhere other than the case file.  Such records are also largely on paper, not electronic or machine-readable formats [@Grosso2017; @Wright2018], and otherwise requires painstaking effort to collect [e.g., @Craft2018]. 
+Prior work on statistical methods for _Batson_ challenges, however, has largely focused on strike data from a single case [e.g. @Barrett2007; @Gastwirth2016; @Kadane2018; @Kadane2018a], perhaps because strike data from past cases is hard to collect. Jury-selection records are often not readily available, because they are kept, if at all, by court staff somewhere other than the case file.  Such records are also largely on paper, not electronic or machine-readable formats [@Grosso2017; @Wright2018], and otherwise requires painstaking effort to collect [e.g., @APM2018]. 
 
 Moreover, strike data on past trials may be missing information not at random [e.g., @Baldus2001, 132-134]. Possible reasons include that some jurisdictions do not require recording relevant or detailed enough information about jurors who were or could have been struck (e.g., their race or gender), thus forcing lawyers and researchers to turn to other data sources (e.g., voter registration rolls), if any, to find that information. Finally, judges and court staff vary in how often they fully complete or maintain the information they are required to record.
 
-When collecting strike data in multiple trials, prior studies have aggregated strikes across those trials, reported the observed difference in strike rates by race or gender, and tested for the probability of observing a non-zero difference in strike rates by race or gender, given repeated sampling from a hypothetical population of peremptory strikes with zero such difference. For example, Eisenberg [-@Eisenberg2017, 334-339] used a 2-tail Fisher's exact test on the observed difference in peremptory strikes by race and gender in a non-random sample of thirty-five trials from 1997-2012 that resulted in death sentences (out of 63 such trials). @Gastwirth2013 has criticized the use of a paired t-test to compare the differences in strike rates of Black and non-Black venire members in the aggregate. Rather, both they and @Gastwirth2014 argued for applying the Cochran–Mantel–Haenszel test by taking the difference of the sum of the observed numbers of Black venire members challenged in each trial and the corresponding sum of the expected numbers of Blacks challenged, and then comparing it to the standard deviation of the difference.
+When collecting strike data in multiple trials, prior studies have aggregated strikes across those trials, reported the observed difference in strike rates by race or gender, and tested for the probability of observing a non-zero difference in strike rates by race or gender, given repeated sampling from a hypothetical population of peremptory strikes with zero such difference. 
 
-Prior studies have also modeled how much a prospective juror's race affected the odds of being struck [e.g., @Baldus2001]. For exmpale, using jury selection data for 1992-2017 for Mississippi's Fifth Circuit Court District, Craft [-@Craft2018a, 9] applied a logistic regression model to analyze how much a prospective juror's race affected the odds of being struck by the state. For studies applying other modeling techniques to this Mississippi data, see @DeCamp2020 (propensity score matching) and @Dunn2021 (optimal feature selection, optimal classification trees).
+For example, Eisenberg [-@Eisenberg2017, 334-339] used a 2-tail Fisher's exact test on the observed difference in peremptory strikes by race and gender in a non-random sample of thirty-five trials from 1997-2012 that resulted in death sentences (out of 63 such trials). @Gastwirth2013 has criticized the use of a paired t-test to compare the differences in strike rates of Black and non-Black venire members in the aggregate. Rather, both they and @Gastwirth2014 argued for applying the Cochran–Mantel–Haenszel test by taking the difference of the sum of the observed numbers of Black venire members challenged in each trial and the corresponding sum of the expected numbers of Blacks challenged, and then comparing it to the standard deviation of the difference.
+
+Prior studies have also modeled how much a prospective juror's race affected the odds of being struck [e.g., @Baldus2001]. For example, using jury selection data for 1992-2017 for Mississippi's Fifth Circuit Court District, Craft [-@Craft2018a, 9] applied a logistic regression model to analyze how much a prospective juror's race affected the odds of being struck by the state. For studies applying other modeling techniques to this Mississippi data, see @DeCamp2020 (propensity score matching) and @Dunn2021 (optimal feature selection, optimal classification trees).
 
 # Discussion
 
-Here, we use a Bayesian approach for detecting illegal bias for _Batson_ challenges based solely on an attorney's pattern of peremptory challenges in both a current trial and that attorney's strikes in past cases. First, we specify a model of the peremptory-strike process in the court of interest. Second, we assign an initial prior distribution for a bias parameter $b$. Third, we use an attorney's strike data from past trials, as  generated by the same peremptory-strike process, to estimate a posterior distribution for $b$.  Finally, we use that posterior distribution as the prior for $b$ in the present case and update the posterior based on data on the target attorney's strikes in that present case. 
+Here, we use a Bayesian approach for detecting illegal bias for _Batson_ challenges based solely on an attorney's pattern of peremptory challenges in both a current trial and that attorney's strikes in past cases. First, we specify a model of the peremptory-strike process in the court of interest. Second, we assign an initial prior distribution for a bias parameter $b$. Third, we use an attorney's strike data from past trials, as  generated by the same peremptory-strike process, to estimate a posterior distribution for $b$. Finally, we use that posterior distribution as the prior for $b$ in the present case and update the posterior based on data on the target attorney's strikes in that present case. 
 
 In so doing, we make two main contributions. First, we use the power prior to control how much the strike history from past cases affects the posterior distribution of the bias parameter $b$. The power prior is a way to create informative prior distributions based on historical data so as to control how much historical data affects the posterior distribution of some parameter of interest. The key insight is to raise the likelihood function based on the historical data to a power parameter [@Ibrahim2000; @Ibrahim2015].
 
@@ -102,7 +118,7 @@ Unlike @Kadane2018, who assigned $b$ a prior of $Uniform (-6,6)$, because the la
 
 First, for our initial prior of $N(0,2)$, we let $\mu = 0$, because the law assigns the burden of proof in a _Batson_ challenge to the party bringing the challenge as well as the initial burden of producing some relevant evidence of illegal bias (the _Batson_ prima facie case). Thus, if that challenging party in fact produces no relevant evidence of illegal bias, the law requires a trial judge to reject the challenge as unproven. This is tantamount to treating zero as the most-likely value of the bias parameter, absent any data.
 
-Second, we take that law as requiring, absent any data, the assumption that higher degrees of illegal bias (preference) are less likely than lower degrees of bias (preference). By using a normal (Gausian) distribution with $\sigma = 2$, we encode this assumption by making values of the bias parameter less likely as they move further from zero and by making very unlikely values any value of $b$ greater than two standard deviations from the mean.
+Second, we take that law as requiring, absent any data, the assumption that higher degrees of illegal bias (preference) are less likely than lower degrees of bias (preference). By using a normal (Gaussian) distribution with $\sigma = 2$, we encode this assumption by making values of the bias parameter less likely as they move further from zero and by making very unlikely values any value of $b$ greater than two standard deviations from the mean.
 
 Finally, we want to incorporate historical data on strikes in past cases and adjust the weight of that historical information on the posterior distribution of the bias parameter.  Accordingly, we introduce the power prior \@ref(eq:model3)
 
@@ -120,7 +136,7 @@ L(b|\delta) = L(b|\delta)(L(b|\delta_0))^{a_0}\exp(-\frac{b^2}{8}) (\#eq:model4)
 
 where $L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}(\frac{(e^b)c_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{\delta_{0ij}} (\frac{m_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{1-\delta_{0ij}}$ is the likelihood function of $b$ given historical data. $n_{0i}$ is the total number of jury selections in the historical data, and $n_{0j}$ is the total number of peremptory strikes in the historical data. $\delta_{0ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class" in the historical trials.   
 
-The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used traceplots, the Gelman-Rubin convergence diagnostic [@Gelman1992; @Gelman1998] and Geweke’s diagnostics [@Gewe1992]. 
+The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used traceplots, the Gelman-Rubin convergence diagnostic [@Gelman1992; @Gelman1998] and Geweke’s diagnostics [@Geweke1992]. 
 
 # Simulation 
 
@@ -140,25 +156,24 @@ In turn, for three credible interval levels (80\%, 90\% and 95\%), we recorded t
 
 The following figures depict the coverage rates of $b$ under the 80\% credible interval (Figure \@ref(fig:b80)), under the 90\% credible interval (Figure \@ref(fig:b90)), and under the 95\% credible interval (Figure \@ref(fig:b95)).
 
-```{r b80, echo=FALSE, fig.cap="80% credible interval"}
+```{r b80, fig.cap="80% credible interval"}
 
-library(ggplot2)
+# simulated data via "noseq_simulation.R" script
 
-# INSERT simulation and plot code
-
-load_path <- here::here("sim_resultc.csv")
+load_path <- here::here("data-sim","sim_resultc.csv")
 
 sims <- readr::read_csv(load_path)
 sims$a.f <- as.factor(sims$a)
 
 sims$sig <- ifelse(sims$L80 <0 & sims$U80 >0 , "ns", 1) 
-sims$sig <- ifelse(sims$L80 >0 & sims$U80 >0 , 
-                                    "pos", sims$sig) 
-sims$sig <- ifelse(sims$L80 <0 & sims$U80 <0 , 
-                                    "neg", sims$sig) 
+sims$sig <- ifelse(sims$L80 >0 & sims$U80 >0 , "pos", sims$sig) 
+sims$sig <- ifelse(sims$L80 <0 & sims$U80 <0 , "neg", sims$sig) 
+
 sims$sig.n <- 0
 sims$sig.n <- ifelse(sims$sig=="pos", 1, sims$sig.n)
 sims$sig.n <- ifelse(sims$sig=="neg", 1, sims$sig.n)
+
+library(ggplot2)
 
 p = ggplot()+
   geom_tile(data = sims, aes(x = d, y = d_h,
@@ -176,8 +191,8 @@ p = ggplot()+
   xlab("Current b")+
   ylab("Historical b")+
   scale_fill_manual(values = c("white", "blue"))+
-  coord_equal()+
-  theme_minimal()+
+  coord_equal() +
+  theme_minimal() +
   labs(fill = "coverage") +
   theme(axis.text = element_text(size =10), 
         #axis.title = element_text(size = 16), 
@@ -189,7 +204,7 @@ p
 ```
 
 
-```{r b90, echo=FALSE, fig.cap="90% credible interval"}
+```{r b90, fig.cap="90% credible interval"}
 
 # INSERT simulation and plot code
 sims$a.f <- as.factor(sims$a)
@@ -229,7 +244,7 @@ p = ggplot()+
 p
 ```
 
-```{r b95,  echo=FALSE,fig.cap="95% credible interval"}
+```{r b95, fig.cap="95% credible interval"}
 
 # INSERT simulation and plot code
 sims$a.f <- as.factor(sims$a)
@@ -273,7 +288,7 @@ In these figures, _historical b_ denotes the bias parameter for the generated hi
 
 These plots indicate that our model can detect strong bias and bias ($b = \{-3, -2, 2,3\}$). When bias is moderate ($b = \{1, -1\}$), the model can detect it if the historical data has a bias parameter in the same direction. If the bias parameter of historical data is in an opposite direction, the model may provide a wrong estimate of current bias parameter. 
 
-# Model 2: Simultaneous Strikes
+# Extension: Simultaneous Strikes
 
 In some courts, both parties simultaneously exercise their peremptory challenges on the prospective jurors in a venire.  This may result in both sides using a strike each on the same potential juror. 
 
@@ -288,15 +303,19 @@ Here, we argue that a simultaneous-strikes process can be modeled as a special c
 
 To show this, we conducted the following simulation study. We first generate a trial and then shuffle the order of the strikes to generate 50 trials with the same proportion of struck cognizable class members but different orders. We then use the model to fit the 50 trials to see if the estimated bias parameter are close to each other. We conduct the simulation study under three scenarios from moderate bias to strong bias, that is $b=1,2,3$. The results are shown in figure \@ref(fig:simltns).
 
-```{r simltns, echo=FALSE,fig.cap="simultaneous case"}
+```{r simltns, fig.cap="simultaneous case", eval = FALSE}
 
-library(dplyr)
-library(ggplot2)
 #library(conflicted)
 #conflict_prefer("select", "dplyr")
 #conflict_prefer("filter", "dplyr")
 
-# ADD SCRIPT FOR GENERATING b1.csv, b2.csv, b3.csv
+# SCRIPT FOR GENERATING b1.csv, b2.csv, b3.csv
+
+# generate data
+
+source("R/simultaneous1.R")
+
+# load already-generated data
 
 load_path_b1 <- here::here("b1.csv")
 load_path_b2 <- here::here("b2.csv")
@@ -384,7 +403,9 @@ ggplot(data = b.com, aes(x = sim.n, y = b_s, color = sig))+
   theme(axis.title = element_text(size = 16), 
         axis.text.x = element_text(size = 12), 
         axis.text.y = element_text(size = 9))
+
 ```
+
 The points represent the estimated posterior mean and the lines represent the 95\% credible interval. The blue line means the credible interval does not include zero, thus indicating a bias, while the grey line means the credible interval includes zero and indicating no bias. We can find the estimated bias parameter of the 50 trials with different orders are close to each other for all of the three scenarios, indicating the order does not influence the estimate of the bias parameter. This is consistent with our previous premise and confirms that the simultaneous-strikes process can be modeled as a special case of our model of an alternating-strikes process.  
 
 
@@ -392,22 +413,25 @@ The points represent the estimated posterior mean and the lines represent the 95
 
 Even with agreement on the appropriate statistical analysis, it is often hard to complete the analysis in real time _during_ jury selection, unless "statisticians accompany attorneys in the jury selection process or a convenient programme or app is developed." [@Kadane2018, 12]
 
-Following this suggestion, we describe here a prototype software application ("app") that implements the approach described above using `r R.version$version.string`[@R] and shiny [@shiny].
+Following this suggestion, we describe here a prototype software application ("app") that implements the approach described above using `r R.version$version.string`[@R] and shiny [@shiny] and comes loaded with real jury-selection data from a convenience sample of criminal cases in the federal district court for Connecticut during YYYY through YYYY. To partially de-identify this historical data, we excluded defendants' names and substituted fictitious names for the attorneys using @charlatan.  
 
-There is currently historical information of some prosecutors and defendants. More historical information would be updated when available. Users can input the current trial information as shown in table \@ref(tab:inpts), and then select the name of the prosecutor and the defendant from the pull-down window if applicable. If the name of the prosecutor or the defense attorney cannot be found, it means the historical information is not available.
+With the app, users can input the current information on the use of peremptory strikes as shown in table \@ref(tab:inpts), and then select the name of the prosecutor and the defendant from the pull-down window, if available, in the historical data. If an attorney's name cannot be found, it means that the app does not have any historical information on that attorney's use of peremptory strikes.
 
-The main screen displays two graphs -- one for the prosecution and the defense - that displays the prior density plot and the posterior density plot for the bias parameter.
+The main screen displays two graphs -- one for the prosecution and the defense - that displays the prior and posterior density plots for the bias parameter.
 
-```{r inpts, echo=FALSE}
+```{r inpts, echo=FALSE, eval = FALSE}
 df <- data.frame(round = c(1:10),
                  num_cog = c(4,4,4,3,2,2,2,2,2,2),
                  total = c(15,14,13,12,11,10,9,8,7,6),
                  cog = c(0,1,1,0,0,1,1,0,0,0),
                  party = rep(c("PP","PD"),5))
 knitr::kable(df)
+
 ```
 
-For instance, if we collect the data of a new trial with prosecutor being "Brian P. Leaming" and defendant being "Frank J. Riccio II", and we would like to see if they are biased or not. We can select the name from the pull-down window of prosecutor and defendant to extract the historical information. Then we can input the current trial information, and select the weight that we would like to put on the historical information. Currently we provide three options for the weight, equal weight of historical information and current information, half weight of historical information and low weight of historical information. We can also select the cognizable class that we are interested in. There are currently two options of cognizable class, race and gender. Suppose the current trial information is as we show in table \@ref(tab:inpts), we put equal weight on historical information and we select cognizable class as race, then the posterior density as shown in figure \@ref(fig:brian) will be displayed. 
+For instance, if we collect the data of a new trial with prosecutor being "Brian P. Leaming" and defendant being "Frank J. Riccio II", and we would like to see if they are biased or not. We can select the name from the pull-down window of prosecutor and defendant to extract the historical information. Then we can input the current trial information, and select the weight that we would like to put on the historical information. Currently we provide three options for the weight, equal weight of historical information and current information, half weight of historical information and low weight of historical information. We can also select the cognizable class that we are interested in. There are currently two options of cognizable class, race and gender. 
+
+Suppose the current trial information is as we show in table \@ref(tab:inpts), we put equal weight on historical information and we select cognizable class as race, then the posterior density as shown in figure \@ref(fig:brian) will be displayed. 
 
 ```{r brian, echo=FALSE,fig.cap="Posterior Density Plot"}
 library(dplyr)
@@ -874,6 +898,6 @@ We can find both the prior and posterior density become more flat, and the poste
 
 # CRediT Author Statement
 
-Sachin S. Pandya: Conceptualization, Investigation, Software, Writing; Xiaomeng Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Timothy Moore: Conceptualization, Supervision, Visualization. Based on categories in https://casrai.org/credit/].
+Sachin S. Pandya: Conceptualization, Investigation, Software, Writing; Xiaomeng Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Timothy Moore: Conceptualization, Supervision, Visualization, Writing. Based on categories in https://casrai.org/credit/].
 
 # References

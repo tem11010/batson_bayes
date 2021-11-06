@@ -1,11 +1,15 @@
 coverageplot_func <- function(dat,CI,xlabel,ylable){
   library(ggplot2)
+  cust_labeller_a <- function(x) paste0("a = ", x)
+  cust_labeller_h <- function(x) paste0("h = ", x)
   ggplot()+
     geom_tile(data = dat, aes(x = d, y = d_h,fill = CI),
               color="black")+
-    facet_grid(h~a, labeller = labeller(
-              h = label_value, 
-              a = paste0("a = ",label_value))) +
+    facet_grid(h~a, 
+               labeller = labeller(
+                 h = cust_labeller_h, 
+                 a = cust_labeller_a)
+              ) +
     scale_fill_gradient(
       'coverage', 
       low = "white",
@@ -20,7 +24,7 @@ coverageplot_func <- function(dat,CI,xlabel,ylable){
     ylab(ylabel)+
     coord_equal()+
     theme_classic()+
-    theme(legend.pos = "bottom",
+    theme(legend.pos = "right",
           axis.text = element_text(size = 10), 
           axis.title = element_text(size = 16), 
           #legend.title.align = 0.05, 

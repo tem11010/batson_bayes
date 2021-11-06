@@ -1,23 +1,33 @@
 ---
 title: "Bayesian Detection of Bias in Peremptory Challenges Using Historical Strike Data"
 date: "`r Sys.Date()`"
-author:
-  - Sachin S. Pandya
-#    orcid_id: 0000-0001-7387-1307
-  - Xiaomeng Li
-  - Timothy E. Moore
-#    orcid_id: 0000-0002-9576-0517
-#output: distill::distill_article
-output:
-  pdf_document:
-    latex_engine: xelatex
-    number_sections: true
-    fig_width: 5
-    fig_height: 5
+blinded: 0
+authors:
+- name: "[Sachin S. Pandya](https://orcid.org/0000-0001-7387-1307)"
+  #thanks: The authors gratefully acknowledge ...
+  affiliation: University of Connecticut
+  email: sachin.pandya@uconn.edu
+- name: "Xiaomeng Li"
+  affiliation: University of Connecticut
+- name: "[Timothy E. Moore](https://orcid.org/0000-0002-9576-0517)"
+  affiliation: University of Connecticut
+output: 
+  rticles::asa_article:
+    citation_package: "default"
+    keep_tex: TRUE
+    #fig_width: 5
+    #fig_height: 5
+  #output:
+#  pdf_document:
+#    latex_engine: xelatex
+#    number_sections: true
+    #fig_width: 4
+    #fig_height: 4
 header-includes: 
   - \usepackage{amsmath}
-fontsize: 12pt
+#fontsize: 12pt
 bibliography: references.bib
+biblio-style: agsm.bst
 abstract: |
   US law bars using peremptory strikes during jury selection because of prospective juror race, ethnicity, gender, or membership in certain other cognizable classes. Here, we propose a Bayesian approach for detecting such illegal bias. We show how to use historical data on an attorney's use of peremptory strikes in past cases to estimate, in a current trial, how likely an attorney has struck prospective jurors because of cognizable-class membership. We also use the _power prior_ to adjust the weight of such historical data in the analysis. We show how well our model performs on simulated data. Finally, we extend this approach with a prototype software application to detect bias in peremptory-challenge in real time during jury-selection. We illustrate this application's use with actual historical strike data from a convenience sample of cases from one federal district court.
 
@@ -36,11 +46,11 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 In the U.S., individuals selected for jury-service appear in court as scheduled and are questioned by the parties' attorneys and the trial judge. During this process, a prospective juror, if not excused by the trial judge for cause, may still be dismissed if a party's attorney uses one of their limited number of peremptory challenges against them. By asserting a peremptory challenge, a party can declare a prospective juror ineligible ("strikes" that juror) for a seat on the jury without the burden of explaining why.
 
-Since _Batson v. Kentucky_ [-@batson1986], a party violates the Equal Protection Clause of the US Constitution by using peremptory challenges if motivated by the prospective jurors' race, ethnicity, gender, or membership in another cognizable class. The party bringing a _Batson_ challenge bears the burden of proving such illegal bias is more likely than not [@LaFave2020, $\S$ 22.3(d)]. For similar challenges under State law, a few States require only that an "objective observer" or an "objectively reasonable person" would find that race, ethnicity or another cognizable-class membership was a "factor" in that party's use of strikes [Wash. Rule 37(e); Calif. Code of Civil Procedure $\S$ 231.7(d)(1)]. Peremptory-challenge procedure, and thus the task of proving illegal bias, varies not only by State, but also by court, including the number of peremptory challenges assigned to each side and the order in which each party uses those strikes [@nscs-jury2018; @Williams2017]. 
+Since _Batson v. Kentucky_ [-@batson1986], a party violates the Equal Protection Clause of the US Constitution by using peremptory challenges if motivated by the prospective jurors' race, ethnicity, gender, or membership in another cognizable class. The party bringing a _Batson_ challenge bears the burden of proving such illegal bias is more likely than not to be true [@LaFave2020, $\S$ 22.3(d)]. For similar challenges under State law, a few States require only that an "objective observer" or an "objectively reasonable person" would find that race, ethnicity or another cognizable-class membership was a "factor" in that party's use of strikes [Wash. Rule 37(e); Calif. Code of Civil Procedure $\S$ 231.7(d)(1)]. Peremptory-challenge procedure, and thus the task of proving illegal bias, varies not only by State, but also by court, including the number of peremptory challenges assigned to each side and the order in which each party uses those strikes [@nscs-jury2018; @Williams2017].
 
-In any case, evidence of such illegal bias may include data on a party's use of peremptory challenges in past cases. (_Flowers v. Mississippi_ -@flowers2019, p. 2243; Wash. Rule 37(g)(v); Calif. Code of Civil Procedure $\S$ 231.7(d)(3)(G)). Prior studies have collected historical strike data in past cases and reported the observed difference in strike rates by race or gender. Typically, they test for the probability of observing a non-zero difference in strike rates by the race or gender of the struck prospective jurors, given repeated sampling from a hypothetical population of peremptory strikes with zero such difference [e.g., @Eisenberg2017; @Grosso2012; for discussion, see @Gastwirth2014; @Gastwirth2013]. Prior studies have also modeled how much a prospective juror's race affected the odds of being struck. For different modeling approaches using the same historical strike data from Mississippi, see @Craft2018a; @DeCamp2021; and @Dunn2021.
+In any case, evidence of such illegal bias may include data on a party's use of peremptory challenges in past cases [@flowers2019, 2243; Wash. Rule 37(g)(v); Calif. Code of Civil Procedure $\S$ 231.7(d)(3)(G)]. Prior studies have collected historical strike data in past cases and reported the observed difference in strike rates by race or gender. Typically, they test for the probability of observing a non-zero difference in strike rates by the race or gender of the struck prospective jurors, given repeated sampling from a hypothetical population of peremptory strikes with zero such difference [e.g., @Eisenberg2017; @Grosso2012; for discussion, see @Gastwirth2014; @Gastwirth2013]. Prior studies have also modeled how much a prospective juror's race affected the odds of being struck. For different modeling approaches using the same historical strike data from Mississippi, see @Craft2018a; @DeCamp2021; and @Dunn2021.
 
-In this paper, we extend a Bayesian approach to _Batson_ and similar challenges [@Kadane2018] to incorporate historical strike data. In this approach, we specify a model of the peremptory-strike process in the court of interest that includes a bias parameter to which we assign an initial prior distribution. Then, we use an attorney's strike data from past trials, as generated by that same peremptory-strike process, to estimate a posterior distribution for that bias parameter. In so doing, we use the power prior [@Ibrahim2000; @Ibrahim2015] to control how much the strike history from past cases affects the posterior distribution of the bias parameter.  Finally, we use that posterior distribution as the prior for the bias parameter in the present case and update the posterior based on data on the target attorney's strikes in that present case.
+In this paper, we extend a Bayesian approach to _Batson_ and similar challenges [@Kadane2018] to incorporate historical strike data. In this approach, we specify a model of the peremptory-strike process in the court of interest that includes a bias parameter to which we assign an initial prior distribution. Then, we use an attorney's strike data from past trials, as generated by that same peremptory-strike process, to estimate a posterior distribution for that bias parameter. In so doing, we use the power prior [@Chen2000; @Ibrahim2015] to control how much the strike history from past cases affects the posterior distribution of the bias parameter.  Finally, we use that posterior distribution as the prior for the bias parameter in the present case and update the posterior based on data on the target attorney's strikes in that present case.
 
 Here, we demonstrate this approach with simulation studies to test model performance. Then, we present a software prototype that encodes the same approach with actual historical strike data to help attorneys and others detect bias in peremptory-challenge use in real time during jury selection. 
 
@@ -127,7 +137,7 @@ Because we use the power prior, we can control how much we account for the histo
 
 We considered 735 scenarios in total, i.e., the combination of 7 different bias parameters of current data and of historical data, 3 different amounts of historical data and 5 different values of the power prior weight parameter $a$. For each scenario, we generated 1000 datasets and fit the model on those datasets. We recorded the posterior mean and credible intervals of one thousand model fits for each scenario. 
 
-In turn, for three credible interval levels (80\%, 90\% and 95\%), we recorded the coverage rates, i.e., the proportion of times we can reach the correct conclusion about the bias parameter based on those credible intervals. That is, when the true value of $b_{curr}$ is greater than zero, the credible interval lies to the right of zero; when $b_{curr}$ equals to zero, the credible interval includes zero; and when $b_{curr}$ is less than zero, the credible interval lies to the left of zero. Since we use a weakly-informative prior that pulls the estimate of $b_{current}$ towards zero, we focus not on how accurately the model can recover the true value of $b_{curr}$, but on how accurately our model can detect that bias.
+In turn, for three credible interval levels (80\%, 90\% and 95\%), we recorded the coverage rates, i.e., the proportion of times we can reach the correct conclusion about the bias parameter based on those credible intervals. That is, when the true value of $b_{curr}$ is greater than zero, the credible interval lies to the right of zero; when $b_{curr}$ equals to zero, the credible interval includes zero; and when $b_{curr}$ is less than zero, the credible interval lies to the left of zero. Since we use a weakly-informative prior that pulls the estimate of $b_{curr}$ towards zero, we focus not on how accurately the model can recover the true value of $b_{curr}$, but on how accurately our model can detect that bias.
 
 ```{r b80, eval = FALSE}
 
@@ -180,7 +190,7 @@ sims$sig.n <- ifelse(sims$sig=="neg", 1, sims$sig.n)
 
 For instance, a 90\% coverage rate means that in 900 of 1000 model fits, a given credible interval contained what we fixed as the value of $b_{curr}$. Put another way, if we set $b_{curr}>0$, we calculate the proportion of the 90\% credible intervals that lie to the right of zero among the 1000 model fits.
 
-Figures 1-3 depicts the coverage rates of $b_{curr}$ with an 80\%, 90\%, and 95\% credible interval, respectively. Here, $b_{hist}$ denotes the bias parameter for the generated historical strike data and $b_{curr}$ denotes the bias parameter for the current data. The values on the right side represent the size of the historical data. The values on the top of the plots represent the power prior weight parameter $a$. For any given combination, a darker color shade denotes a higher coverage rate, and vice versa.
+Figures 1-3 depicts the coverage rates of $b_{curr}$ with an 80\%, 90\%, and 95\% credible interval, respectively, for the combinations of $b_{hist}$, $b_{curr}$, the power prior weight parameter $a$, and different sizes of the historical data ($h = {1,2,3}$). For any given combination, a darker color shade denotes a higher coverage rate, and vice versa.
 
 ```{r plotsfig1, eval = FALSE}
 
@@ -209,43 +219,43 @@ C95plot <- coverageplot_func(sims, sims$C95, xlabel, ylabel) +
 # output to figures folder
 
 load_path <- here::here("analysis","figures","C80plot.png")
-ggsave(load_path, plot = C80plot)
+ggsave(load_path, plot = C80plot, height = 4, width = 7)
 load_path <- here::here("analysis","figures","C90plot.png")
-ggsave(load_path, plot = C90plot)
+ggsave(load_path, plot = C90plot, height = 4, width = 7)
 load_path <- here::here("analysis","figures","C95plot.png")
-ggsave(load_path, plot = C95plot)
+ggsave(load_path, plot = C95plot, height = 4, width = 7)
 
 
 ```
 
-```{r fig1, fig.cap = "Coverage Rates - 80% Credible Interval", fig.align = "center"}
+```{r fig1, out.width = "95%", fig.cap = "Coverage Rate of bias parameter based on 80 pct credible interval."}
 
 load_path <- here::here("analysis","figures","C80plot.png")
 knitr::include_graphics(load_path)
 
 ```
 
-```{r fig2, fig.cap = "Coverage Rates - 90% Credible Interval", fig.align = "center"}
+Figure 1 depicts the coverage rate with an 80\% credible interval. When we place low weight on the historical strike data ($a = 0.1$), we mostly rely on current strike information. When $b_{curr}$ is 3, 2, -2, or -3, the coverage rate is high, very close to 1. However, when $b_{curr} = 1$, the coverage rate drops below 0.8. If the bias is not strong, our model detects it with a lower accuracy.
+
+As we place more weight on the historical strike data (as $a$ increases), when the historical strike data is consistent with current information, the accuracy of detecting the bias is also close to 1 when $b_{curr} = 1$. When $b_{curr} = 0$ (no bias), however, the coverage rate is also around 80\%. Thus, if we use the 80\% credible interval, we have about a 20\% chance of erroneously detecting non-zero bias.
+
+```{r fig2, out.width = "95%", fig.cap = "Coverage Rates - 90 pct. Credible Interval"}
 
 load_path <- here::here("analysis","figures","C90plot.png")
 knitr::include_graphics(load_path)
 
 ```
 
-```{r fig3, fig.cap = "Coverage Rates - 95% Credible Interval", fig.align = "center"}
+Using a wider credible interval lowers this chance of error. For example, with a 90\% credible interval (Figure 2), when $b_{curr} = 2$, the coverage rate is lower than with an 80\% credible interval; when $b_{curr}=0$, the coverage rate is higher. The tradeoff is lower accuracy. With a 90\% credible interval, when the bias parameter is 2, the model is less accurate in detecting bias. When the bias parameter is 3, however, the coverage rate is still high.
+
+```{r fig3, out.width = "95%", fig.cap = "Coverage Rates - 95 pct. Credible Interval"}
 
 load_path <- here::here("analysis","figures","C95plot.png")
 knitr::include_graphics(load_path)
 
 ```
 
-Figure 1 depicts the coverage rate with an 80\% credible interval. As the first column ($a = 0.1$) depicts, when we place low weight on the historical strike data, we mostly rely on current information. When $b_{current}$ is 3, 2 or -2, -3, the coverage rate is high, very close to 1. However, when $b_{curr}$ is 1, the coverage rate drops below 0.8. If the bias is not strong, our model detects it with a lower accuracy.
-
-As we place more weight on the historical strike data (as $a$ increases), when the historical strike data is consistent with current information, the accuracy of detecting the bias is also close to 1 when the bias parameter is 1. When the bias parameter is 0 (no bias), however, the coverage rate is also around 80\%. Thus, if we use the 80\% credible interval, we have about a 20\% chance of erroneously detecting non-zero bias.
-
-Using a wider credible interval lowers this chance of error. For example, with a 90\% credible interval (Figure 2), when $b = 2$, the coverage rate is lower (the color is lighter) than with a 80\% credible interval; when $b=0$, the color is darker (higher coverage rate). The tradeoff is lower accuracy. With a 90\% credible interval, when the bias parameter is 2, the model is less accurate in detecting bias. When the bias parameter is 3, however, the coverage rate is still high.
-
-Figure 3 depicts coverage rates when using a 95\% credible interval. Here, given $b_{curr} = 0$, the coverage rate is very close to 1. This implies that we are very unlikely to infer bias when there is none. When $b_{curr} = 3$, the coverage rate is still high. This implies that we can still accurately detect the bias when it is strong. However, when the bias is moderate ($b_{curr} = \{2, -2\}$), the coverage rate is only high when we have consistent historical information.
+Figure 3 depicts coverage rates when using a 95\% credible interval. Here, given $b_{curr} = 0$, the coverage rate is very close to 1. This implies that we are very unlikely to infer bias when there is none. When $b_{curr} = 3$, the coverage rate is still high. This implies that we can still accurately detect the bias when it is strong. However, when the bias is moderate ($b_{curr} = \{2, -2\}$), the coverage rate is only high if we have consistent historical information.
 
 Overall, these simulation results indicate that our model can always accurately detect strong bias. As for moderate bias, detection accuracy increases with more historical strike information. The choice of credible interval ultimately depends on how conservative we want to be when inferring bias.
 
@@ -371,20 +381,16 @@ ggsave(load_path, plot = simplot)
 
 ```
 
-```{r fig4}
+To test this premise, we conducted the following simulation study. We first generated a single trial in which one attorney used fifteen strikes in an uninterrupted sequence against 32 prospective jurors, 10 of which were member of a cognizable-class (e.g., Black jurors).  Then, we shuffled the order of those strikes to generate 50 trials with the same proportion of struck cognizable-class members but different orders. We then used the model to fit the 50 trials to see if the estimated bias parameters are close to each other. We conducted the simulation study under three scenarios from moderate bias to strong bias ($b=\{1,2,3\}$). 
 
-#| fig.cap="Simulation results for simultaneous strikes example"
+```{r fig4, out.width = "75%", fig.cap="Simulation results for simultaneous strikes example. Columns correspond to values of bias used to simulate data. Points and blue lines denote estimated posterior mean and 95% credible interval for bias parameter. Red line: true value of the bias parameters used in the 50 simulation s."}
 
 load_path <- here::here("analysis","figures","simplot.png")
 knitr::include_graphics(load_path)
 
 ```
 
-To test this premise, we conducted the following simulation study. We first generated a single trial in which one attorney used fifteen strikes in an uninterrupted sequence against 32 prospective jurors, 10 of which were member of a cognizable-class (e.g., Black jurors).  Then, we shuffled the order of those strikes to generate 50 trials with the same proportion of struck cognizable-class members but different orders. We then used the model to fit the 50 trials to see if the estimated bias parameters are close to each other. We conducted the simulation study under three scenarios from moderate bias to strong bias ($b=\{1,2,3\}$). 
-
-Figure 4 depicts the results. The columns are values of bias used to simulate the data. Blue points denote estimated posterior mean for the bias parameter. Blue lines denote the 95% credible interval. Red lines denote true value of bias parameters in the simulations.
-
-We find the estimated bias parameter of the 50 trials with different strike orders are close to each other for all of the three scenarios. None of their credible intervals include zero. We therefore infer that the order of strikes does not influence the estimate of the bias parameter. This confirms that the simultaneous-strikes process can be modeled as a special case of our model of an alternating-strikes process.
+Figure 4 depicts the results. We find the estimated bias parameter of the 50 trials with different strike orders are close to each other for all of the three scenarios. None of their credible intervals include zero. We therefore infer that the order of strikes does not influence the estimate of the bias parameter. This confirms that the simultaneous-strikes process can be modeled as a special case of our model of an alternating-strikes process.
 
 ## The Software Prototype
 
@@ -406,15 +412,14 @@ df <- data.frame(round = c(1:10),
                  total = c(21,20,19,18,17,16,15,14,13,12),
                  cog = c(0,1,1,0,0,1,1,0,0,0),
                  party = rep(c("PP","PD"),5))
-knitr::kable(df, caption ="Hypothetical Strike Tally")
+
+knitr::kable(df, caption ="Hypothetical Strike Tally", format = "latex")
 
 ```
 
 To illustrate, suppose the strike tally in Table 1 depicts the pattern of strikes in the present case with a prosecuting attorney Aaron Waelchi and defense attorney Lawrance Klocko V (both aliases for actual attorneys in the historical strike data). After the user enters this strike tally, the app initially displays two graphs -- one for the prosecution and the defense. Each graph depicts the prior density plot (colored grey) and posterior density plot (blue and red for defense and prosecution, respectively) for the bias parameter (Figure 5).
 
-```{r figapp1, out.width='50%', fig.align='center'}
-
-#| fig.cap = "Density Plots without Historical Strike Data"
+```{r figapp1, out.width='50%', fig.cap = "Density Plots without Historical Strike Data"}
 
 load_path <- here::here("analysis","figures","batson_app_screenshots", "batson_app_screenshot1.png")
 
@@ -451,7 +456,7 @@ knitr::include_graphics(load_path)
 
 Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 80\% credible interval includes 0, inferring such bias from the strike data alone is unjustified. 
 
-Finally, if we assign minimal weight to the historical strike data, the density plot updates accordingly (Figure 8).
+Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure 8).
 
 ```{r figapp4, out.width='50%', fig.cap = "Density Plots with Historical Strike Data (Gender, Minimal Weight)", fig.align='center'}
 
@@ -467,7 +472,7 @@ We can find both the prior and posterior density become flatter, and the credibl
 
 Statistical methods for _Batson_ and similar legal challenges have the purpose of helping to measure how much prospective jurors' race, gender, or other cognizable-class membership affected an attorney's use of peremptory strikes against them. The Bayesian approach here accounts for the extent of the available historical strike data when estimating the posterior for the bias parameter. By incorporating the power prior, one can easily assess how sensitive that posterior estimate is to the available historical strike data. And with a tool like our prototype app, attorneys can use historical strike data to detect bias in real time during jury selection, thus making it easier to raise credible _Batson_ challenges.
 
-At the same time, the Bayesian approach here also requires more from those who would collect the appropriate historical strike data. For example, given the model we used, we required data on the cognitive-class composition of the prospective jurors not just at the time of the first strike, but at each time either party used a strike. Moreover, suppose an attorney of interest exercised strikes in two courts, each with different strike procedures. In some cases, one court's strike procedure can be modeled as a special case of a more general model that applied to other court's procedure (as we showed above). If not, that attorney's historical strike data in one court could not used to estimate the posterior of that attorney's bias parameter, given a current trial in the other court.
+At the same time, the Bayesian approach here also requires more from those who would collect the appropriate historical strike data. For example, given the model we used, we required data on the cognitive-class composition of the prospective jurors not just at the time of the first strike, but at each time either party used a strike. Moreover, suppose an attorney of interest exercised strikes in two courts, each with different strike procedures. In some cases, one court's strike procedure can be modeled as a special case of a more general model that applied to another court's procedure (as we showed above). If not, that attorney's historical strike data in one court could not used to estimate the posterior of that attorney's bias parameter, given a current trial in the other court.
 
 Finally, in practice, historical strike data tends to be incomplete at best, because jury-selection records in past cases are hard to get due to court practices and other barriers [@Grosso2017; @Wright2018]. For example, some jurisdictions do not require recording relevant or detailed enough information about prospective jurors who were or could have been struck (e.g., their race or gender). This forces researchers to turn to other data sources, if any, to find that information. And judges and court staff vary in how often they fully complete or maintain the information they are required to record.  This presents an issue for the approach presented here if the missing strike data is missing not at random.
 

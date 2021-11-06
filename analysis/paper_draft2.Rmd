@@ -114,7 +114,7 @@ L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}(\frac{(e^b)c_{0ij}}{(e
 \label{eq:model5}
 \end{equation} is the likelihood function of $b$ given historical data; $n_{0i}$ is the total number of jury selections (trials) in the historical data; $n_{0j}$ is the total number of peremptory strikes in the historical data; and $\delta_{0ij}$ denotes whether or not a party used that strike on a person who belongs to a cognizable class in the historical trials. 
 
-The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used trace plots, the Gelman-Rubin convergence diagnostic and Geweke’s diagnostics [@Gelman1992; @Gelman1998;@Geweke1992].
+The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used trace plots, the Gelman-Rubin convergence diagnostic and Geweke’s diagnostics [@Gelman1992;@Gelman1998;@Geweke1992].
 
 ## Model Performance on Simulated Data
 

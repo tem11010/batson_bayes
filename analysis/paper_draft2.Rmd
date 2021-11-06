@@ -28,6 +28,8 @@ header-includes:
 #fontsize: 12pt
 bibliography: references.bib
 biblio-style: agsm.bst
+nocite: |
+  @WashR37, @calccp2021
 keywords: "batson challenge, peremptory strikes"
 abstract: |
   US law bars using peremptory strikes during jury selection because of prospective juror race, ethnicity, gender, or membership in certain other cognizable classes. Here, we propose a Bayesian approach for detecting such illegal bias. We show how to combine data on an attorney's strike in a current trial with historical data on that attorney's use of peremptory strikes in past cases to estimate how likely an attorney has struck prospective jurors in the current trial because of their cognizable-class membership. In so doing, we use the power prior to adjust the weight of such historical data in the analysis. We show how well our model performs on simulated data. Finally, we extend this approach with a prototype software application to detect bias in peremptory-challenge in real time during jury-selection. We illustrate this application's use with historical strike data from a convenience sample of cases from one court.
@@ -47,11 +49,11 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 In the U.S., individuals selected for jury-service appear in court as scheduled and are questioned by the parties' attorneys and the trial judge. During this process, a prospective juror, if not excused by the trial judge for cause, may still be dismissed if a party's attorney uses one of their limited number of peremptory challenges against them. By asserting a peremptory challenge, a party can declare a prospective juror ineligible ("strikes" that juror) for a seat on the jury without the burden of explaining why.
 
-Since _Batson v. Kentucky_ [-@batson1986], a party violates the Equal Protection Clause of the US Constitution by using peremptory challenges if motivated by the prospective jurors' race, ethnicity, gender, or membership in another cognizable class. The party bringing a _Batson_ challenge bears the burden of proving such illegal bias is more likely than not to be true [@LaFave2020, $\S$ 22.3(d)]. For similar challenges under State law, a few States require only that an "objective observer" or an "objectively reasonable person" would find that race, ethnicity or another cognizable-class membership was a "factor" in that party's use of strikes [Wash. Rule 37(e); Calif. Code of Civil Procedure $\S$ 231.7(d)(1)]. Peremptory-challenge procedure, and thus the task of proving illegal bias, varies not only by State, but also by court, including the number of peremptory challenges assigned to each side and the order in which each party uses those strikes [@nscs-jury2018; @Williams2017].
+Since _Batson v. Kentucky_ [-@batson1986], a party violates the Equal Protection Clause of the US Constitution by using peremptory challenges if motivated by the prospective jurors' race, ethnicity, gender, or membership in another cognizable class. The party bringing a _Batson_ challenge bears the burden of proving such illegal bias is more likely than not to be true [@LaFave2020, $\S$ 22.3(d)]. For similar challenges under State law, a few States require only that an "objective observer" or an "objectively reasonable person" would find that race, ethnicity or another cognizable-class membership was a "factor" in that party's use of strikes [Wash. General Rule. 37(e); Calif. Code Civil Procedure $\S$ 231.7(d)(1)]. Peremptory-challenge procedure, and thus the task of proving illegal bias, varies not only by State, but also by court, including the number of peremptory challenges assigned to each side and the order in which each party uses those strikes [@nscs-jury2018; @Williams2017].
 
-In any case, evidence of such illegal bias may include data on a party's use of peremptory challenges in past cases [@flowers2019, 2243; Wash. Rule 37(g)(v); Calif. Code of Civil Procedure $\S$ 231.7(d)(3)(G)]. Prior studies have collected historical strike data in past cases and reported the observed difference in strike rates by race or gender. Typically, they test for the probability of observing a non-zero difference in strike rates by the race or gender of the struck prospective jurors, given repeated sampling from a hypothetical population of peremptory strikes with zero such difference [e.g., @Eisenberg2017; @Grosso2012; for discussion, see @Gastwirth2014; @Gastwirth2013]. Prior studies have also modeled how much a prospective juror's race affected the odds of being struck. For different modeling approaches using the same historical strike data from Mississippi, see @Craft2018a; @DeCamp2021; and @Dunn2021.
+In any case, evidence of such illegal bias may include data on a party's use of peremptory challenges in past cases [@flowers2019, 2243; Wash. General Rule 37(g)(v); Calif. Code Civil Procedure $\S$ 231.7(d)(3)(G)]. Prior studies have collected historical strike data in past cases and reported the observed difference in strike rates by race or gender. Typically, they test for the probability of observing a non-zero difference in strike rates by the race or gender of the struck prospective jurors, given repeated sampling from a hypothetical population of peremptory strikes with zero such difference [e.g., @Eisenberg2017; @Grosso2012; for discussion, see @Gastwirth2014; @Gastwirth2013]. Prior studies have also modeled how much a prospective juror's race affected the odds of being struck. For different modeling approaches using the same historical strike data from Mississippi, see @Craft2018a; @DeCamp2021; and @Dunn2021.
 
-In this paper, we extend a Bayesian approach to _Batson_ and similar challenges [@Kadane2018] to incorporate historical strike data. In this approach, we specify a model of the peremptory-strike process in the court of interest that includes a bias parameter to which we assign an initial prior distribution. Then, we use an attorney's strike data from past trials, as generated by that same peremptory-strike process, to estimate a posterior distribution for that bias parameter. In so doing, we use the power prior [@Chen2000; @Ibrahim2015] to control how much the strike history from past cases affects the posterior distribution of the bias parameter.  Finally, we use that posterior distribution as the prior for the bias parameter in the present case and update the posterior based on data on the target attorney's strikes in that present case.
+In this paper, we extend a Bayesian approach to _Batson_ and similar challenges [@Kadane2018a; @Kadane2018b] to incorporate historical strike data. In this approach, we specify a model of the peremptory-strike process in the court of interest that includes a bias parameter to which we assign an initial prior distribution. Then, we use an attorney's strike data from past trials, as generated by that same peremptory-strike process, to estimate a posterior distribution for that bias parameter. In so doing, we use the power prior [@Chen2000; @Ibrahim2015] to control how much the strike history from past cases affects the posterior distribution of the bias parameter.  Finally, we use that posterior distribution as the prior for the bias parameter in the present case and update the posterior based on data on the target attorney's strikes in that present case.
 
 Here, we demonstrate this approach with simulation studies to test model performance. Then, we present a software prototype that encodes the same approach with actual historical strike data to help attorneys and others detect bias in peremptory-challenge use in real time during jury selection. 
 
@@ -59,7 +61,7 @@ Here, we demonstrate this approach with simulation studies to test model perform
 
 ## Statistical Procedure
 
-Following @Kadane2018 and @Barrett2007, we model a peremptory-challenge process in which each party strikes prospective jurors in an alternating sequence. Under such a procedure, the trial judge rules on all challenges for cause before the parties exercise any peremptories. Then, of the potential jurors who remain, a subset of them are subject to peremptory strike, usually a number that corresponds to the number seats on the jury (plus alternates, if any). The parties exercise their strikes on anyone among this subset of potential jurors in an alternating sequence. Once all strikes are used or waived, the remaining prospective jurors are each assigned to seats on the jury until those seats are filled.
+Following @Kadane2018a and @Barrett2007, we model a peremptory-challenge process in which each party strikes prospective jurors in an alternating sequence. Under such a procedure, the trial judge rules on all challenges for cause before the parties exercise any peremptories. Then, of the potential jurors who remain, a subset of them are subject to peremptory strike, usually a number that corresponds to the number seats on the jury (plus alternates, if any). The parties exercise their strikes on anyone among this subset of potential jurors in an alternating sequence. Once all strikes are used or waived, the remaining prospective jurors are each assigned to seats on the jury until those seats are filled.
 
 Accordingly, for any given case $i$ in which jury selection occurs, let $j$ denote a peremptory strike used, and let $\delta_{ij}$ denote whether or not a party used that strike on a person who belongs to a "cognizable class". If "race" is the bias type of interest, the cognizable class is racial minority jurors ($\delta_{ij} =1$, 0 for White jurors).  If "gender" is the bias of interest, the cognizable class is female jurors ($\delta_{ij} = 1$, 0 for male jurors). In turn, let $c_{ij}$ denote the number of cognizable class members subject to strike; and $m_{ij}$ denote the number of cognizable class non-members subject to strike, such that $c_{ij}+m_{ij}$ is the total number of jurors potentially subject to strike. If there is no bias, the probability is $\frac{c_{ij}}{c_{ij}+m_{ij}}$ for striking a cognizable class member, and $1-\frac{c_{ij}}{c_{ij}+m_{ij}}$ for striking someone who does not belong to that class.
 
@@ -73,9 +75,7 @@ Pr(\delta_{ij} | b) =
   \frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}} & \text{for }\delta_{ij}=1\\    
   \frac{m_{ij}}{(e^b)c_{ij}+m_{ij}} & \text{for }\delta_{ij}=0  \label{eq:model1}
 \end{cases} 
-\end{equation}
-
-This Equation \eqref{eq:model1} is equivalent to
+\end{equation} This Equation \eqref{eq:model1} is equivalent to
 
 \begin{equation}
 Pr(\delta_{ij}| b) = (\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}
@@ -89,9 +89,7 @@ The likelihood function of $b$ is
 \begin{equation}  
 L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}
 \label{eq:model3}
-\end{equation}
-
-where $n_{i}$ is the total number of jury selections (trials); and $n_j$ is the total number of peremptory strikes. 
+\end{equation} where $n_{i}$ is the total number of jury selections (trials); and $n_j$ is the total number of peremptory strikes. 
 
 ## Incorporating historical strike data
 
@@ -100,29 +98,23 @@ We incorporate data on strikes in past cases and allow for adjustment of the wei
 \begin{equation}  
 \pi(b|D_0,a_0) \propto L(b|D_0)^{a_0}\pi_0(b)
 \label{eq:powerprior}
-\end{equation}
+\end{equation} where $0 \le a_0 \le 1$ is the parameter controlling the weight of the historical information; $D_0$ is the observed historical data; $L(b|D_0)$ is the likelihood function of $b$ given the historical data; and $\pi_0(b)$ is the initial prior before the historical data is observed. 
 
-where $0 \le a_0 \le 1$ is the parameter controlling the weight of the historical information; $D_0$ is the observed historical data; $L(b|D_0)$ is the likelihood function of $b$ given the historical data; and $\pi_0(b)$ is the initial prior before the historical data is observed. 
-
-In this paper, we assume a normal prior for $\pi_0(b)$ with mean 0 and standard deviation 2. Unlike @Kadane2018, who assigned $b$ a prior of $\text{Uniform}(-6,6)$, we assume that the law for _Batson_ and similar challenges entails a weakly-informative prior. For our initial prior of $N(0,2)$, we let $\mu = 0$, because the law assigns the burden of proof in a _Batson_ challenge to the party bringing the challenge. Thus, if the challenging party produces no relevant evidence of illegal bias, the law requires a trial judge to reject the challenge as unproven. This is tantamount to treating zero as the most-likely value of the bias parameter, absent any data. Moreover, we take the law to imply that, absent any data, one must assume that higher degrees of illegal bias are less likely than lower degrees of bias. For this reason, we use a normal (Gaussian) distribution with $\sigma = 2$.
+In this paper, we assign a normal prior for $\pi_0(b)$ with mean 0 and standard deviation 2. Unlike @Kadane2018a, who assigned $b$ a prior of $\text{Uniform}(-6,6)$, we assume that the law for _Batson_ and similar challenges entails a weakly-informative prior. For our initial prior of $N(0,2)$, we let $\mu = 0$, because the law assigns the burden of proof in a _Batson_ challenge to the party bringing the challenge. Thus, if the challenging party produces no relevant evidence of illegal bias, the law requires a trial judge to reject the challenge as unproven. This is tantamount to treating zero as the most-likely value of the bias parameter, absent any data. Moreover, we take the law to imply that, absent any data, one must assume that higher degrees of illegal bias are less likely than lower degrees of bias. For this reason, we use a normal (Gaussian) distribution with $\sigma = 2$.
 
 After including the historical information through the power prior, the posterior distribution of $b$ is proportional to the product of likelihood function of $b$ and the power prior of $b$ is 
 
 \begin{equation}
 L(b|\delta) \propto L(b|\delta)(L(b|\delta_0))^{a_0}\exp(-\frac{b^2}{8})
 \label{eq:model4}
-\end{equation}
-
-where 
+\end{equation} where 
 
 \begin{equation}
 L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}(\frac{(e^b)c_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{\delta_{0ij}} (\frac{m_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{1-\delta_{0ij}}
 \label{eq:model5}
-\end{equation}
+\end{equation} is the likelihood function of $b$ given historical data; $n_{0i}$ is the total number of jury selections (trials) in the historical data; $n_{0j}$ is the total number of peremptory strikes in the historical data; and $\delta_{0ij}$ denotes whether or not a party used that strike on a person who belongs to a cognizable class in the historical trials. 
 
-is the likelihood function of $b$ given historical data; $n_{0i}$ is the total number of jury selections (trials) in the historical data; $n_{0j}$ is the total number of peremptory strikes in the historical data; and $\delta_{0ij}$ denotes whether or not a party used that strike on a person who belongs to a cognizable class in the historical trials. 
-
-The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used trace plots, the Gelman-Rubin convergence diagnostic and Geweke’s diagnostics [@Gelman1992; @Gelman1998;@Geweke1992]. 
+The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used trace plots, the Gelman-Rubin convergence diagnostic and Geweke’s diagnostics [@Gelman1992; @Gelman1998;@Geweke1992].
 
 ## Model Performance on Simulated Data
 
@@ -257,7 +249,7 @@ Figure 3 depicts coverage rates when using a 95\% credible interval. Here, given
 
 Overall, these simulation results indicate that our model can always accurately detect strong bias. As for moderate bias, detection accuracy increases with more historical strike information. The choice of credible interval ultimately depends on how conservative we want to be when inferring bias.
 
-## Extension: Simultaneous Strikes
+## Simultaneous Strikes
 
 In some courts, both parties simultaneously exercise their peremptory challenges on the prospective jurors subject to strikes. This simultaneous-strikes process can be modeled as a special case of our model of an alternating-strikes process above (see Equation \eqref{eq:model3}), i.e, as equivalent to one party engaging in an uninterrupted sequence of strikes against a subset of prospective jurors eligible to be struck. The premise: Regardless of the order in which a party announced those strikes, the posterior for the bias parameter would be the same.
 
@@ -347,7 +339,8 @@ names(b1.mean)<- colnames(b.com)
 names(b2.mean)<- colnames(b.com)
 names(b3.mean)<- colnames(b.com)
 b.com<- rbind(b.com,b1.mean[1,], b2.mean[1,], b3.mean[1,])
-b.com$sim.n <- as.numeric(b.com$sim)
+
+b.com$sim.n <- as.numeric(b.com$sim) # produces warning: NAs introduced by coercion
 b.com$sim.n[151:153] <- 52.5
 
 library(ggplot2)
@@ -409,7 +402,7 @@ With the app, the user uses the pull-down menus to select the cognizable class (
 
 For the prototype app, we set two cognizable-class options: race and gender. This was because the standard juror questionnaire did not ask about other possible cognizable classes. The data also did not expressly indicate the race or gender of the criminal defendant(s).
 
-In the default setting, the pull-down menus for prosecutor and defense are set to "None". As a result, the app ignores any historical strike data and estimates the posterior distributions of the bias parameter for prosecutor and defense based only on the strike tally data and the initial prior ($b = N(0,2)$). 
+In the default setting, the pull-down menus for prosecutor and defense are set to "None". As a result, the app ignores any historical strike data and estimates the posterior distributions of the bias parameter for prosecutor and defense based only on the strike tally data and the initial prior ($b \sim N(0,2)$). 
 
 ```{r inpts}
 df <- data.frame(round = c(1:10),

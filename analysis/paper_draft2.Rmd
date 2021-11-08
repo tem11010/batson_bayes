@@ -415,7 +415,7 @@ knitr::kable(df, caption ="Hypothetical Strike Tally", format = "latex")
 
 ```
 
-To illustrate, suppose the strike tally in Table 1 depicts the pattern of strikes in the present case with a prosecuting attorney Aaron Waelchi and defense attorney Lawrance Klocko V (both aliases for actual attorneys in the historical strike data). After the user enters this strike tally, the app initially displays two graphs -- one for the prosecution and the defense. Each graph depicts the prior density plot (colored grey) and posterior density plot (blue and red for defense and prosecution, respectively) for the bias parameter (Figure 5).
+To illustrate, suppose the strike tally in Table 1 depicts the pattern of strikes in the present case with a prosecuting attorney Aaron Waelchi and defense attorney Lawrance Klocko V (both aliases for actual attorneys in the historical strike data). After the user enters this strike tally, the app initially displays two graphs -- one for the prosecution and the defense. Each graph depicts the prior density plot (colored light grey) and posterior density plot (blue and red for defense and prosecution, respectively) for the bias parameter (Figure 5).
 
 ```{r figapp1, out.width='75%', fig.cap = "Screenshot of R-Shiny application showing density plots for bias of prosecutor and defense attorney based on data in 'Current strike tally' table. Vertical dotted lines depict 80 pct. credible interval.", fig.align='center'}
 

@@ -30,9 +30,9 @@ bibliography: references.bib
 biblio-style: agsm.bst
 nocite: |
   @WashR37, @calccp2021
-keywords: "batson challenge, peremptory strikes"
+keywords: "Batson challenge, peremptory strikes, power prior, Bayesian"
 abstract: |
-  US law bars using peremptory strikes during jury selection because of prospective juror race, ethnicity, gender, or membership in certain other cognizable classes. Here, we propose a Bayesian approach for detecting such illegal bias. We show how to combine data on an attorney's strike in a current trial with historical data on that attorney's use of peremptory strikes in past cases to estimate how likely an attorney has struck prospective jurors in the current trial because of their cognizable-class membership. In so doing, we use the power prior to adjust the weight of such historical data in the analysis. We show how well our model performs on simulated data. Finally, we extend this approach with a prototype software application to detect bias in peremptory-challenge in real time during jury-selection. We illustrate this application's use with historical strike data from a convenience sample of cases from one court.
+  US law bars using peremptory strikes during jury selection because of prospective juror race, ethnicity, gender, or membership in certain other cognizable classes. Here, we propose a Bayesian approach for detecting such illegal bias. We show how to incorporate historical data on an attorney's use of peremptory strikes in past cases to estimate how likely that attorney has struck prospective jurors in a current trial because of their cognizable-class membership. In so doing, we use the power prior to adjust the weight of such historical information in the analysis. We show how well our model performs on simulated data. Finally, we extend this approach with a prototype software application to detect bias in peremptory-challenge in real time during jury-selection. We illustrate this application's use with historical strike data from a convenience sample of cases from one court.
 
 ---
 

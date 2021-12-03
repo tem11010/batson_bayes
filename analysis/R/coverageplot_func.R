@@ -1,4 +1,4 @@
-coverageplot_func <- function(dat,CI,xlabel,ylable){
+coverageplot_func <- function(dat,CI,xlabel,ylabel){
   library(ggplot2)
   cust_labeller_a <- function(x) paste0("a = ", x)
   cust_labeller_h <- function(x) paste0("h = ", x)

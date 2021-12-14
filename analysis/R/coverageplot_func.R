@@ -7,7 +7,7 @@ coverageplot_func <- function(dat,CI,xlabel,ylabel){
   levels(CI.d)[1] <-   "(0,0.1]"
   ggplot()+
     geom_tile(data = dat, aes(x = d, y = d_h,fill = CI.d),
-              color="black", alpha = 0.5)+
+              color="black", alpha = 0.8)+
     facet_grid(h~a, 
                labeller = labeller(
                  h = cust_labeller_h, 

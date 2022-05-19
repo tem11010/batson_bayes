@@ -118,9 +118,12 @@ L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}(\frac{(e^b)c_{0ij}}{(e
 
 The posterior distribution does not have a closed form.  Accordingly, we used the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. To measure convergence, we used trace plots, the Gelman-Rubin convergence diagnostic and Geweke’s diagnostics [@Gelman1992;@Gelman1998;@Geweke1992].
 
+<!-- IS THE ABOVE PARAGRAPH STILL ACCURATE?-->
+
+
 ## Model Performance on Simulated Data
 
-To evaluate the performance of the proposed method, we conducted a simulation study. The primary aim of these simulations is to examine the effect of the strength of discounting of the historical data by the power prior ($\alpha$), and the size of the historical data set, on our ability to detect bias.
+To evaluate the performance of the proposed method, we conducted a simulation study using Stan `r rstan::stan_version()`, a Hamiltonian Monte Carlo engine for Bayesian inference by way of `r R.version$version.string` and RStan [@rstan]. These simulations primarily show how much our ability to detect bias was affected by how much the power prior ($\alpha$) discounted the weight of the historical data and the size of the historical data.
 
 Because we use the power prior, we can control how much we account for the historical strike data by modifying the discounting parameter $\alpha$. If $\alpha=1$, the historical strike data is equally weighted with the data on strikes in the current trial. If $\alpha<1$, the historical data are discounted and weighted proportionally less than the current trial data. We assign $\alpha<1$ to evaluate how sensitive the posterior of the bias parameter is to the historical data on strikes. Accordingly, in the simulation study, we evaluated different values of $\alpha$: $\alpha=\{0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1\}$ to show how that parameter affected bias detection .
 
@@ -143,7 +146,7 @@ knitr::include_graphics(load_path)
 
 ```
 
-Figure 1 depicts the bias detection rate with an 95\% credible interval for the n_strikes = 15 scenario. When $b_{curr}$ is high (close to 3) the coverage rate is high, very close to 1. However, when $b_{curr}$ is lower (close to zero), the bias detection rate drops below 0.8. When there is no bias in the current or historical trials ($b_{curr} = b_{hist} = 0$}), our bias detection rate for 95% CI is 0.05 or less. As we place more weight on the historical strike data (as $a$ increases), and the historical strike data is consistent with current information (high compatibility between current and historical trials), the bias detection rate is close to 1, especially when bias is high (upper right-hand corner of plots). Conversely, as $\alpha$ decreases, bias detection is only high when there is high bias in the current trial ($b_{curr} \geq 1.5$). Increasing the number of historical trials leads to an increase in bias detection especially when current and historical trials are compatible.  
+Figure 1 depicts the bias detection rate with an 95\% credible interval for the 15 strikes scenario. When $b_{curr}$ is high (close to 3) the coverage rate is high, very close to 1. However, when $b_{curr}$ is lower (close to zero), the bias detection rate drops below 0.8. When there is no bias in the current or historical trials ($b_{curr} = b_{hist} = 0$}), our bias detection rate for 95% CI is 0.05 or less. As we place more weight on the historical strike data (as $a$ increases), and the historical strike data is consistent with current information (high compatibility between current and historical trials), the bias detection rate is close to 1, especially when bias is high (upper right-hand corner of plots). Conversely, as $\alpha$ decreases, bias detection is only high when there is high bias in the current trial ($b_{curr} \geq 1.5$). Increasing the number of historical trials leads to an increase in bias detection especially when current and historical trials are compatible.  
 
 
 ```{r fig2, out.width = "95%", fig.cap = "Coverage Rates based on 95 pct credible interval for 10 strike scenario", fig.align='center'}
@@ -250,8 +253,7 @@ knitr::include_graphics(load_path)
 
 ```
 
-
-Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 80\% credible interval includes 0, inferring such bias from the strike data alone is unjustified. 
+Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 80\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. 
 
 ```{r figapp4, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Minimal weight ($a = 0.1$) applied to historical data.", fig.align='center'}
 
@@ -271,20 +273,24 @@ At the same time, the Bayesian approach here also requires more from those who w
 
 Moreover, suppose an attorney of interest exercised strikes in two courts, each with different strike procedures. In some cases, one court's strike procedure can be modeled as a special case of a more general model that can be applied to another court's procedure (e.g., the simultaneous strike example shown above). In other cases, however, the same model cannot be applied between courts with different jury selection practices. For example, the model we used here does not apply to strike data generated by a court's strike procedure in which prospective jurors appear before the attorneys one at a time to be either struck or seated on the jury.
 
-Furthermore, the bias detection rate depends on the distance between the bias parameters for the current trial and for all the past (historical) trials ($ = |b_{curr} - b_{hist}|$), as our simulations show. These bias parameters may be incompatible ($b_{curr} \neq b_{hist}$) for at least two reasons.
+Furthermore, the bias detection rate depends on the distance between the bias parameters for the current trial and for all the past (historical) trials ($ = |b_{curr} - b_{hist}|$). As we explained above when we let $b_{hist}$ differ from $b_{curr}$ (our parameter of interest) in our simulations, these bias parameters may be incompatible ($b_{curr} \neq b_{hist}$) for at least two reasons.
 
 First, such incompatibility may occur because of missing historical data. Historical strike data tends to be incomplete at best, because jury-selection records in past cases are hard to get due to court practices and other barriers [@Grosso2017; @Wright2018]. For example, some jurisdictions do not require recording relevant or detailed enough information about prospective jurors who were or could have been struck (e.g., their race or gender). This forces researchers to turn to other data sources, if any, to find that information. And judges and court staff vary in how often they fully complete or maintain the information they are required to record.  This presents an issue for the approach presented here if the missing strike data is missing not at random. 
 
-Second, even if that past strike data is complete (no missingness), incompatibility may occur if attorney bias depends on certain trial-level characteristics, such as defendant race or the severity of the criminal offenses charged, that take on one value in the current trial but that vary across the historical trials. For example, suppose an attorney who is more likely to strike Black prospective jurors because the defendant is Black; who has zero strike bias in cases with white defendants; and whose historical strike data comes from past trials with an equal number of Black and white defendants. If so, then bias detection in the current trial will depend on whether we use all the historical data or only the subset of past trials with Black defendants.    
+Second, even if that past strike data is complete (no missingness), incompatibility may occur if attorney bias depends on certain trial-level characteristics, such as defendant race or the severity of the criminal offenses charged, that take on one value in the current trial but that vary across the historical trials. For example, suppose an attorney who is more likely to strike Black prospective jurors because the defendant is Black; who has zero strike bias in cases with white defendants; and whose historical strike data comes from past trials with an equal number of Black and white defendants. If so, then bias detection in the current trial will depend on whether we use all the historical data or only the subset of past trials with Black defendants    
 
-The simulations further show that bias detection increases with the number of an attorney's strikes per trial or the number of historical trials. This is in part because of our conservative initial prior for the bias parameter ($b \sim N(0,2)$) to accord with the legal burden of proving bias on those who challenge an attorney for strike bias. This accords with @Kadane2021, who recommends a neutral and symmetrical prior for estimating bias in _Batson_ challenges [FIX].  Thus, given little historical strike data for an attorney and a low number of strikes per trial, the initial prior has more sway and, a a result, the model we use will only detect severe bias. 
+The simulations further show that bias detection increases with the number of an attorney's strikes per trial or the number of historical trials. This is in part because of our conservative initial prior for the bias parameter ($b \sim N(0,2)$) to accord with the legal burden of proving bias on those who challenge an attorney for strike bias. This accords with @Kadane2021, who recommends a neutral and symmetrical prior for estimating bias in _Batson_ challenges [FIX].  
 
+<!-- what about Kadane's recommendation to use multiple priors for sensitivity? -->
 
-END PARAGRAPH
+Thus, given little historical strike data for an attorney and a low number of strikes per trial, the initial prior will dominate, and,  as a result, the model we use will only detect severe bias. 
+
+# Conclusion
+
 generated a model that can identify bias and incorporates historical trial information - tested this with simulation
 made an app to make the use of the model more accessible - hope is that lawyers will use it in practice
 
-TODO: Add piece about small sample effect and fact that intial prior will dominate in small sample setting. 
+TODO: Add piece about small sample effect and fact that intial prior will dominate in small sample setting. <!-- WHAT to ADD to LAST paragraph in DISCUSSION section? -->
 
 future work could focus on initial prior choice, and measuring compatibility between cur and hist to develope, data driven choice for alpha. 
 
@@ -292,7 +298,6 @@ future work could focus on initial prior choice, and measuring compatibility bet
 
 ## CRediT Author Statement
 
-Pandya: Conceptualization, Investigation, Software, Writing; 
-Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Barón: [INSERT]; Moore: Conceptualization, Supervision, Visualization. 
+Pandya: Conceptualization, Investigation, Software, Writing; Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Barón: [INSERT]; Moore: Conceptualization, Supervision, Visualization. 
 
 # References

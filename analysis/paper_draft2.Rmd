@@ -135,7 +135,7 @@ Additionally, we present sensitivity analysis for the number of available strike
 
 ```{r fig1, out.width = "95%", fig.cap = "Coverage Rates based on 95 pct credible interval for 15 strike scenario", fig.align='center'}
 
-load_path <- here::here("analysis","figures","pp15_95CI.png")
+load_path <- here::here("figures","pp15_95CI.png")
 knitr::include_graphics(load_path)
 
 ```
@@ -145,7 +145,7 @@ Figure 1 depicts the bias detection rate with an 95\% credible interval for the 
 
 ```{r fig2, out.width = "95%", fig.cap = "Coverage Rates based on 95 pct credible interval for 10 strike scenario", fig.align='center'}
 
-load_path <- here::here("analysis","figures","pp10_95CI.png")
+load_path <- here::here("figures","pp10_95CI.png")
 knitr::include_graphics(load_path)
 
 ```
@@ -154,7 +154,7 @@ As we decrease the number of strikes, from fifteen to ten to six (Figs. 2 and 3 
 
 ```{r fig3, out.width = "95%", fig.cap = "Coverage Rates based on 95 pct credible interval for 6 strike scenario", fig.align='center'}
 
-load_path <- here::here("analysis","figures","pp6_95CI.png")
+load_path <- here::here("figures","pp6_95CI.png")
 knitr::include_graphics(load_path)
 
 ```
@@ -163,7 +163,7 @@ Using a wider credible interval lowers this chance of error. For example, with a
 
 ```{r fig3a, out.width = "95%", fig.cap = "Coverage Rates - 95 pct. Credible Interval", fig.align='center', eval = FALSE}
 
-load_path <- here::here("analysis","figures","C95plot.png")
+load_path <- here::here("figures","C95plot.png")
 knitr::include_graphics(load_path)
 
 ```
@@ -178,7 +178,7 @@ To test this premise, we conducted the following simulation study. We first gene
 
 ```{r fig4, out.width = "75%", fig.cap="Simulation results for simultaneous strikes example. Columns correspond to values of bias used to simulate data. Points and horizontal lines denote estimated posterior mean and 95 pct. credible interval for bias parameter. Vertical lines denote true values of the bias parameters used in the 50 simulations.", fig.align='center'}
 
-load_path <- here::here("analysis","figures","simultaneous_sims_plot.png")
+load_path <- here::here("figures","simultaneous_sims_plot.png")
 knitr::include_graphics(load_path)
 
 ```
@@ -214,8 +214,7 @@ To illustrate, suppose the strike tally in Table 1 depicts the pattern of strike
 
 ```{r figapp1, out.width='75%', fig.cap = "Screenshot of R-Shiny application showing density plots for bias of prosecutor and defense attorney based on data in 'Current strike tally' table. Vertical dotted lines depict 80 pct. credible interval.", fig.align='center'}
 
-load_path <- here::here("analysis","figures","batson_app_screenshots", "batson_app_screenshot1.png")
-
+load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot1.png")
 knitr::include_graphics(load_path)
 
 ```
@@ -228,7 +227,7 @@ In our illustration, we select the names of the prosecutor and defense attorney 
 
 ```{r figapp2, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Race). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney.", fig.align='center'}
 
-load_path <- here::here("analysis","figures","batson_app_screenshots", "batson_app_screenshot2.png")
+load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot2.png")
 
 knitr::include_graphics(load_path)
 
@@ -240,7 +239,7 @@ Next, suppose the same scenario, except now the strike tally indicates the patte
 
 ```{r figapp3, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Equal weight ($a = 1$) applied to historical and current data.", fig.align='center'}
 
-load_path <- here::here("analysis","figures","batson_app_screenshots", "batson_app_screenshot3.png")
+load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot3.png")
 
 knitr::include_graphics(load_path)
 
@@ -250,7 +249,7 @@ Here, most of the prosecutor's density curve of both prior and posterior are to 
 
 ```{r figapp4, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Minimal weight ($a = 0.1$) applied to historical data.", fig.align='center'}
 
-load_path <- here::here("analysis","figures","batson_app_screenshots", "batson_app_screenshot4.png")
+load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot4.png")
 
 knitr::include_graphics(load_path)
 
@@ -274,13 +273,17 @@ First, such incompatibility may occur because of missing historical data. Histor
 
 Second, even with complete past strike data (no missingness), incompatibility may occur if attorney bias depends on certain trial-level characteristics (e.g., defendant race, charge severity), that take on one value in the current trial but that vary across the historical trials. For example, suppose an attorney who is more likely to strike Black prospective jurors because the defendant is Black; who has zero strike bias in cases with white defendants; and whose historical strike data comes from past trials with an equal number of Black and white defendants. If so, then bias detection in the current trial with a Black defendant may depend in part on whether we use all the historical data or only the subset of past trials with Black defendants.
 
-In practice, the anticipated degree of incompatibility should influence which value of $\alpha$ that is selected. For example, given perfect compatibility ($\mid b_{curr} - b_{hist} \mid = 0$), we should let $\alpha = 1$ (equal weight between current and historical data). This will maximize the model's ability to detect bias, even when the number of strikes is small. This effect of increased bias detection can be seen in the simulation plots above, along the positive diagonals of the individual blocks, and is strengthened by increasing the number of historical trials and number of strikes. Higher bias detection rates are obtained for higher values of alpha, acorss compatibility scenarios (Fig X). This effect is most pronounced for scenarios with a low number of strikes and few historical trails (top left paned of fig X). There is less of an effect of $\alpha$ on the bias detection rate when bias is high, the number of strikes is high, and the number of historical trials is high  (lower right panel of fig X). Overall, though, increasing $\alpha$ will increase bias detection under current and histrotical trial compatiblity.
+In practice, the anticipated degree of incompatibility should influence which value of $\alpha$ that is selected. For example, given perfect compatibility ($\mid b_{curr} - b_{hist} \mid = 0$), we should let $\alpha = 1$ (equal weight between current and historical data). This will maximize the model's ability to detect bias, even when the number of strikes is small. This effect of increased bias detection can be seen in the simulation plots above, along the positive diagonals of the individual blocks, and is strengthened by increasing the number of historical trials and number of strikes. Higher bias detection rates are obtained for higher values of alpha, acorss compatibility scenarios (Fig X). This effect is most pronounced for scenarios with a low number of strikes and few historical trails (top left paned of fig X). There is less of an effect of $\alpha$ on the bias detection rate when bias is high, the number of strikes is high, and the number of historical trials is high  (lower right panel of fig X). Overall, though, increasing $\alpha$ will increase bias detection under current and historica trial compatibility.
 
 <!-- compatibility figure here ? -->
 
-Finally, bias detection increases with the number of an attorney's strikes per trial or the number of historical trials, even when there is incompatibility between current and historical trials. This is in part because we chose a conservative initial prior for the bias parameter ($b \sim N(0,2)$) to account for _Batson_ challenger's burden of proof. Given little historical strike data for an attorney and a low number of strikes per trial, this initial prior will dominate, and, as a result, the model we use will only detect severe bias. @Kadane2021 notes, bias detection will be sensitive to the choice of the standard deviation of the prior. The sensitivity to the initial prior’s SD, however, is reduced by the inclusion of historical, especially when $\alpha$ is close to 1. Fig X shows the effect of the initial prior’s SD on bias detection rate under a number of compatibility scenarios and alpha values. We can see that the effect of setting the initial prior SD to 1 (half the value used in our simulations) is most pronounced when $\alpha$ is 0.1, i.e., borrowing less information from the historical data. As alpha increases, the impact of lowering the initial prior SD is reduced. Fig X also illustrates that increasing the prior SD, making the initial prior less informative, has little impact on bias detection rates, regardless of choice of $\alpha$. 
+Finally, bias detection increases with the number of an attorney's strikes per trial or the number of historical trials, even when there is incompatibility between current and historical trials. This is in part because we chose a conservative initial prior for the bias parameter ($b \sim N(0,2)$) to account for _Batson_ challenger's burden of proof. Given little historical strike data for an attorney and a low number of strikes per trial, this initial prior will dominate, and, as a result, the model we use will only detect severe bias. As @Kadane2021 notes, bias detection will be sensitive to the choice of the standard deviation of the prior. 
+
+This sensitivity, however, reduces after including the historical , especially when $\alpha$ is close to 1. Fig X shows the effect of the initial prior’s standard deviation on bias detection rate under a number of compatibility scenarios and alpha values. 
 
 <!-- choice of SD figure here ? -->
+
+As Figure X indicates, if we set initial prior's standard deviation to 1 (half the value used in our simulations), that matters most when $\alpha$ is 0.1, i.e., borrowing less information from the historical data. As alpha increases, there is less of an impact of that lower standard deviation. Moreover, increasing the prior's standard deviation -- thus making the initial prior less informative -- has little impact on bias detection rates, regardless of choice of $\alpha$.
 
 # Conclusion
 

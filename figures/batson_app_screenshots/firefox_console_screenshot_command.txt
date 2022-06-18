@@ -1,0 +1,5 @@
+:screenshot --dpr 2 --fullpage
+
+
+
+Source: https://www.drlinkcheck.com/blog/high-dpi-website-screenshot-firefox

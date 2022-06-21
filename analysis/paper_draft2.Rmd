@@ -95,7 +95,14 @@ We incorporate data on strikes in past cases and allow for adjustment of the wei
 \label{eq:powerprior}
 \end{equation} where $0 \le \alpha_0 \le 1$ is the parameter controlling the weight of the historical information; $D_0$ is the observed historical data; $L(b|D_0)$ is the likelihood function of $b$ given the historical data; and $\pi_0(b)$ is the initial prior before the historical data is observed. 
 
-In this paper, we assign a normal prior for $\pi_0(b)$ with mean 0 and standard deviation 2. We assume that the law for _Batson_ and similar challenges entails a weakly-informative prior. For our initial prior of $N(\mu = 0, \sigma = 2)$, we let $\mu = 0$, because the law assigns the burden of proof in a _Batson_ challenge to the party bringing the challenge. Thus, if the challenging party produces no relevant evidence of illegal bias, the law requires a trial judge to reject the challenge as unproven. This is tantamount to treating zero as the most-likely value of the bias parameter, absent any data. Moreover, we take the law to imply that, absent any data, one must assume that higher degrees of illegal bias are less likely than lower degrees of bias. For this reason, we use a normal (Gaussian) distribution with $\sigma = 2$. This prior accords with @Kadane2021 [p. 51], who suggests a prior for estimating _Batson_ strike bias that is at least unimodal, symmetric, and not dependent on the data.
+In this paper, we assume that the law for _Batson_ and similar challenges entails a weakly-informative initial prior:
+
+\begin{equation}  
+\pi_0(b) \sim Normal(\mu_0 = 0, \sigma_0 = 2)
+\label{eq:initialprior}
+\end{equation} 
+
+For this initial prior, we let $\mu_0 = 0$, because the law assigns the burden of proof in a _Batson_ challenge to the party bringing the challenge. Thus, if the challenging party produces no relevant evidence of illegal bias, the law requires a trial judge to reject the challenge as unproven. This is tantamount to treating zero as the most-likely value of the bias parameter, absent any data. Moreover, we take the law to imply that, absent any data, one must assume that higher degrees of illegal bias are less likely than lower degrees of bias. For this reason, we use a normal (Gaussian) distribution with $\sigma_0 = 2$. This prior accords with @Kadane2021 [p. 51], who suggests a prior for estimating _Batson_ strike bias that is at least unimodal, symmetric, and not dependent on the data.
 
 After including the historical information through the power prior, the posterior distribution of $b$ is proportional to the product of likelihood function of $b$ and the power prior of $b$ is 
 
@@ -148,21 +155,21 @@ knitr::include_graphics(load_path)
 
 ```
 
-As we decrease the number of strikes each attorney has, from fifteen to ten to six (Figures \@ref(fig:figbd9510) and \@ref(fig:figbd956) respectively), bias detection decreases. Bias detection is only high when $\alpha$ is high (close to 1); current trial bias is high; there is high compatibility between current and historical trials; and the number of historical trials is large.
+As we decrease the number of strikes each attorney has from fifteen to ten and six (Figures \@ref(fig:figbd9510) and \@ref(fig:figbd956) respectively), bias detection decreases. Bias detection is only high when $\alpha$ is high (close to 1); current trial bias is high; there is high compatibility between current and historical trials; and the number of historical trials is large.
 
-Using a wider credible interval lowers this chance of error. For example, with a 90\% credible interval (Figure \@ref(fig:figbd9510)), when $b_{curr} = 2$, the bias-detection rate is lower than with an 80\% credible interval; when $b_{curr}=0$, that detection rate is higher. The tradeoff is lower accuracy. With a 90\% credible interval, when the bias parameter is 2, the model is less accurate in detecting bias. When the bias parameter is 3, however, the detection rate is still high.
+Using a wider credible interval lowers this chance of error. For example, with a 90\% credible interval (Figure \@ref(fig:figbd9510)), when $b_{curr}=2$, the bias-detection rate is lower than with an 80\% credible interval; when $b_{curr}=0$, that detection rate is higher. The tradeoff is lower accuracy. With a 90\% credible interval, when the bias parameter is 2, the model is less accurate in detecting bias. When the bias parameter is 3, however, the detection rate is still high.
 
-Bias detection will also be sensitive to the choice of the standard deviation of the prior. The results above depend in part on our choice of a conservative initial prior for the bias parameter ($b \sim N(0,2)$). Given little historical strike data for an attorney and a low number of strikes per trial, this initial prior will dominate. As a result, the model we use will only detect severe bias. This sensitivity, however, reduces after including the historical data, especially when $\alpha$ is close to 1.
+Bias detection will also be sensitive to the choice of the standard deviation of the initial prior. The results above depend in part on our choice of a conservative initial prior for the bias parameter (Equation \@ref(eq:initialprior)). Given little historical strike data for an attorney and a low number of strikes per trial, this initial prior will dominate. As a result, the model we use will only detect severe bias. This sensitivity, however, reduces after including the historical data, especially when $\alpha$ is close to 1.
 
 
-```{r figsdprior, out.width = "95%", fig.cap = "Sensitivity of Initial Prior's Standard Deviation", fig.align='center'}
+```{r figsdprior, out.width = "95%", fig.cap = "Sensitivity to Initial Prior's Standard Deviation", fig.align='center'}
 
 load_path <- here::here("figures","SD_sensitivity.jpg")
 knitr::include_graphics(load_path)
 
 ```
 
-Figure \@ref(fig:figsdprior) depicts how different values of the initial prior’s standard deviation ($\sigma = \{1,2,100\}$) affects the bias detection rate for three $\alpha$ values ($\alpha = \{0.1,0.5,1\}$) under scenarios where $b_{curr}=b_{hist}$ . In our simulations, we set $\sigma = 2$ for our initial prior. If we instead select $\sigma = 1$, that matters most when $\alpha = 0.1$, i.e., when we borrow less information from the historical data. As $\alpha$ increases, the initial prior's standard deviation matters less. Moreover, when we increased the initial prior's standard deviation to make it much less informative ($\sigma = 100$), that had little impact on bias detection rates, regardless of the choice of $\alpha$.
+Figure \@ref(fig:figsdprior) depicts how assigning different values for the initial prior’s standard deviation ($\sigma_0 = \{1,2,100\}$) affects the bias detection rate at the 95\% credible interval for three $\alpha$ values ($\alpha = \{0.1,0.5,1\}$) under scenarios where each attorney had 15 strikes and where $b_{curr} = b_{hist}$. In our simulations, we set $\sigma_0 = 2$ for our initial prior. If we instead select $\sigma_0 = 1$, that matters most when $\alpha = 0.1$, i.e., when we borrow less information from the historical data. As $\alpha$ increases, the initial prior's standard deviation matters less. Moreover, when we increased the initial prior's standard deviation to make it much less informative ($\sigma = 100$), that had little impact on bias detection rates, regardless of the choice of $\alpha$.
 
 ```{r figcmptbly, out.width = "95%", fig.cap = "Compatibility", fig.align='center'}
 
@@ -171,11 +178,12 @@ knitr::include_graphics(load_path)
 
 ```
 
-Finally, Figure \@ref(fig:figcmptbly) summarizes our simulation results. These results indicate that our model can accurately detect strong bias if present in both the current and historical trials. Given high compatibility, increasing $\alpha$ improves bias detection, as does increasing the number of historical trials and more strikes per trial. Under the low number of strikes per trial (n = 6), bias detection requires strong bias in the current trial, a high $\alpha$, and high compatibility.
+Finally, Figure \@ref(fig:figcmptbly) summarizes our simulation results for bias detection at the 95% credible interval. These results indicate that our model can accurately detect strong bias if present in both the current and historical trials. Given high compatibility, increasing $\alpha$ improves bias detection, as does increasing the number of historical trials and more strikes per trial. Under the low number of strikes per trial (n = 6), bias detection requires strong bias in the current trial, a high $\alpha$, and high compatibility.
 
 ## Simultaneous Strikes {#simul-strikes}
 
-In some courts, both parties simultaneously exercise their peremptory challenges on the prospective jurors subject to strikes. This simultaneous-strikes process can be modeled as a special case of the model of an alternating-strikes process above (see Equation \eqref{eq:model3}), i.e, as equivalent to one party engaging in an uninterrupted sequence of strikes against a subset of prospective jurors eligible to be struck. The premise: Regardless of the order in which a party announced those strikes, the posterior for the bias parameter would be the same.
+In some courts, both parties simultaneously exercise their peremptory challenges on the prospective jurors subject to strikes. This simultaneous-strikes process can be modeled as a special case of the model of an alternating-strikes process above (see Equation 
+\@ref(eq:model3)), i.e, as equivalent to one party engaging in an uninterrupted sequence of strikes against a subset of prospective jurors eligible to be struck. The premise: Regardless of the order in which a party announced those strikes, the posterior for the bias parameter would be the same.
 
 To test this premise, we conducted the following simulation study. We first generated a single trial in which one attorney used fifteen strikes in an uninterrupted sequence against 30 prospective jurors, 15 of which were member of a cognizable-class (e.g., Black jurors).  Then, we shuffled the order of those strikes to generate 50 trials with the same proportion of struck cognizable-class members but different orders. We then fit the model to the 50 trials to examine whether the estimated bias parameters across the 50 simulated trials were equivalent. 
 

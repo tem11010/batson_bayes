@@ -107,7 +107,7 @@ For this initial prior, we let $\mu_0 = 0$, because the law assigns the burden o
 After including the historical information through the power prior, the posterior distribution of $b$ is proportional to the product of likelihood function of $b$ and the power prior of $b$ is 
 
 \begin{equation}
-L(b|\delta) \propto L(b|\delta)(L(b|\delta_0))^{\alpha_0}\exp(-\frac{b^2}{8})
+L(b|\delta) \propto L(b|\delta)(L(b|\delta_0))^{\alpha_0}\exp(-\frac{b^2}{2\sigma^2})
 \label{eq:model4}
 \end{equation} where 
 

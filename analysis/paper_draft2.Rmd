@@ -169,7 +169,7 @@ knitr::include_graphics(load_path)
 
 ```
 
-Figure \@ref(fig:figsdprior) depicts how assigning different values for the initial prior’s standard deviation ($\sigma = \{1,2,100\}$) affects the bias detection rate at the 95\% credible interval for three $\alpha$ values ($\alpha = \{0.1,0.5,1\}$) under scenarios where each attorney had 15 strikes and where $b_{curr} = b_{hist}$. In our simulations, we set $\sigma = 2$ for our initial prior. If we instead select $\sigma = 1$, that matters most when $\alpha = 0.1$, i.e., when we borrow less information from the historical data. As $\alpha$ increases, the initial prior's standard deviation matters less. Moreover, when we increased the initial prior's standard deviation to make it much less informative ($\sigma = 100$), that had little impact on bias detection rates, regardless of the choice of $\alpha$.
+Figure \@ref(fig:figsdprior) depicts how assigning different values for the initial prior’s standard deviation ($\sigma = \{1,2,100\}$) affects the bias detection rate at the 95\% credible interval for three $\alpha$ values ($\alpha = \{0.1,0.5,1\}$) under scenarios where each attorney had 10 strikes and where $b_{curr} = b_{hist}$. In our simulations, we set $\sigma = 2$ for our initial prior. If we instead select $\sigma = 1$, that matters most when $\alpha = 0.1$, i.e., when we borrow less information from the historical data. As $\alpha$ increases, the initial prior's standard deviation matters less. Moreover, when we increased the initial prior's standard deviation to make it much less informative ($\sigma = 100$), that had little impact on bias detection rates, regardless of the choice of $\alpha$.
 
 ```{r figcmptbly, out.width = "95%", fig.cap = "Compatibility", fig.align='center'}
 

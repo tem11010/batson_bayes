@@ -1,6 +1,7 @@
-##Purpose: Code to simulate application of simultaneous strikes 
+# Purpose of script ------------------------------------------------------------------------------------------------------------
+#Code to simulate application of simultaneous strikes 
 
-#Libraries to use
+# Libraries required 
 library(rstan)
 library(dplyr)
 
@@ -172,7 +173,6 @@ d1=data_create(reps=1,bias_p_c=1,bias_d_c=0,strikes_p_c=15, strikes_d_c=15,
                n_t=1,bias_p_h=1,bias_d_h=0,strikes_p_h=15, 
                strikes_d_h=15, total_strikes_h=30,num_cog_h=15)
 
-#pp<- d1[[1]] %>% filter(party=="PP")
 
 
 #d2: bias in historical trial and current trial is 2

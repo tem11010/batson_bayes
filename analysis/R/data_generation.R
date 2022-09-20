@@ -1,7 +1,15 @@
+
+# Purpose of script ------------------------------------------------------------------------------------------------------------
+# To generate data for simulations for the paper. 
+
+# Libraries required 
 library(rstan)
 library(dplyr)
 
-#sim_data: Function to generate simulated datasets
+
+# sim_data function --------------------------------------------------------------------------------------------------
+
+#sim_data: Function to generate simulated data sets
 #@d_p: bias in prosecution
 #@d_d: bias in defense
 #@round_p: the number round of strikes for prosecution
@@ -18,15 +26,16 @@ sim_data <- function(d_p,d_d,round_p,round_d,total,num_cog){
   df0$num_cog[1] = num_cog
   df0$total[1] = total
   #p_cog=probablity strike a cognizeable class member
-  p_cog <- num_cog*exp(d_p)/(num_cog*exp(d_p)+total-num_cog)
-  df0$cog[1] = rbinom(1,1,p_cog)
-  df0$party[1] = 'PP'
-  df0$num_cog[2] = df0$num_cog[1]-df0$cog[1]
-  df0$total[2] = df0$total[1]-1
+  p_cog <- num_cog*exp(d_p)/(num_cog*exp(d_p)+total-num_cog) 
+  df0$cog[1] = rbinom(1,1,p_cog)  #generate one decision of strike or not strike 
+  df0$party[1] = 'PP' #initial party (PP=prosecution party)
+  df0$num_cog[2] = df0$num_cog[1]-df0$cog[1] #decrease the number of cognizable jurors if strike is 1. 
+  df0$total[2] = df0$total[1]-1 # decrease the number of potential jurors 
   p_cog <- df0$num_cog[2]*exp(d_d)/(df0$num_cog[2]*exp(d_d)+df0$total[2]-
-                                      df0$num_cog[2])
-  df0$cog[2] = rbinom(1,1,p_cog)
-  df0$party[2] = 'PD'
+                                      df0$num_cog[2]) #re calculate probability of striking a cognizable juror 
+  df0$cog[2] = rbinom(1,1,p_cog) # repeat for initial strike for party PD (PD=party defense)
+  df0$party[2] = 'PD' 
+  #now loop through to populate the rest of the data frame
   for(i in 2:min(round_p,round_d)){
     df0$num_cog[2*i-1] = df0$num_cog[2*i-2]-df0$cog[2*i-2]
     df0$total[2*i-1] = df0$total[2*i-2]-1
@@ -65,7 +74,10 @@ sim_data <- function(d_p,d_d,round_p,round_d,total,num_cog){
   return(df0)
 }
 
-#get_stan_dat: Function to get data into RStan
+
+# get_stan_dat -------------------------------------------------------------------------------------------------------
+
+#get_stan_dat: Function to get data into RStan for party of interest (i.e. PP)
 #@d_p: bias in prosecution
 #@d_d: bias in defense
 #@round_p: the number round of strikes for prosecution
@@ -76,12 +88,15 @@ sim_data <- function(d_p,d_d,round_p,round_d,total,num_cog){
 
 get_stan_dat<-function(d_p,d_d,round_p,round_d,total,num_cog,trial_name)
 {
-  dat1=sim_data(d_p,d_d,round_p,round_d,total,num_cog)
-  dat1$trial=trial_name
-  dat1$m=dat1$total-dat1$num_cog
-  pp_dat = dat1 %>% dplyr::filter(party=="PP")
+  dat1=sim_data(d_p,d_d,round_p,round_d,total,num_cog) # use to generate data frame of strikes
+  dat1$trial=trial_name #trial_name 
+  dat1$m=dat1$total-dat1$num_cog #number of non-cognizable jurors
+  pp_dat = dat1 %>% dplyr::filter(party=="PP") #filter to only prosecution 
   return(pp_dat)
 }
+
+
+# get_historical -----------------------------------------------------------------------------------------------------
 
 
 #get_historical: Funciton that calls get_stan_dat to create 'n_t' historical data files 
@@ -92,6 +107,8 @@ get_stan_dat<-function(d_p,d_d,round_p,round_d,total,num_cog,trial_name)
 #@round_d: the number round fo strikes for defense
 #@total: total number of jurors  
 #@num_cog: number of cognizable people
+
+#trial_name=1 for current and 2,..,n_t+1 for historical trials 
 get_historical<-function(n_t,d_p,d_d,round_p,round_d,total,num_cog)
 {
   #inital dat to then rbind the other historical trials
@@ -106,6 +123,9 @@ get_historical<-function(n_t,d_p,d_d,round_p,round_d,total,num_cog)
   return(dat)
   
 }
+
+
+# data_create --------------------------------------------------------------------------------------------------------
 
 #data_create: Function which returns lists of current dataset and historical dataset(s)
 #@reps: Number of replicates
@@ -151,9 +171,33 @@ data_create<-function(reps,bias_p_c,bias_d_c,strikes_p_c, strikes_d_c, total_str
   return(dats)
 }
 
-# The following code generates the data sets under different scenarios for the model.R 
 
-#bias_p_c=0
+# Dataset generation code for paper simulation study ----------------------------------------------------------------------------
+
+# The following code generates the data sets under different scenarios for the model.R 
+#@reps: Number of replicates (used 1000 for paper simulations)
+#@bias_p_c: bias of prosecution in current trial (use values c(seq(0,3,.5)))
+#@bias_d_c: bias of defense in current trial (set at zero for paper results) (assumed it's zero)
+#@strikes_p_c: Number of strikes for prosecution in current trial (used 6,10,15)
+#@strikes_d_c: Number of strikes for defense in current trial (used 6,10,15)
+#@total_strikes_c: Total number of individuals who could be struck
+# Used 28 when strikes_p_c=strikes_d_c= 6 or 10.
+# Used 30 when strikes_p_c=strikes_d_c= 15.
+#@num_cog_c: number of cognizable class members in current trial 
+#@n_t: Number of historical trials in each replicate
+#@bias_p_h: bias of prosecution in historical trial(s)
+#@bias_d_h: bias of defense in historical trial(s) (set at zero for paper results)
+#@strikes_p_h: Number of strikes for prosecution in historical trial(s)
+#@strikes_d_h: Number of strikes for defense in historical trial(s)
+#@total_strikes_h: Total number of strikes used by both parties in historical trial 
+#@num_cog_h: Number of cognizable class members in historical trial(s)
+
+# dataset labeling 
+#dab_c meaning 
+#a= bias in historical data: (1,2,3,4,5,6,7) corresponds to (0,.5,1,1.5,2,2.5,3)
+#b = number of historical trials(1,2,3) corresponds to (1,2,3)
+#c = number of strikes
+# e.g. d13_6 = bias_h=0, number of h_trials=3, number of strike 6 
 d11_6=data_create(reps=1000,bias_p_c=0,bias_d_c=0,strikes_p_c=6, strikes_d_c=6, 
                   total_strikes_c=28,num_cog_c=14,
                   n_t=1,bias_p_h=0,bias_d_h=0,strikes_p_h=6, 

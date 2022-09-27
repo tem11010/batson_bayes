@@ -84,7 +84,7 @@ The likelihood function of $b$ is
 \begin{equation}  
 L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}
 \label{eq:model3}
-\end{equation} where $n_{i}$ is the total number of jury selections (trials); and $n_j$ is the total number of peremptory strikes. 
+\end{equation} where $n_{i}$ is the total number of jury selections (trials), $n_j$ is the total number of peremptory strikes, and $\delta=(\delta_{11},\dots,\delta_{12},\dots,\delta_{{n_i}{n_j}})$ 
 
 ## Incorporating historical strike data
 
@@ -93,7 +93,7 @@ We incorporate data on strikes in past cases and allow for adjustment of the wei
 \begin{equation}  
 \pi(b|\delta_0,\alpha_0) \propto L(b|\delta_0)^{\alpha_0}\pi_0(b)
 \label{eq:powerprior}
-\end{equation} where $0 \le \alpha_0 \le 1$ is the parameter controlling the weight of the historical information; $\delta_0$ is the observed historical data; $L(b|\delta_0)$ is the likelihood function of $b$ given the historical data; and $\pi_0(b)$ is the initial prior before the historical data is observed. 
+\end{equation} where $0 \le \alpha_0 \le 1$ is the parameter controlling the weight of the historical information; $\delta_0=(\delta_{011},\dots,\delta_{012},\dots,\delta_{0{n_i}{n_j}})$ is the observed historical data; $L(b|\delta_0)$ is the likelihood function of $b$ given the historical data; and $\pi_0(b)$ is the initial prior before the historical data is observed. 
 
 In this paper, we assume that the law for _Batson_ and similar challenges entails a weakly-informative initial prior:
 
@@ -107,7 +107,7 @@ For this initial prior, we let $\mu = 0$, because the law assigns the burden of 
 After including the historical information through the power prior, the posterior distribution of $b$ is proportional to the product of likelihood function of $b$ and the power prior of $b$ is 
 
 \begin{equation}
-  P(b|\delta,\delta_0) \propto L(b|\delta)(L(b|\delta_0))^{\alpha_0}\exp(-\frac{(b-\mu)^2}{2\sigma^2})
+  \pi(b|\delta,\delta_0) \propto L(b|\delta)(L(b|\delta_0))^{\alpha_0}\exp(-\frac{(b-\mu)^2}{2\sigma^2})
   \label{eq:model4}
 \end{equation} where 
 
@@ -208,7 +208,7 @@ With the app, the user uses the pull-down menus to select the cognizable class (
 
 For the prototype app, we set two cognizable-class options: race and gender. This was because the standard juror questionnaire did not ask about other possible cognizable classes. The data also did not expressly indicate the race or gender of the criminal defendant(s).
 
-In the default setting, the pull-down menus for prosecutor and defense are set to "None". As a result, the app ignores any historical strike data and estimates the posterior distributions of the bias parameter for prosecutor and defense based only on the strike tally data and the initial prior ($b \sim N(0,2)$). 
+In the default setting, the pull-down menus for prosecutor and defense are set to "None". As a result, the app ignores any historical strike data and estimates the posterior distributions of the bias parameter for prosecutor and defense based only on the strike tally data and the initial prior ($b \sim N(0,2)$). Historical data will be included if the name(s) of a prosection or defense attorney are selected from the pull-down menu. Subsequently, the amount of historical data to be borrowed can be selected by the choice of $\alpha$. 
 
 ```{r inpts}
 df <- data.frame(round = c(1:10),

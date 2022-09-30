@@ -73,7 +73,7 @@ Pr(\delta_{ij} | b) =
 \end{equation} This Equation \eqref{eq:model1} is equivalent to
 
 \begin{equation}
-Pr(\delta_{ij}| b) = (\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}
+Pr(\delta_{ij}| b) = \left(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}}\right)^{\delta_{ij}} \left(\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}}\right)^{1-\delta_{ij}}
 \label{eq:model2}
 \end{equation}
 
@@ -82,7 +82,7 @@ Given the strike data we have, i.e., $\delta_{ij}$, $c_{ij}$, and $m_{ij}$, by e
 The likelihood function of $b$ is
 
 \begin{equation}  
-L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}})^{\delta_{ij}} (\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}})^{1-\delta_{ij}}
+L(b|\delta) = \prod_{i=1}^{n_i} \prod_{j=1}^{n_j}\left(\frac{(e^b)c_{ij}}{(e^b)c_{ij}+m_{ij}}\right)^{\delta_{ij}} \left(\frac{m_{ij}}{(e^b)c_{ij}+m_{ij}}\right)^{1-\delta_{ij}}
 \label{eq:model3}
 \end{equation} where $n_{i}$ is the total number of jury selections (trials), $n_j$ is the total number of peremptory strikes, and $\delta=(\delta_{11},\dots,\delta_{12},\dots,\delta_{{n_i}{n_j}})$ 
 
@@ -107,12 +107,12 @@ For this initial prior, we let $\mu = 0$, because the law assigns the burden of 
 After including the historical information through the power prior, the posterior distribution of $b$ is proportional to the product of likelihood function of $b$ and the power prior of $b$ is 
 
 \begin{equation}
-  \pi(b|\delta,\delta_0) \propto L(b|\delta)(L(b|\delta_0))^{\alpha_0}\exp(-\frac{(b-\mu)^2}{2\sigma^2})
+ \pi(b|\delta,\delta_0) \propto L(b|\delta)L(b|\delta_0)^{\alpha_0}\exp\left(-\frac{(b-\mu)^2}{2\sigma^2}\right)
   \label{eq:model4}
 \end{equation} where 
 
 \begin{equation}
-L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}(\frac{(e^b)c_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{\delta_{0ij}} (\frac{m_{0ij}}{(e^b)c_{0ij}+m_{0ij}})^{1-\delta_{0ij}}
+L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}\left(\frac{(e^b)c_{0ij}}{(e^b)c_{0ij}+m_{0ij}}\right)^{\delta_{0ij}} \left(\frac{m_{0ij}}{(e^b)c_{0ij}+m_{0ij}}\right)^{1-\delta_{0ij}}
 \label{eq:model5}
 \end{equation} is the likelihood function of $b$ given historical data; $n_{0i}$ is the total number of jury selections (trials) in the historical data; $n_{0j}$ is the total number of peremptory strikes in the historical data; and $\delta_{0ij}$ denotes whether or not a party used that strike on a person who belongs to a cognizable class in the historical trials. 
 

@@ -4,6 +4,7 @@
 .Ruserdata
 debug.log
 analysis/paper_draft.html
+analysis/_output/*.tex
 *.pdf
 analysis/*.tex
 nul

@@ -3,8 +3,6 @@
 .RData
 .Ruserdata
 debug.log
-analysis/paper_draft.html
-analysis/_output/*.tex
-*.pdf
-analysis/*.tex
+analysis/_output/*
+analysis/draft_archive/*
 nul

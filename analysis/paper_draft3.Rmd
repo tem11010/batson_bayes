@@ -46,23 +46,11 @@ In the United States, individuals selected for jury-service appear in court as s
 
 Since _Batson v. Kentucky_ [-@batson1986], a party violates the Equal Protection Clause of the US Constitution by using peremptory challenges if motivated by the prospective jurors' race, ethnicity, sex, or certain other cognizable classes. The party bringing a _Batson_ challenge bears the burden of proving such illegal bias is more likely than not to be true [@LaFave2022, $\S$ 22.3(d)]. 
 
-```{r batsonworkflowfig, fig.cap="Batson workflow"}
+```{r batsonworkflowfig, fig.cap="Batson workflow", fig.align = 'center', out.width="50%", fig.pos = "h"}
 
-library(DiagrammeR)
-grViz(diagram = "digraph flowchart {
-  rankdir = LR
-  node [fontname = arial, shape = rectangle]
-  tab1 [label = '@@1']
-  tab2 [label = '@@2']
-  tab3 [label = '@@3']
-  
-  tab1 -> tab2 -> tab3;
-}
-  
-  [1]: 'prima facie case'
-  [2]: 'proffered reasons'    
-  [3]: 'prove bias'    
-  ", height = '100%', width = '100%')
+load_path <- here::here("figures","batson_workflow_fig.png")
+knitr::include_graphics(load_path)
+
 
 ```
 
@@ -325,3 +313,9 @@ In this paper, we extended a Bayesian approach to estimate attorney strike bias 
 Pandya: Conceptualization, Investigation, Software, Writing; Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Barón: Formal Analysis, Software; Moore: Conceptualization, Supervision, Visualization, Writing - original draft.
 
 # References
+
+<div id="refs"></div>
+
+# Appendix
+
+Insert appendix here.

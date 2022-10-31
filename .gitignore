@@ -6,3 +6,5 @@ debug.log
 analysis/_output/*
 analysis/draft_archive/*
 nul
+*.log
+*.gz

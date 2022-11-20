@@ -8,3 +8,4 @@ analysis/draft_archive/*
 nul
 *.log
 *.gz
+*.pdf

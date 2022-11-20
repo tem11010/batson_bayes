@@ -1,0 +1,242 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: false
+    latex_engine: pdflatex
+    template: "svm-latex-memo.tex"
+    number_sections: true
+fontfamily: mathpazo
+fontsize: 11pt
+geometry: margin=1in
+header-includes:
+   - \linespread{1.05}
+
+from: Authors
+to: Editor, The American Statistican
+subject: Reply to Reviewer Comments
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+memorandum: true
+graphics: false
+width: .3
+---
+
+This memorandum provides our replies to comments provided by the TAS associated editor and two reviewers.  It indicates how we have revised the paper accordingly, as well as our understanding of the issues raised by those comments.
+
+# Comments of Associate Editor
+
+`[T]he article doesn’t compellingly make the case that the methodology is more useful than simply tracking those who have been reprimanded in the past or that it’s ethical/reasonable to actually employ in the courtroom. Specifically, the way that prior information is encoded, the logic behind a detection appears to be circular in that if someone has been reprimanded in the past they should be reprimanded in the future (in some cases for no reason). This issue hasn’t been discussed to a level that makes the utility of such a model clear.`
+
+We have three replies to this concern.
+
+First, as page X, lines Y of the paper indicate, the law of _Batson_ and parallel State law has consistently permitted judges to infer illegal strike bias based in part on an attorney's use of strikes in past cases. In reviewing the kinds of evidence that can prove a _Batson_ violation by a prosecutor, the U.S. Supreme Court included, as examples of types of evidence, the "relevant history of the State’s peremptory strikes in past cases." Flowers v. Mississippi, 139 S. Ct. 2228, pin (2019). 
+
+More recent State law variants on _Batson_ are also explicit about this. For example, Washington State law provides that in deciding whether "an objective observer could view race or ethnicity as a factor in the use of the peremptory challenge," the circumstances the court "should" consider include "whether the party has used peremptory challenges disproportionately against a given race or ethnicity, in the present case _or in past cases_." Wash. General Rule 37(g)(v) (emphasis added). California law similarly identifies, as a circumstance a court may consider, whether the striking "has used peremptory challenges disproportionately against a given race, ethnicity, gender, gender identity, sexual orientation, national origin, or religious affiliation, or perceived membership in any of those groups, in the present case _or in past cases_." Calif. Code of Civil Procedure 231.7(d)(3)(G) (emphasis added).
+
+We hope this removes the worry that it is not "ethical/reasonable" to infer present strike bias from strike behavior in past cases. 
+
+Second, the phrase "should be reprimanded in the future (in some cases for no reason)" seems to be premised either on worries that our approach (1) requires trial judges to infer present illegal strike bias (i.e., find _Batson_ violations ) _solely_ based on strikes in past cases; and (2) will cause judges to be more likely to find _Batson_ violations when in fact no strike bias exists. Neither is the case, and we have revised the paper to make this more clear. 
+
+As an initial matter, the word "reprimanded" refers to a court finding of a _Batson_ violation. Our approach, however, relies on an attorney's use of strikes of past cases, regardless of whether those strikes were ever the subject of a _Batson_ challenge. This is better than just "tracking those who have been reprimanded in the past" for _Batson_ violations, because the probability of a court that finds a _Batson_ violation depends on an attorney having raised a _Batson_ challenge in the first place. Absent an attorney arguing _Batson_, a court will not inquire into whether illegal strike bias existed. If illegal strike bias exists but the attorney erroneously perceives no credible basis for it, the attorney will tend not to argue _Batson_. In cases where there no illegal strike bias but the attorney erroneously perceives some credible basis for it, the attorney will tend to argue _Batson_ but may not persuade the trial judge that illegal strike bias was more likely than not. By relying on past strike data, not whether anyone argued _Batson_ in those past cases, we avoid any selection bias associated with relying only on past court findings of _Batson_ violations.
+
+More importantly, the law does not permit a trial judge to find illegal strike bias based _only_ on an attorney's strikes in past cases while ignoring evidence tending to prove no illegal bias in the present case. As the paper now explains on page X, line Y, _Batson_ procedure permits any type of admissible evidence that is relevant to strike bias (for or against) -- not just the attorney's past strike data -- and requires the trial judge to weigh all such evidence to decide whether illegal strike bias exists.
+
+For this reason, our approach alone is not intended as an all-purpose detector of _Batson_ violations, because our approach cannot incorporate the weight of all the other kinds of evidence that could be submitted to prove illegal strike bias in the present case. For example, _Batson_ procedure requires the striking attorney at a certain stage to justify the challenged strikes based on (non-discriminatory) reasons. If the attorney fails to produce such reasons, the trial judge must find a _Batson_ violation. If the attorney offers such reasons, the trial judge must assess evidence as to the credibility of those reasons. Our approach cannot adjust the posterior distribution of the bias parameter to account for the credibility of those reasons or other types of evidence (other than the attorney's pattern of strikes) relevant to illegal strike bias.
+
+Rather, as Figure 1 now depicts, our approach helps attorneys evaluate the inference of illegal bias in the present case based on an attorney's strikes in the present case and past cases, i.e., _before_ accounting for other evidence relevant to illegal strike bias in the present case (the _Batson_ violation itself). For that task, our approach assigns at most equal weight to past strikes and their strikes in the present case (i.e., when $\alpha = 1$). And if there is incompatibility betwen the historical strike data and the current strike data ($b_{hist} \neq b_{curr}$) for reasons identified on page X, lines Y, that inference of bias will be sensitive to the choice of $\alpha$, and therefore that inference of bias can and should be taken as weaker for that reason. 
+
+In turn, attorneys can use that information, _combined with_ other evidence, to (1) decide whether to argue _Batson_, (2) to prove the _Batson_ prima facie case, and (3) to persuade the trial judge to find that illegal strike bias is more likely than not, given all the evidence, i.e., find a _Batson_ violation.
+
+### Additional Comments
+
+`1. Page 4, line 5: The authors refer to gender but then provide sex options (male/female).`
+
+[comment]
+
+`2. Page 4, line 36: Use \left(\right) to ensure appropriately sized parentheses where necessary.`
+
+Thank you for this suggestion. The paper has been revised accordingly.
+
+`3. Page 5, equation 6: The left-hand side-of the equation is not correct`
+
+Thank you for spotting this.  The equation has been revised accordingly.
+
+`4. Page 6, line 43: The idea behind $\alpha$ is concerning to me. The idea here is that if there is previous problematic strike data, and we choose large $\alpha$, then we’ll detect problematic strikes at higher rates. This type of modeling is helpful when historical data are informative to current random behavior, but in this case it goes against the usual ‘innocent until proven guilty,’ and, in fact, bias can be detected at rates close to 100% when there is no bias currently! That is, in other judicial contexts (and likely this one), this could be highly problematic. Simultaneously, large choices of $\alpha$ can lead to no detection of bias based on good behavior or lack of detection earlier. Note that detection rates are as low as 40% when current bias is set to 3! To me, noting I’m not a law expert, it seems a non-informative prior would be best here. While prior behavior could be used to demonstrate a pattern (guilt), I’m not convinced it’s appropriate for detection. If that is not the case, it should be thoroughly explained to the reader. Perhaps the citation reference by Reviewer 2 can help the authors – It’s possible that only considering small values of $\alpha$ would be reasonable. The simulation results for alpha = 0.1 are less objectionable.`
+
+As explained above, the law of _Batson_ permits the inference of present strike bias based on past strikes in previous trials. The possible incompatability of $b_hist$ and $b_curr$ is thus already an issue when using past strike data to infer bias. Our contribution is to bring that issue to foreground and to advise assessing how sensitive the inference of bias is to the choice of $\alpha$ values by choosing multiple $\alpha$ values.
+
+`5. Page 6, line 50: The description of bhist is not clear; it is defined twice with different values.`
+
+The paper has been revised to clarify this description.
+
+`6. Page 9, line 15: The discussion about selecting credible interval percentages is confusing. Are you saying that larger credible interval percentages lead to less accurate bias detection?`
+
+We intend to indicate that the larger the credible interval, the greater the chance that zero falls within it.  Accordingly, the choice of the credible interval is a decision about how conservative one wishes to be about inferring bias (defined here as when $b = 0$ falls outside the chosen credible interval.
+
+Just focus on one in the paper, rest in the appendix. It is a decision about how conservative you want to be. We have removed the discussion of the different CIs and foculs on the 95% CI for the manuscript. We note that this does not necessarily fixed the type I error, because this coverage probability refers to the true bias parameter (that is fixed in our simulations), and we are interested in "bias detection", i.e. whether the CI includes 0 or not. We also, present sensitivity analysis for the selection of the nominal HPD level. In practice, this needs to be chosen based on how conservative the lawyer bringing up a _Batson_ challenge behaves. 
+
+`7. Page 17, line 46: The real data analyses side-step the use of prior data and don’t represent the analyses or simulation prior. One would be curious whether the approach with no prior works for detecting bias (e.g., simulations results without prior data). I think I would find this type of model more compelling.`
+
+[REPLY]
+
+`8. Page 18, line 45: If there is benefit to the user for finding bias, the ability to select $\alpha$ is akin to p-hacking.`
+
+We respectfully disagree with the analogy to "p-hacking", for three reasons.  First, the phrase "p-hacking" typically refers to the practice of using different statistical models on the same data in search of one or more associations that qualify "statistically significant" (p < .05), and then reporting only the analysis with the model(s) that produce those results. In contrast, in our approach, the statistical model necessarily precedes any analysis, because it has to qualify as a valid model of the strike _procedure_ of the court of interest, which can and must be known before any data is collected or analyzed. 
+
+Second, in the adversarial setting of the courtroom, our approach actually thwarts the strategic selection of $\alpha$ values, because it makes the choice of $\alpha$ transparent.  This is why we stress in the paper (p. X, lines Y) that, where there is suspected incompatibility between $b_{hist}$ and $b_{curr}$, the proper approach is try multiple values of $\alpha$ and determine how sensitive the inference of bias is to the chosen $\alpha$ value.  Because the choice of how much to weigh the historical strike data is transparent, every lawyer knows that any strategic selection of $\alpha$ will be met with scrutiny from the lawyers on the other side. Absent this transparency, lawyers already still argue for how much past strike behavior ought to weigh when inferring or dispute illegal strike bias, except that they do so implicitly and with the opacity of words.   
+ 
+`9. Something unmentioned that should be addressed is confounders. While technological and statistical tools can be helpful to the judicial system, and even decrease instances of discrimination and curb disparities, there are many unintended consequences of such systems. For example, race and class are intertwined in the United States and there is no discussion (at least) about incorporating covariates (e.g., age, education, class, etc.)`
+
+[INSERT]
+
+# Reviewer 1
+
+>1. In Section 2.3, the paragraph in line 47 on p. 6 . . . I am confused about which set of values was used in the simulation for bhist.
+
+Thank you for catching this.  We have revised the paper (p. X, lines Y) to clarify the values used in the the simulation for $b_{hist}$.
+
+>2. About the results presented in Figure 1 of Section 2.3, if we ignore the assumption of compatibility between historical and current data, in the cases of $\alpha$ = 0:5 and $\alpha$ = 1, does the bottom right corner in each panel indicate that the bias detection rate can be as high as 100% even when the true current bias is 0? If so, the Type I error seems to be very high in some cases. Similarly, the power (bias detection rate) seems low at the top left corner in each panel where bias is low in historical data but high in current data.
+
+[INSERT]
+
+>3. Regarding the Shiny App in Section 2.5, it would be helpful to include some details about the Metropolis-Hastings scheme. For instance, is a normal distribution used as the proposal distribution for b? What is the length of the Markov chain? Is any thinning performed on the posterior draws? Is any convergence criterion (e.g., the Gelman-Rubin statistic) checked? What is the computation time?
+
+[INSERT]
+
+>4. In Section 3, the authors state that "the anticipated degree of incompatibility should inuence which value of $\alpha$ to select." As a follow-up of comment 2, if the assumption of compatibility is correct, setting $\alpha$ = 1 does lead to better power without sacrificing the Type I error. However, based on results in Figures 1 to 3, if this assumption is wrong, choosing a large $\alpha$ leads to either low power (bias detection rate) or large Type I error, depending on the bias in historical data. In the absence of such knowledge of compatibility, how does one choose the value of $\alpha$? In addition, to get around this issue, is it reasonable to treat $\alpha$ itself random and introduce a hyper prior?
+
+[INSERT]
+
+Absent some very strong assumptions, there is no generally justifiable hyper prior for $\alpha$, because the proper weight to place on historical data depends on whether, for that historical data, there is any missing data is missing not at random and whether an inference of bias based on that historical strike data is complicated by plausible confounding or mediating trial-level variables (e.g., defendant race, criminal charge severity). The plausible reasons for non-random missingness and confounding, however, likely vary considerably depending on strike procedure, courtroom practices, prosecutor charging practices, among other things. [MORE].
+
+>5. Some of the Figure and table captions (e.g. Figures 1-5 and Table 1) can benefit from being more descriptive.
+
+[INSERT]
+
+> 6. A couple of notation issues: . . . .
+
+Thank you for pointing out these issues. We have revised Equations (3) and (6) accordingly.
+
+# Reviewer 2
+
+Reviewer 2 questions whether the data required for such a model are readily available for broad application, in addition to pointing out several important questions about the details of the paper. 
+
+
+Data for past trials is not readily available. But, since the 80s, any person can enter a courtroom and observe the jury selection process, so this data could be collected for present and future cases. 
+
+
+* [add paragraph to address this]
+
+
+Further, in ‘Other Comments’ 3-4, they describe a rather important realities about the application that are not accounted for in the model. While the problem is certainly interesting, the simulations demonstrate some highly problematic results.
+Knowledgeable reviewers and I still have several large unanswered questions about how the methodology can be enacted appropriately. I provide my comments below.
+
+
+
+3. Page 5, equation 5: The left-hand side-of the equation is not correct
+* [EB: fix in formula] - This is now fixed to reflect that it is a posterior distribution. We note that all formulas have now been updated and checked. 
+
+We now specify the vector notation for $\delta_0$ and $\delta_1$.
+
+Mention that in the app, it is easy to check the influence of alpha by re-running the model. Make a clearer case that level of alpha should be selected in cases of high incompatibility. Law allows you to rely on the prosecutor's past behavior. The ability to modify alpha, allows you to decide whether inference based on past behavior is warranted.
+[TEM & EB]
+
+6. Page 9, line 15: The discussion about selecting credible interval percentages is confusing. Are you  saying that larger credible interval percentages lead to less accurate bias detection?
+
+7. Page 17, line 46: The real data analyses side-step the use of prior data and don’t represent the analyses or simulation prior. One would be curious whether the approach with no prior works for detecting bias (e.g., simulations results without prior data). I think I would find this type of model more compelling.
+
+
+The real data analysis, as the default option, does not borrow historical data (i.e. $\alpha=0$). In this case the default prior of $N(0,2)$ is used for the bias parameter (i.e. b). This is reflected when no attorney is selected from the pull-down menu. If an attorney is selected from the pull-down menu, then prior information is used for that attorney. The paper has been updated to reflect this point in the same section.
+
+
+Review 1
+Journal: The American Statistician
+Manuscript ID: TAS-22-165
+Title: Bayesian detection of bias in peremptory challenges using historical strike data
+The authors presented a Bayesian model in detecting potential biases against minority groups
+in peremptory challenges. The use of the power prior to incorporate historical data is in-
+teresting, and the methodology overall seems reasonable. The proposed R Shiny App may
+also be helpful to practitioners. My main concerns are about the simulation results and the
+choice of the hyperparameter 
+in the power prior.
+Major comments:
+
+
+1. In Section 2.3, the paragraph in line 47 on p. 6 ends with bhist = f3;2; : : : ; 3g,but in the very next paragraph, bhist is set to f0; 0:5; : : : ; 3g. I don't see bhist =f3;2; : : : ; 2; 3g mentioned anywhere else, including in the results shown in Figures1 to 3. I am confused about which set of values was used in the simulation for bhist.
+
+
+* Fix bhist typo[DONE]
+
+
+* Repeat metal detector response here. 
+
+
+* Ask Xiaomeng about this in the app [TEM:  reach out]
+
+
+* Repeat metal detector response here. Could mention this as something that we considered, and mention that we would like find a way to measure compatibility. This is also tool intended to be used by lawyers in real-time.
+
+Main Comments:
+1. The method is first illustrated in a simulation study, with a range of values of $\alpha$.
+This is fine for an audience of statisticians and attorneys specializing in jury
+discrimination but is somewhat overwhelming for a general reader. It would be
+easier for the reader if one data set, perhaps from the actual data from Connecticut
+was used and the reader could see how the data from each additional previous trial
+impacts the posterior. Perhaps only a few values of $\alpha$, rather than 11 and two intervales
+of the bias parameter b, could be used.
+
+
+* Start with CT data as example. Take screenshots from the app part. 
+
+> 2. From the likelihood on page 4, it is apparent that the method requires data on the consecutive strike patterns, not only in the current case, but in previous ones. How often is this data currently available? If it isn’t readily available now, how likely are states and locales to implement a system of systematically reporting and preserving the required data (especially in the areas where one expects minorities to encounter bias in jury membership)?
+
+* Repeat comment about accessibility
+
+`3. In Section 2.3, it is noted that in the simulations, it is assumed that the defense attorney has no bias. If one has been called for jury service in a city with a large minority population and been in a jury room, this is highly implausible. The reviewer once was sitting next to a minority woman and we saw---A minority leave the jury room, then a white, then another minority, then another white etc. At the end both of us noticed the “pattern”. Because one is analyzing a changing pool of possible challenges each time a peremptory challenge is made, when the defense attorney (assuming a minority defendant—the usual situation where Batson issues arise) removes a white, the minority proportion of the pool of possible individuals to be removed increases. This could make it more difficult to detect a biased prosecutor. On the other hand, if the method detects prosecutorial bias when the defense challenges appear biased too, this should strengthen the evidence of prosecutorial bias. This issue deserves some quantitative investigation, so judges can feel confident when using the results.`
+
+* [TEM&EB: Check this to see if adding bias to the defense alters bias detection for the prosecutors. ][see table below]
+
+`4. The paper and software focus on peremptory challenges made by the same lawyer in previous cases. As noted in the Miller-El cases, the training manual used by prosecutors recommended the order in which groups, e.g. African-Americans, women etc. should be challenged. Therefore, data from prosecutors from the same DA’s office or defense firm in similar cases (drug dealing, robbery etc.), should be quite informative. Should one simply add them to the list of prior cases, or make a down-weighting adjustment in the Bayesian analysis?`
+
+* Could use same idea for individual lawyers for offices, by aggregating by firms/office/etc, and remove duplicate strikes/trials.
+
+[SP: add pararaph/sentence about this]
+
+`5. The paper uses 90% and 95% credible intervals on p. 7, 95% in Tables 2 and 3 and 80% on p. 18 and Fig. 7. From the various contexts, the reviewer got the impression that the author(s) were recommending that 0 not in the 95% credible interval should help the defendant establish their Batson claim, while 0 in an 80% credible interval indicates no bias and would help the prosecutor (in a typical Batson case) rebut a Batson challenge. Is this correct? In any case, the author(s) should indicate which credible intervals should be used at various stages of the proceedings. If possible, the standards for deciding a Batson claim used by judges in a jurisdiction should be the same. This is especially true in the present context where the prior data considered in cases in the same jurisdiction is likely to have a substantial overlap.`
+
+* This is not correct. Clarify by focussing on single interval.
+
+`Gastwirth (2005) in Law, Prob. Risk, p. 179-185, . . . had proposed that
+approach when potential jurors were removed one at a time in an alternating
+sequence. Checking that reference, the reviewer saw that at the end of the 2005
+paper, the use of data from prior cases would be helpful and recommended that
+procedures, such as the one proposed here. This connection should be noted. Also,
+if one had data from an actual case, one could show the additional insight one
+obtains by incorporating data from previous cases.`
+
+Thank you for this reference.  The paper now cites to the model in Gastwirth (2005). We also agree about the "additional insight" from "data from an actual case."  The discussion about the prototype software application expressly relies on actual strike data from a sample of trials from the federal district court of Connecticut. [MORE].
+
+`The choice of $\alpha$ should be discussed and recommendations made. Otherwise, both parties can explore which value is most helpful. Also, how can one ensure that the prior data doesn’t overwhelm the data from the current case, without choosing a ridiculously low value? The authors say something about this on page 6 but more guidance to potential users and courts would be helpful.`
+
+* Repeat section about alpha/metal detector argument. 
+
+`The scenario depicted in Table 8 and the related text indicates that both the prosecutor and defense removed minority jurors –both 95% credible intervals do not contain 0. This seems unrealistic. More common would be the prosecutor removed more minorities so their 95% credible interval would not contain 0 while the credible interval for the defense removing non-minority potential jurors would be shifted but still might contain 0 (Of course, in some cases when minorities form a substantial portion, e.g. 40% or so of the venire, the data may indicate both sides were probably biased.`
+
+Table 8 = hypothetical data. This is just one scenario. Nothing about the tool makes any assumptions about what defense and prosecutors do/tend to do when it comes to cognizable/non-cognizable jurors. The burden of proof lies with the person bringing the challenge
+
+> At the bottom of p. 17, you don’t really need names for the attorneys, A and B would suffice.
+
+Fair. Although, these are fake names.
+
+Update online appendix
+* Move figures (80% and 90% CI)
+   * 80 and 90 CI
+   * Fig 4, 6, 8, 9,
+* Move app screenshots and majority of text about app
+* Add sensitivity for defense bias (new)
+
+Add real data example to introduction - make more explicit
+
+Table of bias detection for the prosecutor, when the defense shows bias. N historical = 3, nstrike =15. 
+
+	1.0

@@ -79,7 +79,7 @@ For the sake of clarity, we now focus on one in the paper, and have placed the r
 
 `7. Page 17, line 46: The real data analyses side-step the use of prior data and don’t represent the analyses or simulation prior. One would be curious whether the approach with no prior works for detecting bias (e.g., simulations results without prior data). I think I would find this type of model more compelling.`
 
-This comment is not clear to us. The real data analyses are based on real _historical_ trial data from the stae of Connecticut (see lines x to y). Users of the app have the option to run the models excluding any historical trial data (as suggested by the comment) by not selecting the name of a prosecutor or defense attorney. In this case the normal(0,2) prior is used for the bias parameter. Similarly, the app gives the user the option of altering the weight the historical strike data (if selected) by adjusting alpha (power prior parameter). Thus the user can: 1) choose not to use historical data, 2) use historical data with equal weight as the current trial (alpha = 1), or 3) down-weight the historical trial data.
+This comment is not clear to us. The real data analyses are based on real _historical_ trial data from the state of Connecticut (see lines x to y). Users of the app have the option to run the models excluding any historical trial data (as suggested by the comment) by not selecting the name of a prosecutor or defense attorney. In this case the normal(0,2) prior is used for the bias parameter. Similarly, the app gives the user the option of altering the weight the historical strike data (if selected) by adjusting alpha (power prior parameter). Thus the user can: 1) choose not to use historical data, 2) use historical data with equal weight as the current trial (alpha = 1), or 3) down-weight the historical trial data.
 
 `8. Page 18, line 45: If there is benefit to the user for finding bias, the ability to select $\alpha$ is akin to p-hacking.`
 
@@ -89,7 +89,7 @@ Second, in the adversarial setting of the courtroom, our approach actually thwar
  
 `9. Something unmentioned that should be addressed is confounders. While technological and statistical tools can be helpful to the judicial system, and even decrease instances of discrimination and curb disparities, there are many unintended consequences of such systems. For example, race and class are intertwined in the United States and there is no discussion (at least) about incorporating covariates (e.g., age, education, class, etc.)`
 
-[INSERT] We agree. Although, unfortunately this additional information (age, etc) is not routinely collected by the courts, and therefore is difficult to consider in the context of our model. We have added a sentence (line x) to the discussion that highlights this point by calling for the need to reassess how, and more importantly what, information is collected on prospective jurors, so that models like ours can be used to my the process more fair and equittable. 
+[INSERT] Batson challenge doesn't care if you strike a cognizable class because you assume they have particular confounders (e.g., low income, etc). [editme] We do explicitly highlight that trial-level characteristics and impact compatibility between current and historical trials. We do advocate for reassessment of the way (and what) data are collected from individual trials. 
 
 # Reviewer 1
 
@@ -107,7 +107,7 @@ Thank you for catching this.  We have revised the paper (p. X, lines Y) to clari
 
 >4. In Section 3, the authors state that "the anticipated degree of incompatibility should influence which value of $\alpha$ to select." As a follow-up of comment 2, if the assumption of compatibility is correct, setting $\alpha$ = 1 does lead to better power without sacrificing the Type I error. However, based on results in Figures 1 to 3, if this assumption is wrong, choosing a large $\alpha$ leads to either low power (bias detection rate) or large Type I error, depending on the bias in historical data. In the absence of such knowledge of compatibility, how does one choose the value of $\alpha$? In addition, to get around this issue, is it reasonable to treat $\alpha$ itself random and introduce a hyper prior?
 
-[INSERT]
+[INSERT] Choose it based on beliefs on causes of incompatibility and evaluate bias detections sensitivity to its value. 
 
 Absent some very strong assumptions, there is no generally justifiable hyper prior for $\alpha$, because the proper weight to place on historical data depends on whether, for that historical data, there is any missing data is missing not at random and whether an inference of bias based on that historical strike data is complicated by plausible confounding or mediating trial-level variables (e.g., defendant race, criminal charge severity). The plausible reasons for non-random missingness and confounding, however, likely vary considerably depending on strike procedure, courtroom practices, prosecutor charging practices, among other things. [MORE].
 

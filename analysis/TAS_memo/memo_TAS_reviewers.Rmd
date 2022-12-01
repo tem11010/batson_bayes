@@ -35,7 +35,7 @@ More recent State law variants on _Batson_ are also explicit about this. For exa
 
 We hope this removes the worry that it is not "ethical/reasonable" to infer present strike bias from strike behavior in past cases. 
 
-Second, the phrase "should be reprimanded in the future (in some cases for no reason)" seems to be premised either on worries that our approach (1) requires trial judges to infer present illegal strike bias (i.e., find _Batson_ violations ) _solely_ based on strikes in past cases; and (2) will cause judges to be more likely to find _Batson_ violations when in fact no strike bias exists. Neither is the case, and we have revised the paper to make this more clear. 
+Second, the phrase "should be reprimanded in the future (in some cases for no reason)" seems to be premised either on worries that our approach (1) requires trial judges to infer present illegal strike bias (i.e., find _Batson_ violations ) _solely_ based on strikes in past cases; and (2) will cause judges to be more likely to find _Batson_ violations when in fact no strike bias exists. Neither is the case, and we have revised the paper to make this more clear. Places where these clarifications have been made are highlighted in the paragraphs that follow. 
 
 As an initial matter, the word "reprimanded" refers to a court finding of a _Batson_ violation. Our approach, however, relies on an attorney's use of strikes of past cases, regardless of whether those strikes were ever the subject of a _Batson_ challenge. This is better than just "tracking those who have been reprimanded in the past" for _Batson_ violations, because the probability of a court that finds a _Batson_ violation depends on an attorney having raised a _Batson_ challenge in the first place. Absent an attorney arguing _Batson_, a court will not inquire into whether illegal strike bias existed. If illegal strike bias exists but the attorney erroneously perceives no credible basis for it, the attorney will tend not to argue _Batson_. In cases where there no illegal strike bias but the attorney erroneously perceives some credible basis for it, the attorney will tend to argue _Batson_ but may not persuade the trial judge that illegal strike bias was more likely than not. By relying on past strike data, not whether anyone argued _Batson_ in those past cases, we avoid any selection bias associated with relying only on past court findings of _Batson_ violations.
 
@@ -43,9 +43,11 @@ More importantly, the law does not permit a trial judge to find illegal strike b
 
 For this reason, our approach alone is not intended as an all-purpose detector of _Batson_ violations, because our approach cannot incorporate the weight of all the other kinds of evidence that could be submitted to prove illegal strike bias in the present case. For example, _Batson_ procedure requires the striking attorney at a certain stage to justify the challenged strikes based on (non-discriminatory) reasons. If the attorney fails to produce such reasons, the trial judge must find a _Batson_ violation. If the attorney offers such reasons, the trial judge must assess evidence as to the credibility of those reasons. Our approach cannot adjust the posterior distribution of the bias parameter to account for the credibility of those reasons or other types of evidence (other than the attorney's pattern of strikes) relevant to illegal strike bias.
 
-Rather, as Figure 1 now depicts, our approach helps attorneys evaluate the inference of illegal bias in the present case based on an attorney's strikes in the present case and past cases, i.e., _before_ accounting for other evidence relevant to illegal strike bias in the present case (the _Batson_ violation itself). For that task, our approach assigns at most equal weight to past strikes and their strikes in the present case (i.e., when $\alpha = 1$). And if there is incompatibility betwen the historical strike data and the current strike data ($b_{hist} \neq b_{curr}$) for reasons identified on page X, lines Y, that inference of bias will be sensitive to the choice of $\alpha$, and therefore that inference of bias can and should be taken as weaker for that reason. 
+Rather, as the new Figure 1 depicts, our approach helps attorneys evaluate the inference of illegal bias in the present case based on an attorney's strikes in the present case and past cases, i.e., _before_ accounting for other evidence relevant to illegal strike bias in the present case (the _Batson_ violation itself). For that task, our approach assigns at most equal weight to past strikes and their strikes in the present case (i.e., when $\alpha = 1$). And if there is incompatibility betwen the historical strike data and the current strike data ($b_{hist} \neq b_{curr}$) for reasons identified on page X, lines Y, that inference of bias will be sensitive to the choice of $\alpha$, and therefore that inference of bias can and should be taken as weaker for that reason. 
 
-In turn, attorneys can use that information, _combined with_ other evidence, to (1) decide whether to argue _Batson_, (2) to prove the _Batson_ prima facie case, and (3) to persuade the trial judge to find that illegal strike bias is more likely than not, given all the evidence, i.e., find a _Batson_ violation.
+In turn, attorneys can use that information, _combined with_ other evidence, to (1) decide whether to argue _Batson_, (2) to prove the _Batson_ prima facie case, and (3) to persuade the trial judge to find that illegal strike bias is more likely than not, given all the evidence, i.e., find a _Batson_ violation. 
+
+We hope that these modifications clarify the placement of our model in the steps from a sequence of peremptory challenges to a _Batson_ challenge actually being brought, and upheld by the trial judge. We we have also more clearly outlined the the precedence for the use of historical strike data in the _Batson_ challenge process. 
 
 ### Additional Comments
 
@@ -63,21 +65,21 @@ Thank you for spotting this.  The equation has been revised accordingly.
 
 `4. Page 6, line 43: The idea behind $\alpha$ is concerning to me. The idea here is that if there is previous problematic strike data, and we choose large $\alpha$, then we’ll detect problematic strikes at higher rates. This type of modeling is helpful when historical data are informative to current random behavior, but in this case it goes against the usual ‘innocent until proven guilty,’ and, in fact, bias can be detected at rates close to 100% when there is no bias currently! That is, in other judicial contexts (and likely this one), this could be highly problematic. Simultaneously, large choices of $\alpha$ can lead to no detection of bias based on good behavior or lack of detection earlier. Note that detection rates are as low as 40% when current bias is set to 3! To me, noting I’m not a law expert, it seems a non-informative prior would be best here. While prior behavior could be used to demonstrate a pattern (guilt), I’m not convinced it’s appropriate for detection. If that is not the case, it should be thoroughly explained to the reader. Perhaps the citation reference by Reviewer 2 can help the authors – It’s possible that only considering small values of $\alpha$ would be reasonable. The simulation results for alpha = 0.1 are less objectionable.`
 
-As explained above, the law of _Batson_ permits the inference of present strike bias based on past strikes in previous trials. The possible incompatability of $b_hist$ and $b_curr$ is thus already an issue when using past strike data to infer bias. Our contribution is to bring that issue to foreground and to advise assessing how sensitive the inference of bias is to the choice of $\alpha$ values by choosing multiple $\alpha$ values.
+As explained above, the law of _Batson_ permits the inference of present strike bias based on past strikes in previous trials. The possible incompatability of $b_hist$ and $b_curr$ is thus already an issue when using past strike data to infer bias. Our contribution is to bring that issue to foreground and to advise assessing how sensitive the inference of bias is to the choice of $\alpha$ values by choosing multiple $\alpha$ values. [? We have also included the citation from reviewer 2]
 
 `5. Page 6, line 50: The description of bhist is not clear; it is defined twice with different values.`
 
-The paper has been revised to clarify this description.
+The paper has been revised to clarify this description. 
 
 `6. Page 9, line 15: The discussion about selecting credible interval percentages is confusing. Are you saying that larger credible interval percentages lead to less accurate bias detection?`
 
 We intend to indicate that the larger the credible interval, the greater the chance that zero falls within it.  Accordingly, the choice of the credible interval is a decision about how conservative one wishes to be about inferring bias (defined here as when $b = 0$ falls outside the chosen credible interval.
 
-Just focus on one in the paper, rest in the appendix. It is a decision about how conservative you want to be. We have removed the discussion of the different CIs and foculs on the 95% CI for the manuscript. We note that this does not necessarily fixed the type I error, because this coverage probability refers to the true bias parameter (that is fixed in our simulations), and we are interested in "bias detection", i.e. whether the CI includes 0 or not. We also, present sensitivity analysis for the selection of the nominal HPD level. In practice, this needs to be chosen based on how conservative the lawyer bringing up a _Batson_ challenge behaves. 
+For the sake of clarity, we now focus on one in the paper, and have placed the results based on alternative CIs in the appendix. It is a decision about how conservative you want to be. We have removed the discussion of the different CIs and foculs on the 95% CI for the manuscript. We note that this does not necessarily fixed the type I error, because this coverage probability refers to the true bias parameter (that is fixed in our simulations), and we are interested in "bias detection", i.e. whether the CI includes 0 or not. We also, present sensitivity analysis for the selection of the nominal HPD level. In practice, this needs to be chosen based on how conservative the lawyer bringing up a _Batson_ challenge behaves. 
 
 `7. Page 17, line 46: The real data analyses side-step the use of prior data and don’t represent the analyses or simulation prior. One would be curious whether the approach with no prior works for detecting bias (e.g., simulations results without prior data). I think I would find this type of model more compelling.`
 
-[REPLY]
+This comment is not clear to us. The real data analyses are based on real _historical_ trial data from the stae of Connecticut (see lines x to y). Users of the app have the option to run the models excluding any historical trial data (as suggested by the comment) by not selecting the name of a prosecutor or defense attorney. In this case the normal(0,2) prior is used for the bias parameter. Similarly, the app gives the user the option of altering the weight the historical strike data (if selected) by adjusting alpha (power prior parameter). Thus the user can: 1) choose not to use historical data, 2) use historical data with equal weight as the current trial (alpha = 1), or 3) down-weight the historical trial data.
 
 `8. Page 18, line 45: If there is benefit to the user for finding bias, the ability to select $\alpha$ is akin to p-hacking.`
 
@@ -87,7 +89,7 @@ Second, in the adversarial setting of the courtroom, our approach actually thwar
  
 `9. Something unmentioned that should be addressed is confounders. While technological and statistical tools can be helpful to the judicial system, and even decrease instances of discrimination and curb disparities, there are many unintended consequences of such systems. For example, race and class are intertwined in the United States and there is no discussion (at least) about incorporating covariates (e.g., age, education, class, etc.)`
 
-[INSERT]
+[INSERT] We agree. Although, unfortunately this additional information (age, etc) is not routinely collected by the courts, and therefore is difficult to consider in the context of our model. We have added a sentence (line x) to the discussion that highlights this point by calling for the need to reassess how, and more importantly what, information is collected on prospective jurors, so that models like ours can be used to my the process more fair and equittable. 
 
 # Reviewer 1
 
@@ -97,13 +99,13 @@ Thank you for catching this.  We have revised the paper (p. X, lines Y) to clari
 
 >2. About the results presented in Figure 1 of Section 2.3, if we ignore the assumption of compatibility between historical and current data, in the cases of $\alpha$ = 0:5 and $\alpha$ = 1, does the bottom right corner in each panel indicate that the bias detection rate can be as high as 100% even when the true current bias is 0? If so, the Type I error seems to be very high in some cases. Similarly, the power (bias detection rate) seems low at the top left corner in each panel where bias is low in historical data but high in current data.
 
-[INSERT]
+[INSERT] The reviewer is correct on 2 counts: 1 the bias detection rate can be as high as 100% when true bias is zero, and 2 power to detect bias is low when there is low bias in historical trials.  1. these situations occur in the presense of compatibility whih we highlight in the manuscript as arising for various reasons (see lines x), and 2. The lack of power is low due the limited number of strikes, which is why the use of compatible historical information can increase this power. This is the purpose of power prior: adjust the weight of historical data (and therefore type I error) by adjusting alpha. In reality, users of the model will not know the values of bias in the current and historical data, and so will need to rely on ... to decide what value of alpha to choose, and as we have said above, ultimately whether or not to bring a Batson challenge where they will need to discolse their use of alpha. 
 
 >3. Regarding the Shiny App in Section 2.5, it would be helpful to include some details about the Metropolis-Hastings scheme. For instance, is a normal distribution used as the proposal distribution for b? What is the length of the Markov chain? Is any thinning performed on the posterior draws? Is any convergence criterion (e.g., the Gelman-Rubin statistic) checked? What is the computation time?
 
-[INSERT]
+[INSERT] Will get Eric to check this (still no response from Xiaomeng)
 
->4. In Section 3, the authors state that "the anticipated degree of incompatibility should inuence which value of $\alpha$ to select." As a follow-up of comment 2, if the assumption of compatibility is correct, setting $\alpha$ = 1 does lead to better power without sacrificing the Type I error. However, based on results in Figures 1 to 3, if this assumption is wrong, choosing a large $\alpha$ leads to either low power (bias detection rate) or large Type I error, depending on the bias in historical data. In the absence of such knowledge of compatibility, how does one choose the value of $\alpha$? In addition, to get around this issue, is it reasonable to treat $\alpha$ itself random and introduce a hyper prior?
+>4. In Section 3, the authors state that "the anticipated degree of incompatibility should influence which value of $\alpha$ to select." As a follow-up of comment 2, if the assumption of compatibility is correct, setting $\alpha$ = 1 does lead to better power without sacrificing the Type I error. However, based on results in Figures 1 to 3, if this assumption is wrong, choosing a large $\alpha$ leads to either low power (bias detection rate) or large Type I error, depending on the bias in historical data. In the absence of such knowledge of compatibility, how does one choose the value of $\alpha$? In addition, to get around this issue, is it reasonable to treat $\alpha$ itself random and introduce a hyper prior?
 
 [INSERT]
 
@@ -111,7 +113,7 @@ Absent some very strong assumptions, there is no generally justifiable hyper pri
 
 >5. Some of the Figure and table captions (e.g. Figures 1-5 and Table 1) can benefit from being more descriptive.
 
-[INSERT]
+[INSERT] 
 
 > 6. A couple of notation issues: . . . .
 

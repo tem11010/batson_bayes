@@ -25,6 +25,7 @@
    \node (PB) at (6,1) [state] {bias estimate};
     \node (H) at (3,3) [state] {past strikes};
     \node (C) at (9,3) [state] {current strikes};
+    %\node (OE) at (6,-2) [state] {other evidence};
 
     \path (A) edge (B1);
     \path (B1) edge (B2); 
@@ -35,6 +36,7 @@
     \path (PB) edge (B3) [dashed, blue];
     \path (H) edge (M);
     \path (C) edge (M);
+    %\path (OE) edge (B3) [red];
 
 \end{tikzpicture}
 

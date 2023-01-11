@@ -282,7 +282,7 @@ In cases where lawyers contest the degree of compatibility, those lawyers can an
 
 By their choice of $\alpha$, the lawyer explicitly and transparently denotes the degree of weight placed on the historical strike data in the analysis. This transparency matters, because it thwarts lawyer efforts to strategically select $\alpha$ values to prove or disprove illegal strike bias. Rather, at the key steps of the _Batson_ challenge process (Figure \@ref(fig:batsonworkflowfig)), the lawyers on both sides of a _Batson_ challenge know that the lawyers on the other side can always directly and repeatedly assess how sensitive any bias estimation is to the choice of $\alpha$. In any case, the choice of $\alpha$ cannot always determine whether a trial judge finds illegal bias, because no approach to estimating bias based on historical strike data has that ability. 
 
-In future work we hope to examine data-driven approached to the selection of $\alpha$; where the degree of incompatibility can be estimated and used to inform the choice of the degree of discounting to apply to historical data. Knowing how to quantify incompatibility and how to specify and appropriate prior for  $\alpha$ is an area of active research [e.g., @Pawel2022] 
+In future work we hope to examine data-driven approach to selecting $\alpha$; where the degree of incompatibility can be estimated and used to inform the choice of the degree of discounting to apply to historical data. Knowing how to quantify incompatibility and how to specify an appropriate prior for $\alpha$ is an area of active research [e.g., @Pawel2022] 
 
 # Conclusion
 

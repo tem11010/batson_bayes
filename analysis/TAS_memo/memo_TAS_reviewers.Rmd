@@ -131,7 +131,13 @@ In the Discussion, we explained that data on consecutive strike patterns is hard
 
 >In Section 2.3, it is noted that in the simulations, it is assumed that the defense attorney has no bias. If one has been called for jury service in a city with a large minority population and been in a jury room, this is highly implausible. The reviewer once was sitting next to a minority woman and we saw---A minority leave the jury room, then a white, then another minority, then another white etc. At the end both of us noticed the “pattern”. Because one is analyzing a changing pool of possible challenges each time a peremptory challenge is made, when the defense attorney (assuming a minority defendant—the usual situation where Batson issues arise) removes a white, the minority proportion of the pool of possible individuals to be removed increases. This could make it more difficult to detect a biased prosecutor. On the other hand, if the method detects prosecutorial bias when the defense challenges appear biased too, this should strengthen the evidence of prosecutorial bias. This issue deserves some quantitative investigation, so judges can feel confident when using the results.`
 
-[INSERT TABLE]
+```{r inpts}
+df <- data.frame( `Bias Pros` = c(1.5, 1.5, 1.5, 3.0, 3.0, 3.0, 1.5, 1.5, 1.5),
+                  `Bias Def`= c(1.5, 1.5, 1.5, 3.0, 3.0, 3.0, 0.0, 0.0, 0.0),
+                  `alpha`= c(0.1, 0.5, 1.0, 0.1, 0.5, 1.0, 0.1, 0.5, 1.0),
+                  `Bias Det. Pros (95% CI)`= c(0.80, 0.99, 0.99, 0.99, 1.00, 1.00, 0.87, 1.00, 1.00))
+knitr::kable(df, caption ="Simulation results showing effect of adjusting bias in defense on bias detection for the prosecutor. Changing the level of bias in defense does not alter bias detection rate for defense.", format = "latex", booktabs = TRUE, align = "c")
+```
 
 >Page 5, equation 5: The left-hand side-of the equation is not correct
 

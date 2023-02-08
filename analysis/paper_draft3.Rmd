@@ -273,7 +273,7 @@ Statistical methods for _Batson_ and similar challenges often use historical str
 
 In practice, the anticipated degree of incompatibility should influence which value of $\alpha$ to select for the power prior. Given perfect compatibility ($\lvert b_{curr} - b_{hist} \rvert = 0$), we should let $\alpha = 1$ (equal weight between current and historical data). This will maximize bias detection even when the number of strikes per trial is small. This effect of increased bias detection can be seen in the simulation results depicted in Figures \@ref(fig:figbd9515), \@ref(fig:figbd9510), and \@ref(fig:figbd956) along the positive diagonals of the individual blocks.
 
-Bias detection also increases with the number of historical trials and the number of strikes per trial. Higher values of $\alpha$ lead to higher bias detection rates across compatibility scenarios, especially in scenarios with a lower number of strikes per trial and few historical trials (top left panel of Figure \@ref(fig:figcmptbly)). The choice of $\alpha$ matters less for bias detection when bias is high; the number of strikes per trial is high; and the number of historical trials is high (lower right panel of Figure \@ref(fig:figcmptbly)). Overall, given high compatibility, increasing $\alpha$ will increase bias detection. But our simulations also show that, given high incompatibility, bias detection can be erroneously high when current bias ($b_{curr}$) is low; and bias detection can be erroneously low where current bias is high but bias in historical trials ($b_{hist}$) is low.
+Bias detection also increases with the number of historical trials and the number of strikes per trial. Higher values of $\alpha$ lead to higher bias detection rates across compatibility scenarios, especially in scenarios with a lower number of strikes per trial and few historical trials (top left panel of Figure \@ref(fig:figcmptbly)). The choice of $\alpha$ matters less for bias detection when bias is high; the number of strikes per trial is high; and the number of historical trials is high (lower right panel of Figure \@ref(fig:figcmptbly)). Overall, given high compatibility, increasing $\alpha$ will increase bias detection. But our simulations also show that, given high incompatibility, bias detection can be (erroneously) high when current bias ($b_{curr}$) is low; and bias detection can be (erroneously) low where current bias is high but bias in historical trials ($b_{hist}$) is low.
 
 Where lawyers dispute the degree of incompatibility, they can and should interrogate the choice of $\alpha$ by selecting multiple $\alpha$ values and observing how sensitive the posterior distribution of the striking attorney's bias parameter is to the choice of $\alpha$ value. Our protoype app permits this kind of testing of sensitivity in real time by providing multiple options for $\alpha$ values. If the inference of bias is sensitive to the choice of $\alpha$ values, all else equal, then one should worry more about incompatibility and choose a lower $\alpha$ value accordingly.
 
@@ -317,24 +317,27 @@ These records, however, often did not indicate the identity of the attorneys exe
 
 ## Additional Illustrations
 
-Suppose the same scenario discussed in section \@ref(prototype), except now the strike tally indicates the pattern of strikes by these attorneys against female prospective jurors. If so, we select "gender" as the cognizable class, and the density plots update accordingly (Figure \@ref(fig:figapp3)).
+Suppose the same scenario discussed in section \@ref(prototype), except now the strike tally indicates the pattern of strikes by these attorneys against female prospective jurors. If so, we select "gender" as the cognizable class, and the density plots update accordingly (Figure \@ref(fig:figapp3)(left)).
 
-```{r figapp3, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Equal weight ($a = 1$) applied to historical and current data.", fig.align='center'}
+```{r figapp3, out.width='50%', fig.cap = "Screenshots of R-Shiny application show density plots for gender bias of prosecutor and defense attorney based on historical and current strike data. Vertical dotted lines depict 80 pct. credible interval.", fig.show = 'hold', fig.ncol = 2, fig.subchap=c("Equal weight","Minimal weight") }
 
-load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot3.png")
+load_path3 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot3.png")
+load_path4 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot4.png")
 
-knitr::include_graphics(load_path)
+#par(mfrow=c(2,1))
+
+knitr::include_graphics(load_path3)
+knitr::include_graphics(load_path4)
+
 
 ```
 
-Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 80\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. 
+Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 80\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure \@ref(fig:figapp3)(right)). Both the prior and posterior density become flatter and the credible interval plainly includes zero.
 
-```{r figapp4, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Minimal weight ($a = 0.1$) applied to historical data.", fig.align='center'}
+```{r figapp4, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Minimal weight ($a = 0.1$) applied to historical data.", fig.align='center', eval=FALSE}
 
 load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot4.png")
 
 knitr::include_graphics(load_path)
 
 ```
-
-Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure \@ref(fig:figapp4)). Both the prior and posterior density become flatter and the credible interval plainly includes zero.

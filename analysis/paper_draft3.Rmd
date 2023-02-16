@@ -235,9 +235,9 @@ knitr::kable(df, caption ="Hypothetical Strike Tally", format = "latex", booktab
 
 ```
 
-To illustrate, suppose the strike tally in Table 1 depicts the pattern of strikes in the present case with defense attorney Aaron Waelchi and prosecutor Lawrance Klocko V (both aliases for actual attorneys in the historical strike data). After the user enters this strike tally, the app initially displays two graphs -- one for the prosecution and the defense. Each graph depicts the prior density plot (colored light grey) and posterior density plot (blue and red for defense and prosecution, respectively) for the bias parameter (Figure \@ref(fig:figapp1)(a)). Here, the 80\% credible interval includes zero, indicating no credible basis to infer bias, given the current strike tally alone. In the default setting, the pull-down menus for prosecutor and defense are set to "None". As a result, the app ignores any historical strike data and estimates the posterior distributions of the bias parameter for this prosecutor and defense attorney based only on the strike tally data and the initial prior ($b \sim N(0,2)$). 
+To illustrate, suppose the strike tally in Table 1 depicts the pattern of strikes in the present case with defense attorney Aaron Waelchi and prosecutor Lawrance Klocko V (both aliases for actual attorneys in the historical strike data). After the user enters this strike tally, the app initially displays two graphs -- one for the prosecution and the defense. Each graph depicts the prior density plot (colored light grey) and posterior density plot (blue and red for defense and prosecution, respectively) for the bias parameter (Figure \@ref(fig:figapp1)(a)). Here, the 95\% credible interval includes zero, indicating no credible basis to infer bias, given the current strike tally alone. In the default setting, the pull-down menus for prosecutor and defense are set to "None". As a result, the app ignores any historical strike data and estimates the posterior distributions of the bias parameter for this prosecutor and defense attorney based only on the strike tally data and the initial prior ($b \sim N(0,2)$). 
 
-```{r figapp1, out.width='50%', fig.cap = "Screenshots of R-Shiny application showing density plots for race bias of prosecutor and defense attorney. Vertical dotted lines depict 80 pct. credible interval.", fig.align='center', fig.ncol = 2, fig.show = 'hold', fig.subcap=c("Current Strike Data only","Historical and current strike data")}
+```{r figapp1, out.width='50%', fig.cap = "Screenshots of R-Shiny application showing density plots for race bias of prosecutor and defense attorney. Vertical dotted lines depict 95 pct. credible interval.", fig.align='center', fig.ncol = 2, fig.show = 'hold', fig.subcap=c("Current Strike Data only","Historical and current strike data")}
 
 load_path1 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot1.png")
 load_path2 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot2.png")
@@ -315,7 +315,7 @@ These records, however, often did not indicate the identity of the attorneys exe
 
 Suppose the same scenario discussed in section \@ref(prototype), except now the strike tally indicates the pattern of strikes by these attorneys against female prospective jurors. If so, we select "gender" as the cognizable class, and the density plots update accordingly (Figure \@ref(fig:figapp3)(left)).
 
-```{r figapp3, out.width='50%', fig.cap = "Screenshots of R-Shiny application show density plots for gender bias of prosecutor and defense attorney based on historical and current strike data. Vertical dotted lines depict 80 pct. credible interval.", fig.show = 'hold', fig.ncol = 2, fig.subchap=c("Equal weight","Minimal weight") }
+```{r figapp3, out.width='50%', fig.cap = "Screenshots of R-Shiny application show density plots for gender bias of prosecutor and defense attorney based on historical and current strike data. Vertical dotted lines depict 95 pct. credible interval.", fig.show = 'hold', fig.ncol = 2, fig.subchap=c("Equal weight","Minimal weight") }
 
 load_path3 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot3.png")
 load_path4 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot4.png")
@@ -328,7 +328,7 @@ knitr::include_graphics(load_path4)
 
 ```
 
-Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 80\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure \@ref(fig:figapp3)(right)). Both the prior and posterior density become flatter and the credible interval plainly includes zero.
+Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 95\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure \@ref(fig:figapp3)(right)). Both the prior and posterior density become flatter and the credible interval plainly includes zero.
 
 ```{r figapp4, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Minimal weight ($a = 0.1$) applied to historical data.", fig.align='center', eval=FALSE}
 

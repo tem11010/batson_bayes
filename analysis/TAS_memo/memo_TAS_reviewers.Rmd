@@ -21,7 +21,7 @@ graphics: false
 width: .3
 ---
 
-This memorandum replies to comments provided by the TAS associate editor and two reviewers. We believe the revised paper is much better as a result.
+This memorandum replies to comments provided by the TAS associate editor and two reviewers. We thank the editor and reviewers for their comments. We believe the revised paper is much better as a result.
 
 # Key Issues
 
@@ -55,6 +55,8 @@ Second, as the phrase "should be reprimanded in the future (in some cases for no
 
 Third, we assume the word "reprimanded" refers to a court finding of a _Batson_ violation. Our approach, however, relies on an attorney's use of strikes of past cases, regardless of whether those strikes were ever the subject of a _Batson_ challenge. This is better than just "tracking those who have been reprimanded in the past" for _Batson_ violations, because the probability that a court finds a _Batson_ violation depends on an attorney having raised a _Batson_ challenge in the first place. (Absent an attorney arguing _Batson_, a court will not inquire into whether illegal strike bias existed.) If illegal strike bias exists but the attorney erroneously perceives no credible basis for it, the attorney will tend not to argue _Batson_. In cases where there no illegal strike bias but the attorney erroneously perceives some credible basis for it, the attorney will tend to argue _Batson_ but may not persuade the trial judge that illegal strike bias was more likely than not. By relying on past strike data, not whether anyone argued _Batson_ in those past cases, we avoid any bias associated with relying only on past court findings of _Batson_ violations.
 
+[editme]In any case, other authors analysing _Batson_ challallenge data have suggest other, more implicit forms of weighting cases based on trial-incompatibility. As we now mention in the paper [xx], @Gastwirth2014 suggests that trials with 'similar characteristics' be selected before conducting Cochran-Mantel-Haenszel tests. This is tantamount to setting the weight of incompatible cases to zero and compatible cases to 1. In such an instance, such weighing should be explicit and justified.
+
 _Page 4, line 5: The authors refer to gender but then provide sex options (male/female)._
 
 Both the model and the prototype software encode "gender" as binary (male or female) simply because the underlying strike data in the app is based on standard juror questionnaires that provide "male" and "female" as the only mutually-exclusive options.
@@ -83,7 +85,7 @@ We revised to remove such confusion. On the choice of credible intervals, see It
 
 _Page 17, line 46: The real data analyses side-step the use of prior data and don’t represent the analyses or simulation prior. One would be curious whether the approach with no prior works for detecting bias (e.g., simulations results without prior data). I think I would find this type of model more compelling._
 
-This comment is not clear to us. The real data analyses are based on real historical strike data from real criminal cases in the federal district court in Connecticut. If they wish, users of the app can run the model excluding any historical data (as this reviewer suggested) by not selecting the name of a prosecutor or defense attorney. Like our model, the app uses the $N(0,2)$ prior for the bias parameter. Similarly, the app user can alter the weight the historical strike data (if selected) by adjusting $\alpha$ (the power prior parameter). Thus, the app user can: (1) choose not to use historical data, (2) use historical data with equal weight as the current trial (alpha = 1), or (3) down-weight the historical trial data (alpha = 0.5 or alpha = 0.2). See also Item 1(6).
+This comment is not clear to us. The real data analyses are based on real historical strike data from real criminal cases in the federal district court in Connecticut. If they wish, users of the app can run the model excluding any historical data (as this reviewer suggested) by not selecting the name of a prosecutor or defense attorney. Like our model, the app uses the $N(0,2)$ prior for the bias parameter. Similarly, the app user can alter the weight of the historical strike data (if selected) by adjusting $\alpha$ (the power prior parameter). Thus, the app user can: (1) choose not to use historical data, (2) use historical data with equal weight as the current trial (alpha = 1), or (3) down-weight the historical trial data (alpha = 0.5 or alpha = 0.2). See also Item 1(6).
 
 _Page 18, line 45: If there is benefit to the user for finding bias, the ability to select $\alpha$ is akin to p-hacking._
 

@@ -1,4 +1,3 @@
-
 @Misc{rstan,
     title = {{RStan}: the {R} interface to {Stan}},
     author = {{Stan Development Team}},
@@ -9,25 +8,26 @@
 
 @article{Neelon2010,
   title={Bayesian analysis using power priors with application to pediatric quality of care},
-  author={Neelon, Brian and O’Malley, A James},
+  author={Neelon, Brian and O'Malley, A. James},
   journal={Journal of Biometrics and Biostatistics},
   volume={1},
   number={1},
-  pages={1--9},
+  pages={1-9},
   year={2010}
 }
 
-@Article{Hobbs2011,
-author = {Hobbs BP, Carlin BP, Mandrekar SJ, Sargent DJ.},
-title = {{Hierarchical commensurate and power prior models for adaptive incorporation of historical information in clinical trials}},
-volume = {67},
+@article{Hobbs2011,
+author = {Hobbs, Brian P. and Carlin, Bradley P. and Mandrekar, Sumithra J. and Sargent, Daniel J.},
+title = {Hierarchical Commensurate and Power Prior Models for Adaptive Incorporation of Historical Information in Clinical Trials},
 journal = {Biometrics},
+volume = {67},
 number = {3},
-year = {2011},
+pages = {1047-1056},
+keywords = {Adaptive designs, Bayesian, Clinical trials, Colorectal cancer, Power priors},
 doi = {10.1111/j.1541-0420.2011.01564.x},
-URL = {https://doi.org/10.1111/j.1541-0420.2011.01564.x}
+abstract = {Summary Bayesian clinical trial designs offer the possibility of a substantially reduced sample size, increased statistical power, and reductions in cost and ethical hazard. However when prior and current information conflict, Bayesian methods can lead to higher than expected type I error, as well as the possibility of a costlier and lengthier trial. This motivates an investigation of the feasibility of hierarchical Bayesian methods for incorporating historical data that are adaptively robust to prior information that reveals itself to be inconsistent with the accumulating experimental data. In this article, we present several models that allow for the commensurability of the information in the historical and current data to determine how much historical information is used. A primary tool is elaborating the traditional power prior approach based upon a measure of commensurability for Gaussian data. We compare the frequentist performance of several methods using simulations, and close with an example of a colon cancer trial that illustrates a linear models extension of our adaptive borrowing approach. Our proposed methods produce more precise estimates of the model parameters, in particular, conferring statistical significance to the observed reduction in tumor size for the experimental regimen as compared to the control regimen.},
+year = {2011}
 }
-
 
 @Article{Gelman1992,
 author = {Andrew Gelman and Donald B. Rubin},
@@ -748,5 +748,20 @@ year = {2020},
 doi = {10.1177/0962280219886609},
     note ={PMID: 31729275},
     abstract = { During drug evaluation trials, information from clinical trials previously conducted on another population, indications or schedules may be available. In these cases, it might be desirable to share information by efficiently using the available resources. In this work, we developed an adaptive power prior with a commensurability parameter for using historical or external information. It allows, at each stage, full borrowing when the data are not in conflict, no borrowing when the data are in conflict or “tuned” borrowing when the data are in between. We propose to apply our adaptive power prior method to bridging studies between Caucasians and Asians, and we focus on the sequential adaptive allocation design, although other design settings can be used. We weight the prior information in two steps: the effective sample size approach is used to set the maximum desirable amount of information to be shared from historical data at each step of the trial; then, in a sort of Empirical Bayes approach, a commensurability parameter is chosen using a measure of distribution distance. This approach avoids elicitation and computational issues regarding the usual Empirical Bayes approach. We propose several versions of our method, and we conducted an extensive simulation study evaluating the robustness and sensitivity to prior choices. }
+}
+
+@article{Viele2014,
+author = {Viele, Kert and Berry, Scott and Neuenschwander, Beat and Amzal, Billy and Chen, Fang and Enas, Nathan and Hobbs, Brian and Ibrahim, Joseph G. and Kinnersley, Nelson and Lindborg, Stacy and Micallef, Sandrine and Roychoudhury, Satrajit and Thompson, Laura},
+title = {Use of historical control data for assessing treatment effects in clinical trials},
+journal = {Pharmaceutical Statistics},
+volume = {13},
+number = {1},
+pages = {41-54},
+keywords = {priors, borrowing, historical data, Bayesian},
+doi = {doi.org/10.1002/pst.1589},
+NOOurl = {https://onlinelibrary.wiley.com/doi/abs/10.1002/pst.1589},
+NOOeprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/pst.1589},
+abstract = {ABSTRACTClinical trials rarely, if ever, occur in a vacuum. Generally, large amounts of clinical data are available prior to the start of a study, particularly on the current study's control arm. There is obvious appeal in using (i.e., ‘borrowing’) this information. With historical data providing information on the control arm, more trial resources can be devoted to the novel treatment while retaining accurate estimates of the current control arm parameters. This can result in more accurate point estimates, increased power, and reduced type I error in clinical trials, provided the historical information is sufficiently similar to the current control data. If this assumption of similarity is not satisfied, however, one can acquire increased mean square error of point estimates due to bias and either reduced power or increased type I error depending on the direction of the bias. In this manuscript, we review several methods for historical borrowing, illustrating how key parameters in each method affect borrowing behavior, and then, we compare these methods on the basis of mean square error, power and type I error. We emphasize two main themes. First, we discuss the idea of ‘dynamic’ (versus ‘static’) borrowing. Second, we emphasize the decision process involved in determining whether or not to include historical borrowing in terms of the perceived likelihood that the current control arm is sufficiently similar to the historical data. Our goal is to provide a clear review of the key issues involved in historical borrowing and provide a comparison of several methods useful for practitioners.},
+year = {2014}
 }
 

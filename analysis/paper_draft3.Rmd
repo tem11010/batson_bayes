@@ -136,7 +136,7 @@ L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}\left(\frac{(e^b)c_{0ij
 \label{eq:model5}
 \end{equation} is the likelihood function of $b$ given historical data; $n_{0i}$ is the total number of jury selections (trials) in the historical data; $n_{0j}$ is the total number of peremptory strikes in the historical data; and $\delta_{0ij}$ denotes whether or not a party used that strike on a person who belongs to a cognizable class in the historical trials. 
 
-## Model Performance on Simulated Data
+## Model Performance on Simulated Data {#simulation-results}
 
 To evaluate the proposed method, we conducted a simulation study using Stan `r rstan::stan_version()`, a Hamiltonian Monte Carlo engine for Bayesian inference by way of `r R.version$version.string` and RStan [@rstan]. These simulations primarily show how much the size of the historical data affects our ability to detect bias and how much the power prior discounted the weight of the historical data. As introduced above, $b > 0$ represents a prosecutor's bias against a prospective juror within the cognizable class, while $b = 0$ denotes no bias. For simplicity, we assume the defense attorney has no bias.
 
@@ -174,9 +174,9 @@ knitr::include_graphics(load_path)
 
 ```
 
-As we decrease the number of strikes each attorney has from fifteen to ten and six (Figures \@ref(fig:figbd9510) and \@ref(fig:figbd956) respectively), bias detection decreases. Bias detection is only high when $\alpha$ is high (close to 1); current trial bias is high; there is high compatibility between current and historical trials; and the number of historical trials is large.
+As we decrease the number of strikes each attorney has from fifteen to ten and six (Figures \@ref(fig:figbd9510) and \@ref(fig:figbd956) respectively), bias detection decreases. Bias detection is only high when $\alpha$ is high (close to 1); current trial bias is high; there is high compatibility between current and historical trials; and the number of historical trials is large. 
 
-Using a wider credible interval lowers this chance of error. For example, with a 90\% credible interval (not shown), when $b_{curr}=2$, the bias-detection rate is lower than with an 80\% credible interval; when $b_{curr}=0$, that detection rate is higher. The tradeoff is lower accuracy. With a 90\% credible interval, when the bias parameter is 2, the model is less accurate in detecting bias. When the bias parameter is 3, however, the detection rate is still high.
+The choice of credible interval also affects bias detection. For example, with a 90\% credible interval, when $b_{curr}=2$, the bias-detection rate is lower than with an 80\% credible interval; when $b_{curr}=0$, that detection rate is higher. The tradeoff is lower accuracy. With a 90\% credible interval, when the bias parameter is 2, the model is less accurate in detecting bias. When the bias parameter is 3, however, the detection rate is still high. For details on simulation results for 90% and 80% credible intervals, see the Appendix.
 
 Bias detection will also be sensitive to the choice of the standard deviation of the initial prior ($\sigma$). The results above depend in part on our choice of a conservative initial prior for the bias parameter (Equation \@ref(eq:initialprior)). Given little historical strike data for an attorney and a low number of strikes per trial, this initial prior will dominate. As a result, our model will only detect severe bias. This sensitivity, however, reduces after including the historical data, especially when $\alpha$ is close to 1.
 
@@ -304,15 +304,65 @@ Pandya: Conceptualization, Investigation, Software, Writing; Li: Conceptualizati
 
 # Appendix
 
-Here, we extend the discussion in section \@ref(prototype) by discussing data collection and presenting additional illustrations of how a lawyer might use the prototype app. 
+Here, we extend section \@ref(simulation-results) by reporting our simulation results for 90% and 80% credible intervals.  We also extend the discussion in section \@ref(prototype) by discussing data collection and presenting additional illustrations of how a lawyer might use the prototype app. 
 
-## Data Collection
+## Bias Detection with 90% and 80% Credible Intervals
 
-To collect this historical strike data, one of us filed a request with the U.S. District Court of Connecticut based on 28 U.S.C. $\S$ 1868.  Thereafter, we received copies of certain jury-selection records associated with twenty-nine criminal cases in that court during this period. These included strike sheets that indicated the identification number of prospective jurors who were struck by peremptory challenge, the order in which they were struck, and which side (prosecutor or defense) struck which juror. Such records also included a tally of answers to juror questionnaires that asked each prospective juror to report their race and gender. 
+The choice of credible interval can affect bias detection as we define it, because the larger the credible interval one chooses, the greater the chance that zero falls within it, and vice-versa.  Here, we report simulation results for bias detection for 90% and 80% credible intervals for trials with fifteen, ten, and six strikes per side.
+
+```{r figbd9015, out.width = "95%", fig.cap = "Bias Detection Rates, 90 pct credible interval, 15 strike scenario", fig.align='center'}
+
+load_path <- here::here("figures","pp15_90CI.png")
+knitr::include_graphics(load_path)
+
+```
+
+
+```{r figbd9010, out.width = "95%", fig.cap = "Bias Detection Rates (90 pct credible interval, 10 strikes scenario)", fig.align='center'}
+
+load_path <- here::here("figures","pp10_90CI.png")
+knitr::include_graphics(load_path)
+
+```
+
+```{r figbd906, out.width = "95%", fig.cap = "Bias Detection Rates based on 90 pct credible interval for 6 strike scenario", fig.align='center'}
+
+load_path <- here::here("figures","pp6_90CI.png")
+knitr::include_graphics(load_path)
+
+```
+
+```{r figbd8015, out.width = "95%", fig.cap = "Bias Detection Rates, 80 pct credible interval, 15 strike scenario", fig.align='center'}
+
+load_path <- here::here("figures","pp15_80CI.png")
+knitr::include_graphics(load_path)
+
+```
+
+```{r figbd8010, out.width = "95%", fig.cap = "Bias Detection Rates (80 pct credible interval, 10 strikes scenario)", fig.align='center'}
+
+load_path <- here::here("figures","pp10_80CI.png")
+knitr::include_graphics(load_path)
+
+```
+
+```{r figbd806, out.width = "95%", fig.cap = "Bias Detection Rates based on 80 pct credible interval for 6 strike scenario", fig.align='center'}
+
+load_path <- here::here("figures","pp6_80CI.png")
+knitr::include_graphics(load_path)
+
+```
+
+
+## Prototype Software Application
+
+### Data Collection
+
+To collect the historical strike data for the prototype software application, one of us filed a request with the U.S. District Court of Connecticut based on 28 U.S.C. $\S$ 1868.  Thereafter, we received copies of certain jury-selection records associated with twenty-nine criminal cases in that court during this period. These included strike sheets that indicated the identification number of prospective jurors who were struck by peremptory challenge, the order in which they were struck, and which side (prosecutor or defense) struck which juror. Such records also included a tally of answers to juror questionnaires that asked each prospective juror to report their race and gender. 
 
 These records, however, often did not indicate the identity of the attorneys exercising the strikes. While the standard forms included a signature line for the attorney, many were left blank or filled with illegible signatures.  Accordingly, we turned to the publicly-available docket sheets for each case for the names of the lawyers who appeared in the case on behalf of the prosecution (the US Attorney's office) or the criminal defendant(s) on the date(s) of jury selection. Where only a single attorney represented a party during jury selection, it was easy to attribute the pattern of strikes to that attorney. Where multiple lawyers appeared for one side, we attributed to each of them that side's pattern of peremptory challenges in that case. In such cases, neither the jury-selection documents nor the docket sheets indicated any hierarchy among multiple lawyers or any other basis to attribute strikes to only one attorney among them. After generating a dataset based on these documents, we kept only strikes where a criminal defendant was represented by an attorney. Finally, to de-identify this dataset, we excluded defendant names and substituted fictitious names for the attorneys using the charlatan package [@charlatan].
 
-## Additional Illustrations
+### Additional Illustrations
 
 Suppose the same scenario discussed in section \@ref(prototype), except now the strike tally indicates the pattern of strikes by these attorneys against female prospective jurors. If so, we select "gender" as the cognizable class, and the density plots update accordingly (Figure \@ref(fig:figapp3)(left)).
 
@@ -331,10 +381,3 @@ knitr::include_graphics(load_path4)
 
 Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 95\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure \@ref(fig:figapp3)(right)). Both the prior and posterior density become flatter and the credible interval plainly includes zero.
 
-```{r figapp4, out.width='75%', fig.cap = "Density Plots with Historical Strike Data (Gender). Screenshot of R-Shiny application show density plots based on historical and current strike data for prosecutor and defense attorney. Minimal weight ($a = 0.1$) applied to historical data.", fig.align='center', eval=FALSE}
-
-load_path <- here::here("figures","batson_app_screenshots", "batson_app_screenshot4.png")
-
-knitr::include_graphics(load_path)
-
-```

@@ -294,9 +294,17 @@ In this paper, we extended a Bayesian approach to estimate attorney strike bias 
 
 We thank the Associate Editor and two anonymous reviewers for their comments.
 
+# Colophon
+
+Figures were produced with ggplot2 [@ggplot2] or Tikz [@Tantau2022].
+
 # CRediT Author Statement.
 
 Pandya: Conceptualization, Investigation, Software, Writing; Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Barón: Formal Analysis, Software; Moore: Conceptualization, Supervision, Data Visualization, Writing - original draft.
+
+# Disclosure Statement
+
+The authors report there are no competing interests to declare.
 
 # References
 

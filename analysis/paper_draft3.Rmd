@@ -4,6 +4,7 @@ date: "`r Sys.Date()`"
 blinded: 0
 authors:
 - name: "[Sachin S. Pandya](https://orcid.org/0000-0001-7387-1307)"
+  affiliation: University of Connecticut
   email: sachin.pandya@uconn.edu
 - name: "Xiaomeng Li"
   affiliation: University of Connecticut
@@ -153,7 +154,7 @@ Additionally, we present sensitivity analysis for the number of available strike
 
 Figure \@ref(fig:figbd9515) depicts the bias detection rate with an 95\% credible interval for the 15 strikes scenario. When $b_{curr}$ is high (close to 3), the bias detection rate is high (very close to 1). However, when $b_{curr}$ is lower (close to zero), the bias detection rate drops below 0.8. When there is no bias in the current or historical trials ($b_{curr} = b_{hist} = 0$), the bias detection rate for the 95% credible interval is 0.05 or less. As we place more weight on the historical strike data (as $\alpha$ increases), and the historical strike data is consistent with current information (high compatibility), the bias detection rate is close to 1, especially when bias is high (upper right-hand corner of plots). Conversely, as $\alpha$ decreases, bias detection is only high when there is high bias in the current trial ($b_{curr} \geq 1.5$). Increasing the number of historical trials leads to an increase in bias detection especially when current and historical trials are compatible. However, when current and historical trials are incompatible, both type I and type II error can be high if $\alpha$ is close to one. As we discuss in section \@ref(selectingalpha) below, the choice of $\alpha$ depends on assumptions about the degree of incompatibility of current and historical trials.
 
-```{r figbd9515, out.width = "95%", fig.align='center', fig.cap = "Bias detection rate for simulations based on 15 strikes. Rows of larger squares correspond to combinations of alpha values (0.1, 0.5, and 1) for low, median and equal weight of historical data to current trial data. Columns of larger squares correspond to 1, 2, or 3 historical trials. Small squares correspond to combinations of bias in current (rows) and historical (columns) trials."}
+```{r figbd9515, out.width = "95%", fig.align='center', fig.cap = "Bias detection rates (proportion of simulations where 0 is excluded from the 95 percent credible interval of bias parameter) for simulations based on 15 strikes. Rows of larger squares correspond to combinations of alpha values (0.1, 0.5, and 1) for low, median and equal weight of historical data to current trial data. Columns of larger squares correspond to 1, 2, or 3 historical trials. Small squares correspond to combinations of bias in current (rows) and historical (columns) trials."}
  
 
 load_path <- here::here("figures","pp15_95CI.png")
@@ -162,9 +163,7 @@ knitr::include_graphics(load_path)
 ```
 
 
-```{r figbd9510, out.width = "95%", fig.cap = "Bias Detection Rates (95 pct credible interval, 10 strikes scenario).", fig.align='center'}
-
-# Bias detection rate for simulations based on 10 strikes. Rows of larger squares correspond to combinations of alpha valuesa (0.1, 0.5, and 1) for low, median and equal weight of historical data to current trial data. Columns of larger squares correspond to 1, 2, or 3 historical trials. Small squares correspond to combinations of bias in current (rows) and historical (columns) trials.
+```{r figbd9510, out.width = "95%", fig.cap = "Bias detection rates (proportion of simulations where 0 is excluded from the 95 percent credible interval of bias parameter) for simulations based on 10 strikes.", fig.align='center'}
 
 load_path <- here::here("figures","pp10_95CI.png")
 knitr::include_graphics(load_path)
@@ -172,7 +171,7 @@ knitr::include_graphics(load_path)
 ```
 
 
-```{r figbd956, out.width = "95%", fig.cap = "Bias Detection Rates based on 95 pct credible interval for 6 strike scenario.", fig.align='center'}
+```{r figbd956, out.width = "95%", fig.cap = "Bias detection rates (proportion of simulations where 0 is excluded from the 95 percent credible interval of bias parameter) for simulations based on 6 strikes.", fig.align='center'}
 
 load_path <- here::here("figures","pp6_95CI.png")
 knitr::include_graphics(load_path)
@@ -185,7 +184,7 @@ The choice of credible interval also affects bias detection. For example, with a
 
 Bias detection will also be sensitive to the choice of the standard deviation of the initial prior ($\sigma$). The results above depend in part on our choice of a conservative initial prior for the bias parameter (Equation \@ref(eq:initialprior)). Given little historical strike data for an attorney and a low number of strikes per trial, this initial prior will dominate. As a result, our model will only detect severe bias. This sensitivity, however, reduces after including the historical data, especially when $\alpha$ is close to 1.
 
-```{r figsdprior, out.width = "80%", fig.cap = "Sensitivity to Standard Deviation for Initial Prior by alpha.", fig.align='center'}
+```{r figsdprior, out.width = "80%", fig.cap = "Sensitivity to Initial Prior's Standard Deviation (SD) by level of discounting (alpha). Simulations were run with 3 levels of the initial prior SD: low (SD = 1), medium (SD = 2), and hight (SD = 100). Bias detection rate corresponds to the proportion of simulations in which bais was detected based on 0 being excluded from the 95 percent credible interval. Bias was equal in current and historical trials and three levels were selected: 0 (no bias scenario), 1, and 2. In general, bias detection is relatively unaffected by choice initial SD, especially when alpha is close to 1.", fig.align='center'}
 
 #   Bias was equal in current and historical trials and three levels were selected 0 , 1, and 2."
 
@@ -196,7 +195,7 @@ knitr::include_graphics(load_path)
 
 Figure \@ref(fig:figsdprior) depicts how assigning different values for the initial prior’s standard deviation ($\sigma = \{1,2,100\}$) affects the bias detection rate at the 95\% credible interval for three $\alpha$ values ($\alpha = \{0.1,0.5,1\}$) under scenarios where each attorney had 10 strikes and where $b_{curr} = b_{hist}$. In our simulations, we set $\sigma = 2$ for our initial prior. If we instead select $\sigma = 1$, that matters most when $\alpha = 0.1$, i.e., when we borrow less information from the historical data. As $\alpha$ increases, the initial prior's standard deviation matters less. Moreover, when we increased the initial prior's standard deviation to make it much less informative ($\sigma = 100$), that had little impact on bias detection rates, regardless of the choice of $\alpha$.
 
-```{r figcmptbly, out.width = "85%", fig.cap = "Bias detection under compatibility scenarios (equal bias in current and historical trials) for different numbers of strikes (columns), sizes of historical data (rows) and levels of alpha (shapes).", fig.align='center'}
+```{r figcmptbly, out.width = "85%", fig.cap = "Bias detection under compatibility scenarios (equal bias in current and historical trials) for different numbers of strikes (columns), sizes of historical data (rows) and levels of alpha (shapes). As the weight applied to historical data increases (higher alpha), bias detection increases. Bias detection rates also increase as the number of strikes and historical datasets increase.", fig.align='center'}
 
 load_path <- here::here("figures","compatibility_plot.jpg")
 knitr::include_graphics(load_path)

@@ -1,7 +1,7 @@
 ---
 title: "Bayesian Detection of Bias in Peremptory Challenges Using Historical Strike Data"
 date: "`r Sys.Date()`"
-blinded: 1
+blinded: 0
 authors:
 - name: "[Sachin S. Pandya](https://orcid.org/0000-0001-7387-1307)"
   affiliation: University of Connecticut
@@ -137,7 +137,7 @@ L(b|\delta_0) = \prod_{i=1}^{n_{0i}} \prod_{j=1}^{n_{0j}}\left(\frac{(e^b)c_{0ij
 
 ## Model Performance on Simulated Data {#simulation-results}
 
-To evaluate the proposed method, we conducted a simulation study using Stan `r rstan::stan_version()`, a Hamiltonian Monte Carlo engine for Bayesian inference by way of `r R.version$version.string` and RStan [@rstan]. These simulations primarily show how much the size of the historical data affects our ability to detect bias and how much the power prior discounted the weight of the historical data. As introduced above, $b > 0$ represents a prosecutor's bias against a prospective juror within the cognizable class, while $b = 0$ denotes no bias. For simplicity, we assume the defense attorney has no bias.
+To evaluate the proposed method, we conducted a simulation study using Stan 2.261, a Hamiltonian Monte Carlo engine for Bayesian inference by way of R version 4.2.2 and RStan and RStan [@rstan]. These simulations primarily show how much the size of the historical data affects our ability to detect bias and how much the power prior discounted the weight of the historical data. As introduced above, $b > 0$ represents a prosecutor's bias against a prospective juror within the cognizable class, while $b = 0$ denotes no bias. For simplicity, we assume the defense attorney has no bias.
 
 Because we use the power prior, we can control how much we account for the historical strike data by modifying the discounting parameter $\alpha$ (denoted as $\alpha_0$ in Equations \@ref(eq:powerprior) and \@ref(eq:model4)). If $\alpha=1$, the historical strike data is equally weighted with the data on strikes in the current trial. If $\alpha<1$, the historical data are discounted and weighted proportionally less than the current trial data. We assign $\alpha<1$ to evaluate how sensitive the posterior of the bias parameter is to the historical data on strikes. Accordingly, in the simulation study, we evaluated different values of $\alpha$: $\alpha=\{0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1\}$ to show how that parameter affected bias detection.
 
@@ -221,7 +221,7 @@ Figure \@ref(fig:fig-simul) depicts the results of the simultaneous strike simul
 
 ## The Software Prototype {#prototype}
 
-We describe here a prototype software application ("app") that implements the approach described above and that attorneys and others can use in real time to detect bias in the use of peremptory challenges. We built this app with `r R.version$version.string` and the shiny package [@R; @shiny]. Unlike the simulations, we built the app using Rcpp [@Rcpp] and the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. As in the simulations, a normal distribution was assumed for the distribution of $b$. The length of the Markov chain was 110000 and the first 10,000 iterations were dropped as burn-in. No thinning was performed, as the correlation was weak and convergence occurred rapidly. We checked convergence with both traceplots and the Gelman-Rubin statistic [@Gelman1992]. Computation times vary from 0.76 to 1.2 seconds, depending in the amount of data used (quicker with current strike data only _versus_ current plus historical strike data).
+We describe here a prototype software application ("app") that implements the approach described above and that attorneys and others can use in real time to detect bias in the use of peremptory challenges. We built this app with `r R.version$version.string` and the shiny package [@R; @shiny]. Unlike the simulations, we built the app using Rcpp [@Rcpp] and the Metropolis-Hasting algorithm to sample $b$ from the posterior distribution. As in the simulations, a normal distribution was assumed for the distribution of $b$. The length of the Markov chain was 110,000 and the first 10,000 iterations were dropped as burn-in. No thinning was performed, as the correlation was weak and convergence occurred rapidly. We checked convergence with both traceplots and the Gelman-Rubin statistic [@Gelman1992]. Computation times vary from 0.76 to 1.2 seconds, depending in the amount of data used (quicker with current strike data only _versus_ current plus historical strike data).
 
 To show how lawyers might use this app in real cases in real time during jury selection, we loaded this app with actual strike data from a convenience sample of attorneys who appeared during jury selection in criminal cases in the federal district court for Connecticut during fiscal years 2013 through 2017. Using publicly-available court docket sheets for each case, we matched particular lawyers to these strikes and later assigned them aliases using the charlatan package [@charlatan]. For details on this dataset, see the Supplementary Material.
 
@@ -305,9 +305,9 @@ We thank the Associate Editor and two anonymous reviewers for their comments.
 
 Figures were produced with ggplot2 [@ggplot2] or Tikz [@Tantau2022].
 
-<!--# CRediT Author Statement.
+# CRediT Author Statement
 
-Pandya: Conceptualization, Investigation, Software, Writing; Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Barón: Formal Analysis, Software; Moore: Conceptualization, Supervision, Data Visualization, Writing - original draft.-->
+Pandya: Conceptualization, Investigation, Software, Writing; Li: Conceptualization, Formal Analysis, Software, Writing - original draft; Barón: Formal Analysis, Software; Moore: Conceptualization, Supervision, Data Visualization, Writing - original draft.
 
 # Disclosure Statement
 
@@ -316,84 +316,3 @@ The authors report there are no competing interests to declare.
 # References
 
 <div id="refs"></div>
-
-# Supplementary Material for "Bayesian Detection of Bias in Peremptory Challenges Using Historical Strike Data"
-
-Here, we extend section \@ref(simulation-results) of the paper by reporting our simulation results for 90% and 80% credible intervals.  We also extend the discussion in section \@ref(prototype) of the paper by discussing data collection and presenting additional illustrations of how a lawyer might use the prototype app. 
-
-## Bias Detection with 90% and 80% Credible Intervals
-
-The choice of credible interval can affect bias detection as we define it, because the larger the credible interval one chooses, the greater the chance that zero falls within it, and vice-versa.  Here, we report simulation results for bias detection for 90% intervals for trials with fifteen, ten, and six strikes per side (Figures \@ref(fig:figbd9015), \@ref(fig:figbd9010), and \@ref(fig:figbd906), respectively), and the same for 80% credible intervals (Figures \@ref(fig:figbd8015), \@ref(fig:figbd8010), and \@ref(fig:figbd806)).
-
-
-```{r figbd9015, out.width = "95%", fig.cap = "Bias Detection Rates, 90 pct credible interval, 15 strike scenario", fig.align='center'}
-
-load_path <- here::here("figures","pp15_90CI.png")
-knitr::include_graphics(load_path)
-
-```
-
-
-```{r figbd9010, out.width = "95%", fig.cap = "Bias Detection Rates (90 pct credible interval, 10 strikes scenario)", fig.align='center'}
-
-load_path <- here::here("figures","pp10_90CI.png")
-knitr::include_graphics(load_path)
-
-```
-
-```{r figbd906, out.width = "95%", fig.cap = "Bias Detection Rates based on 90 pct credible interval for 6 strike scenario", fig.align='center'}
-
-load_path <- here::here("figures","pp6_90CI.png")
-knitr::include_graphics(load_path)
-
-```
-
-```{r figbd8015, out.width = "95%", fig.cap = "Bias Detection Rates, 80 pct credible interval, 15 strike scenario", fig.align='center'}
-
-load_path <- here::here("figures","pp15_80CI.png")
-knitr::include_graphics(load_path)
-
-```
-
-```{r figbd8010, out.width = "95%", fig.cap = "Bias Detection Rates (80 pct credible interval, 10 strikes scenario)", fig.align='center'}
-
-load_path <- here::here("figures","pp10_80CI.png")
-knitr::include_graphics(load_path)
-
-```
-
-```{r figbd806, out.width = "95%", fig.cap = "Bias Detection Rates based on 80 pct credible interval for 6 strike scenario", fig.align='center'}
-
-load_path <- here::here("figures","pp6_80CI.png")
-knitr::include_graphics(load_path)
-
-```
-
-
-## Prototype Software Application
-
-### Data Collection
-
-To collect the historical strike data for the prototype software application, one of us filed a request with the U.S. District Court of Connecticut based on 28 U.S.C. $\S$ 1868.  Thereafter, we received copies of certain jury-selection records associated with twenty-nine criminal cases in that court during this period. These included strike sheets that indicated the identification number of prospective jurors who were struck by peremptory challenge, the order in which they were struck, and which side (prosecutor or defense) struck which juror. Such records also included a tally of answers to juror questionnaires that asked each prospective juror to report their race and gender. 
-
-These records, however, often did not indicate the identity of the attorneys exercising the strikes. While the standard forms included a signature line for the attorney, many were left blank or filled with illegible signatures.  Accordingly, we turned to the publicly-available docket sheets for each case for the names of the lawyers who appeared in the case on behalf of the prosecution (the United States Attorney's office) or the criminal defendant(s) on the date(s) of jury selection. Where only a single attorney represented a party during jury selection, it was easy to attribute the pattern of strikes to that attorney. Where multiple lawyers appeared for one side, we attributed to each of them that side's pattern of peremptory challenges in that case. In such cases, neither the jury-selection documents nor the docket sheets indicated any hierarchy among multiple lawyers or any other basis to attribute strikes to only one attorney among them. After generating a dataset based on these documents, we kept only strikes where a criminal defendant was represented by an attorney. Finally, to de-identify this dataset, we excluded defendant names and substituted fictitious names for the attorneys using the charlatan package [@charlatan].
-
-### Additional Illustrations
-
-Suppose the same scenario discussed in section \@ref(prototype), except now the strike tally indicates the pattern of strikes by these attorneys against female prospective jurors. If so, we select "gender" as the cognizable class, and the density plots update accordingly (Figure \@ref(fig:figapp3)(left)).
-
-```{r figapp3, out.width='50%', fig.cap = "Screenshots of R-Shiny application show density plots for gender bias of prosecutor and defense attorney based on historical and current strike data. Vertical dotted lines depict 95 pct. credible interval.", fig.show = 'hold', fig.ncol = 2, fig.subchap=c("Equal weight","Minimal weight") }
-
-load_path3 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot3.png")
-load_path4 <- here::here("figures","batson_app_screenshots", "batson_app_screenshot4.png")
-
-#par(mfrow=c(2,1))
-
-knitr::include_graphics(load_path3)
-knitr::include_graphics(load_path4)
-
-
-```
-
-Here, most of the prosecutor's density curve of both prior and posterior are to the left of zero, indicating the possible bias against male jurors. However, because the 95\% credible interval includes zero, inferring such bias from the strike data alone is unjustified. Finally, if we assign minimal weight to the historical strike data ($a = 0.1$), the density plot updates accordingly (Figure \@ref(fig:figapp3)(right)). Both the prior and posterior density become flatter and the credible interval plainly includes zero.
-

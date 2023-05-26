@@ -1,0 +1,88 @@
+---
+output: 
+  pdf_document:
+    citation_package: biblatex
+    keep_tex: false
+    latex_engine: pdflatex
+    template: svm-latex-memo.tex
+    number_sections: true
+fontfamily: mathpazo
+fontsize: 11pt
+geometry: margin=1in
+header-includes:
+   - \linespread{1.05}
+
+from: Authors
+to: The American Statistican
+subject: Reply to Second Round of Reviewer Comments
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+memorandum: true
+graphics: false
+width: .3
+bibliography: references.bib
+---
+
+This memorandum replies to comments from the TAS editor, a TAS associate editor, and a reviewer received in May 2023.
+
+# TAS Editor
+
+_Do not hyphenate "jury service" on page 2._ 
+
+We have edited accordingly.
+
+_Are all Figures 2-4 necessary in the paper or can one/two of them be moved to the supplement?_
+
+TBD
+
+_On all figures, please make sure axes and labels are readable. For example, on your current Fig. 7, $b_cur \approx b$ is difficult to read, (and you use b_curr in the paper, not b_cur)._
+
+TBD
+
+_On your next revision, please submit the paper and supplement as separate files. Refer to figures in the supplement by using Figure S1, Figure S2, and so on. Include author information in the supplement file._
+
+Done.
+
+_The referee has suggested that the analysis of a real data set could be put in the supplement (free of space concerns), noting that this could be helpful for instructors of Bayesian methods in the classroom. I will leave that up to you._
+
+See below.
+
+## Associate Editor
+
+_(page 1, lines 21-23) The authors include the ‘real time’ use of the application in the abstract but this isn’t fully demonstrated in the manuscript as written. I would like the authors to link to the application (perhaps they were waiting because the link is identifying). I also would like to see some step by step use of the application, noting the authors do provide screenshots in Figure 8 that probably give enough information for the manuscript._
+
+We have now provided links to the app as well as the code used to generate the results. Instructions for using the app are now provided not only in section 3.2 of the paper and the Supplemental Materials, but also a vignette in the app itself. 
+
+_(page 5, lines 20-25) I think the point here can be made more convincingly for a statistical audience. That is, the problem I had with my initial reading was the bias shown in modeling that could be used against attorneys. However, with the clarifications this methodology is helpful for alerting about potentially biased strikes. These issues, if brought to the judge, are fully explored as explored on page 2 (lines 25-38). That is, errors of Type I are okay and errors of Type II can lead to missed bias. This thought process helped me reorient my initial reading of the paper._
+
+TBD
+
+
+_(page 6, lines 2-19) I found this paragraph difficult to read through once and understand. Specifically what is a “cognizable” class? Is it the majority or non-marginalized class? I think moving the (e.g.,) on lines 50-51 up to the first mention would help with this. Further, “the number of cognizable class members subject to strike” can probably be replaced with “number of cognizable class jurors”? Or maybe using nij and mij to connote these are number of jurors and not those struck. This is perhaps a bit too nitpicky, but I wrote it in the margins._
+
+TBD
+
+_(page 7, lines 31-54) This is a really good explanation. This may have got me thinking along the lines of comment 2 above._
+
+Thanks!
+
+_(page 9, lines 3-19) I’m still a little unsure exactly how bhist and bcurr are used to generate the data. I’m assuming you’re generating it via the probability model described in Equation (2) given those selected values, is that right?_
+
+Yes, that's correct.
+
+_(page 10, lines 25-29) Does the application allow users to revise the historical data used? That is, should there be guidance about choosing between low α with all the historical data or large α with a subset of the historical data? That is, it seems your approach can be compatible with the stratified approach of Gastwirth and Xu (2014) – would that improve the issue with heterogeneous historical data?_
+
+TBD
+
+## Reviewer 2
+
+_On page 1, where you cite the Washington, Calif. and Conn. Codes stating that that membership in a “cognizable” class was a “factor”, you should also mention that in Miller-El, 545 U.S. the Supreme Court used the expression “significant factor”._
+
+TBD
+
+_On page 3, the initial prior given in (5) should be presented before the power prior in (4). Indeed, you state that the initial prior should be specified before the historical data is observed._
+
+TBD
+
+_Both Fig. 4 (and the surrounding discussion) and the discussion on p. 21, indicate that when there is high incompatibility between the historical and current data, the detections may well be erroneous. This is especially important in the situation where bcurr =0, i.e. no evidence of bias in the challenges in the present case. It is difficult for this reviewer to believe that judges would seriously entertain a Batson challenge, even if historical discrimination had occurred, when the data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal. Of course, a defendant could raise a Batson challenge if they noticed that minorities with a certain characteristic were being challenged but majority members with same characteristic were not. Comparative evidence, rather than statistical, would be the basis of the ultimate decision on the Batson claim. Perhaps the discussion on p. 21 could discuss this further; especially as the reverse situation (serious bias in the current trial but little historically) is also important._
+
+TBD

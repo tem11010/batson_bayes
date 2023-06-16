@@ -19,9 +19,9 @@ sm11 <- simul_1[[2]]
 sm22 <- simul_2[[2]]
 sm33 <- simul_3[[2]]
 
-sm11$b <- "b_[curr] %~~% 1"
-sm22$b <- "b_[curr] %~~% 2"
-sm33$b <- "b_[curr] %~~% 3"
+sm11$b <- "b[curr] %~~% 1"
+sm22$b <- "b[curr] %~~% 2"
+sm33$b <- "b[curr] %~~% 3"
 
 comb_sm <- rbind(sm11, sm22, sm33)
 comb_sm$sim <- rep(factor(paste("",50:1, sep =""),
@@ -29,7 +29,7 @@ comb_sm$sim <- rep(factor(paste("",50:1, sep =""),
                    3)
 
 b_set <- data.frame(mean_b = c(1, 2, 3), 
-                    b = c("b_[curr] %~~% 1", "b_[curr] %~~% 2", "b_[curr] %~~% 3"))
+                    b = c("b[curr] %~~% 1", "b[curr] %~~% 2", "b[curr] %~~% 3"))
 
 ggplot(data = comb_sm)+
   facet_grid(~b, labeller = label_parsed)+

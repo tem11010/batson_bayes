@@ -40,7 +40,7 @@ We have revised the figures accordingly.  To make the labels more readable, we u
 
 _On your next revision, please submit the paper and supplement as separate files. Refer to figures in the supplement by using Figure S1, Figure S2, and so on. Include author information in the supplement file._
 
-We have revised accordingly. [TBD]
+We have revised accordingly.
 
 _The referee has suggested that the analysis of a real data set could be put in the supplement (free of space concerns), noting that this could be helpful for instructors of Bayesian methods in the classroom. I will leave that up to you._
 
@@ -54,12 +54,11 @@ We have now provided links to the app as well as the code used to generate the s
 
 _(page 5, lines 20-25) I think the point here can be made more convincingly for a statistical audience. That is, the problem I had with my initial reading was the bias shown in modeling that could be used against attorneys. However, with the clarifications this methodology is helpful for alerting about potentially biased strikes. These issues, if brought to the judge, are fully explored as explored on page 2 (lines 25-38). That is, errors of Type I are okay and errors of Type II can lead to missed bias. This thought process helped me reorient my initial reading of the paper._
 
-
-
+We suspect the initial reading arose because "bias" has both a statistical meaning and a conventional meaning, and we are using the latter when referring to $b$ as the bias parameter.
 
 _(page 6, lines 2-19) I found this paragraph difficult to read through once and understand. Specifically what is a “cognizable” class? Is it the majority or non-marginalized class? I think moving the (e.g.,) on lines 50-51 up to the first mention would help with this. Further, “the number of cognizable class members subject to strike” can probably be replaced with “number of cognizable class jurors”? Or maybe using nij and mij to connote these are number of jurors and not those struck. This is perhaps a bit too nitpicky, but I wrote it in the margins._
 
-TBD
+By "cognizable" class, we mean the category to which the struck juror belongs that is the possible basis of strike bias. For example, if the set of prospective jurors consists only of Black and White individuals and the focus is on strike bias _against_ Black prospective jurors because of their race, the "cognizable" class is "Black prospective jurors". If, however, the focus is on strike bias against Black female prospective jurors because of their race and gender, the "cognizable" class is "Black female prospective jurors." We used the phrase "cognizable class members subject to strike" instead of "cognizable class jurors", because at the time any strike occurs, (1) no one is actually a juror, because no one has yet been seated onto the jury, and (2) not every prospective juror could have been struck.  
 
 _(page 7, lines 31-54) This is a really good explanation. This may have got me thinking along the lines of comment 2 above._
 
@@ -71,13 +70,13 @@ Yes, that's correct.
 
 _(page 10, lines 25-29) Does the application allow users to revise the historical data used? That is, should there be guidance about choosing between low α with all the historical data or large α with a subset of the historical data? That is, it seems your approach can be compatible with the stratified approach of Gastwirth and Xu (2014) – would that improve the issue with heterogeneous historical data?_
 
-As we discuss in the paper (page X, lines YY-YY), how one chooses the subsetting criteria (e.g., "similar" cases) would have to be justified with respect to its _assumed_ effect on the degree of compatability between the historical trials and the current trial ($b_hist - $b_curr$). We stress _assumed_, because outside simulations like ours, neither $b_hist$ nor $b_curr$ are directly observable in actual cases. Accordingly, for any subset of the historical strike data one chooses, our guidance for choosing an $\alpha$ value remains the same: Check for how sensitive to the posterior estimate of strike bias to different values of $\alpha$.  The current version of the software prototype does not contain a feaure that lets users subset the historical data by some characteristic (e.g., date, defendant race). The app, however, in principle, could be modified to add that kind of subsetting feature as a step prior to estimating the posterior distribution for bias.
+Subsetting the historical data does not necessarily reduce the degree of incompatibility between the historical strike data and the current trial ($b_hist$ - $b_curr$). As we discuss in the paper (page X, lines YY-YY), it depends on what one assumes about how much the subsetting criteria (e.g., only "similar" cases) changes the degree of incompatibility. We stress "assumes", because the true values of $b_hist$ and $b_curr$ are not directly observable in actual cases. Accordingly, for any subset of the historical strike data one chooses, our guidance for choosing an $\alpha$ value remains the same: Check for how sensitive to the posterior estimate of strike bias to different values of $\alpha$. The current version of the software prototype does not let users subset the historical data by some characteristic (e.g., date, defendant race). However, in principle, it could be modified to add that kind of feature.
 
 ## Reviewer 2
 
 _On page 1, where you cite the Washington, Calif. and Conn. Codes stating that that membership in a “cognizable” class was a “factor”, you should also mention that in Miller-El, 545 U.S. the Supreme Court used the expression “significant factor”._
 
-Thank you for this comment.  We have revised the paper accordingly.
+Thank you for this comment.  We have revised the paper accordingly. [TBD]
 
 _On page 3, the initial prior given in (5) should be presented before the power prior in (4). Indeed, you state that the initial prior should be specified before the historical data is observed._
 
@@ -89,10 +88,6 @@ Thank you for this comment.  We have revised the Discussion to discuss this furt
 
 First, we agree that high incompatbility may lead to error in bias detection. The challenge is that high incompatibility (in the case where $b_curr = 0$ or where $b_hist = 0$) is not directly observable.  This is why we recommend using sensitivity to choice of $\alpha$ value to ascertain whether to worry about high incompatability.
 
-Second, we wish to address the idea that a judge may be reluctant to "seriously entertain a Batson challenge" if the strikes in the present case indicate essential equal "removal rates of protected and unprotected members of the venire." As an initial matter, we take "seriously entertain" to denote the premise that judge would be less likely to find a _Batson_ prima facie case and ultimately find a _Batson_ violation, given those removal rates. We do not dispute that premise about judges are likely to do.  We d
-
-
-
-
+Second, we wish to address the idea that a judge may be reluctant to "seriously entertain a Batson challenge" if the strikes in the present case indicate essential equal "removal rates of protected and unprotected members of the venire." we take "seriously entertain" to denote the premise that judge would be less likely to find a _Batson_ prima facie case and ultimately find a _Batson_ violation, given those observed "removal rates". We do not dispute that premise about judge behavior.
 
 

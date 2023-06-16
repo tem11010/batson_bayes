@@ -20,6 +20,12 @@ output:
 header-includes: 
   - \usepackage{amsmath}
   - \usepackage{subfig}
+  - \newcommand{\beginsupplement}{
+    \setcounter{table}{0}  
+    \renewcommand{\thetable}{S\arabic{table}} 
+    \setcounter{figure}{0} 
+    \renewcommand{\thefigure}{S\arabic{figure}}
+    }
 #fontsize: 12pt
 bibliography: references.bib
 biblio-style: agsm.bst
@@ -35,10 +41,21 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 ```
 
+\beginsupplement
 
-Here, we extend section 3 of the paper by reporting our simulation results for 90% and 80% credible intervals.  We also extend the discussion in section 3.2 of the paper by discussing data collection and presenting additional illustrations of how a lawyer might use the prototype app. 
+Here, we extend section 3 of the paper by reporting our simulation results for strike bias detection for the 95% credible interval (ten strikes per side) as well as such results for the 90% and 80% credible intervals for fifteen, ten, and six strikes per side.  We also extend the discussion in section 3.2 of the paper by discussing data collection and presenting additional illustrations of how a lawyer might use the prototype app. 
 
-# Bias Detection with 90% and 80% Credible Intervals
+# Additional Simulation Results for Strike Bias Detection
+
+The number of strikes can affect bias detection as we define it.  The paper reports simulation results for bias detection for the 95% credible interval for trials with fifteen and six strikes per side.  Here, Figure \@ref(fig:figbd9510) depicts the simulation results for trials with ten strikes per side.
+
+```{r figbd9510, out.width = "95%", fig.cap = "Bias detection rates (proportion of simulations where 0 is excluded from the 95 percent credible interval of bias parameter) for simulations based on 10 strikes.", fig.align='center'}
+
+load_path <- here::here("figures","pp10_95CI.png")
+knitr::include_graphics(load_path)
+
+```
+
 
 The choice of credible interval can affect bias detection as we define it, because the larger the credible interval one chooses, the greater the chance that zero falls within it, and vice-versa.  Here, we report simulation results for bias detection for 90% intervals for trials with fifteen, ten, and six strikes per side (Figures \@ref(fig:figbd9015), \@ref(fig:figbd9010), and \@ref(fig:figbd906), respectively), and the same for 80% credible intervals (Figures \@ref(fig:figbd8015), \@ref(fig:figbd8010), and \@ref(fig:figbd806)).
 

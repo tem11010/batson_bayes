@@ -1,7 +1,18 @@
 # New simulations - March 2022
+
+#-------------------------------------------------------------------------------#
+
+
+
+#-------------------------------------------------------------------------------#
+
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(cowplot)
+
+
+
 
 # STEPS
 
@@ -10,15 +21,15 @@ library(stringr)
 ##STEP3 - plot in ggplot2
 
 
-d0_1 <- load('data/01.RData')
+d0_1 <- load('data/01.RData') 
 d0_2 <- load('data/02.RData')
 
 #i=1
 for (i in 1:63){
-
+  
   assign(paste("d0", paste("p", i, sep = ""), sep = "_"),
          eval(as.symbol(paste("p", i, sep = ""))))
-
+  
 }
 
 
@@ -536,6 +547,7 @@ write.csv(comb.df, "data/simulation_data_all.csv", row.names = FALSE)
 
 library(ggplot2)
 library(viridis)
+library(cowplot)
 library(RColorBrewer)
 
 df.eq <- data.frame(b_h = seq(from = 0, to = 3, by = 0.5), 
@@ -555,7 +567,7 @@ names(alpha.labs) <- c("0.1", "0.5", "1")
 pp_15 <- 
   comb.df %>%
   filter(n_strike==15, alpha.val %in% c(0.1, 0.5, 1)) %>%
-  ggplot(data = ., aes(x = b_h, y = b_c, fill = post_bias_det95), 
+  ggplot(data = ., aes(x = b_h, y = b_c, fill = post_bias_det90), 
          color="black")+
   geom_tile(color = "black", alpha = 0.9)+
   geom_rect(data = df.eq, aes (xmin = -0.25, xmax = 0.25, 
@@ -563,7 +575,7 @@ pp_15 <-
             color = "black", lwd = 1.2,
             fill = "transparent")+
   coord_equal()+
-  geom_text(aes(label = round(post_bias_det95, 2), color = post_bias_det95), 
+  geom_text(aes(label = round(post_bias_det80, 2), color = post_bias_det80), 
             size = 2.3, fontface = "bold")+
   scale_color_gradient2(low = "grey35",mid = "grey55", 
                         high = "white", guide = "none")+
@@ -587,7 +599,7 @@ pp_15 <-
 pp_10 <- 
   comb.df %>%
   filter(n_strike==10, alpha.val %in% c(0.1, 0.5, 1)) %>%
-  ggplot(data = ., aes(x = b_h, y = b_c, fill = post_bias_det95), 
+  ggplot(data = ., aes(x = b_h, y = b_c, fill = post_bias_det80), 
          color="black")+
   geom_tile(color = "black", alpha = 0.9)+
   geom_rect(data = df.eq, aes (xmin = -0.25, xmax = 0.25, 
@@ -595,7 +607,7 @@ pp_10 <-
             color = "black", lwd = 1.2,
             fill = "transparent")+
   coord_equal()+
-  geom_text(aes(label = round(post_bias_det95, 2), color = post_bias_det95), 
+  geom_text(aes(label = round(post_bias_det80, 2), color = post_bias_det80), 
             size = 2.3, fontface = "bold")+
   scale_color_gradient2(low = "grey35",mid = "grey55", 
                         high = "white", guide = "none")+
@@ -617,7 +629,7 @@ pp_10 <-
 pp_6 <- 
   comb.df %>%
   filter(n_strike==6, alpha.val %in% c(0.1, 0.5, 1)) %>%
-  ggplot(data = ., aes(x = b_h, y = b_c, fill = post_bias_det95), 
+  ggplot(data = ., aes(x = b_h, y = b_c, fill = post_bias_det80), 
          color="black")+
   geom_tile(color = "black", alpha = 0.9)+
   geom_rect(data = df.eq, aes (xmin = -0.25, xmax = 0.25, 
@@ -625,7 +637,7 @@ pp_6 <-
             color = "black", lwd = 1.2,
             fill = "transparent")+
   coord_equal()+
-  geom_text(aes(label = round(post_bias_det95, 2), color = post_bias_det95), 
+  geom_text(aes(label = round(post_bias_det80, 2), color = post_bias_det80), 
             size = 2.3, fontface = "bold")+
   scale_color_gradient2(low = "grey35",mid = "grey55", 
                         high = "white", guide = "none")+
@@ -645,11 +657,414 @@ pp_6 <-
         legend.title.align = -0.5)
 
 
-ggsave(plot = pp_15, filename = "pp15_95CI.png", height = 8, width = 8, 
+ggsave(plot = pp_15, filename = "pp15_80CI.png", height = 8, width = 8,
        units = "in", dpi = 300)
 
-ggsave(plot = pp_10, filename = "pp10_95CI.png", height = 8, width = 8, 
+ggsave(plot = pp_10, filename = "pp10_80CI.png", height = 8, width = 8,
        units = "in", dpi = 300)
 
-ggsave(plot = pp_6, filename = "pp6_95CI.png", height = 8, width = 8, 
+ggsave(plot = pp_6, filename = "pp6_80CI.png", height = 8, width = 8,
        units = "in", dpi = 300)
+
+
+
+#------------------------------------------------------------------------------#
+
+# Compatibility plots
+
+n_6_comp <- comb.df %>%
+  filter(n_strike==6, alpha.val %in% c(0.1, 0.5, 1), 
+         b_h == 0 & b_c== 0 | b_h == 0.5 & b_c== 0.5 |
+           b_h == 1 & b_c== 1| b_h == 1.5 & b_c== 1.5|
+           b_h == 2 & b_c== 2| b_h == 2.5 & b_c== 2.5|
+           b_h == 3 & b_c== 3)
+
+n_10_comp <- comb.df %>%
+  filter(n_strike==10, alpha.val %in% c(0.1, 0.5, 1), 
+         b_h == 0 & b_c== 0 | b_h == 0.5 & b_c== 0.5 |
+           b_h == 1 & b_c== 1| b_h == 1.5 & b_c== 1.5|
+           b_h == 2 & b_c== 2| b_h == 2.5 & b_c== 2.5|
+           b_h == 3 & b_c== 3)
+
+n_15_comp <- comb.df %>%
+  filter(n_strike==15, alpha.val %in% c(0.1, 0.5, 1), 
+         b_h == 0 & b_c== 0 | b_h == 0.5 & b_c== 0.5 |
+           b_h == 1 & b_c== 1| b_h == 1.5 & b_c== 1.5|
+           b_h == 2 & b_c== 2| b_h == 2.5 & b_c== 2.5|
+           b_h == 3 & b_c== 3)
+
+comp6 <-
+  n_6_comp %>%
+  ggplot(data = ., aes(y = post_bias_det95, x = b_h, color = as.factor(alpha.val)))+
+  geom_point(size = 3, alpha = 0.6) +
+  geom_line(lwd = 1.05, alpha = 0.6) +
+  geom_hline(yintercept = 0.5)+
+  
+  facet_grid(~n_h) +
+  theme_classic()+
+  xlab("Bias")+
+  ylab("Bias Detection Rate")+
+  scale_color_manual("Alpha", values = c("grey88", "grey66", "grey10"))+
+  theme(axis.text = element_text(size = 12), 
+        axis.title = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title.align = -0.5)
+
+comp10 <-
+  n_10_comp %>%
+  ggplot(data = ., aes(y = post_bias_det95, x = b_h, color = as.factor(alpha.val)))+
+  geom_point(size = 3, alpha = 0.6) +
+  geom_line(lwd = 1.05, alpha = 0.6) +
+  geom_hline(yintercept = 0.5)+
+  
+  facet_grid(~n_h) +
+  theme_classic()+
+  xlab("Bias")+
+  ylab("Bias Detection Rate")+
+  scale_color_manual("Alpha", values = c("grey88", "grey66", "grey10"))+
+  theme(axis.text = element_text(size = 12), 
+        axis.title = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title.align = -0.5)
+
+comp15 <-
+  n_15_comp %>%
+  ggplot(data = ., aes(y = post_bias_det95, x = b_h, color = as.factor(alpha.val)))+
+  geom_point(size = 3, alpha = 0.6) +
+  geom_line(lwd = 1.05, alpha = 0.6) +
+  geom_hline(yintercept = 0.5)+
+  facet_grid(~n_h) +
+  theme_classic()+
+  xlab("Bias")+
+  ylab("Bias Detection Rate")+
+  scale_color_manual("Alpha", values = c("grey88", "grey66", "grey10"))+
+  theme(axis.text = element_text(size = 12), 
+        axis.title = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title.align = -0.5, 
+        strip.background = element_rect(fill="grey95"))
+
+cowplot::plot_grid(comp6, comp10,
+                   comp15, ncol = 1)
+
+
+comp_comb <-comb.df %>%
+  filter(n_strike %in% c(6, 10,  15), n_h %in% c(1, 3), alpha.val %in% c(0.1, 0.5, 1), 
+         b_h == 0 & b_c== 0 | b_h == 0.5 & b_c== 0.5 |
+           b_h == 1 & b_c== 1| b_h == 1.5 & b_c== 1.5|
+           b_h == 2 & b_c== 2| b_h == 2.5 & b_c== 2.5|
+           b_h == 3 & b_c== 3)
+
+
+comp_comb <- comp_comb %>% mutate(n_strike_lab = 
+                                    case_when(n_strike ==6 ~ "N. strikes = 6",
+                                              n_strike ==10 ~ "N. strikes = 10",
+                                              n_strike ==15 ~ "N. strikes = 15"))
+comp_comb$n_strike_lab <- factor(comp_comb$n_strike_lab, levels = c("N. strikes = 6",
+                                                                    "N. strikes = 10",
+                                                                    "N. strikes = 15"), 
+                                 ordered = TRUE) 
+
+comp_comb %>% mutate(n_h = as.factor(n_h)) %>% 
+  ggplot(data = ., aes(y = post_bias_det95, x = b_h, group = as.factor(alpha.val)))+
+  geom_line(lwd = 1.01, alpha = 1) +
+  geom_point(size = 3, alpha = 1, aes(pch= as.factor(alpha.val))) +
+  facet_grid(vars(n_h), vars(n_strike_lab)) +
+  #scale_linetype_manual("Number of Historical Trials", values = c(1, 1, 1))+
+  scale_shape_manual("Value of alpha", values = c(0, 1, 2))+
+  theme_half_open()+
+  #geom_hline(yintercept = 0)+
+  xlab("Bias")+
+  #scale_y_continuous(expand = c(0, 0))+
+  ylab("Bias Detection Rate")+
+  scale_color_manual("Alpha", values = c("orange", "purple", "black"))+
+  theme(axis.text = element_text(size = 11), 
+        axis.title = element_text(size = 14), 
+        legend.position = "bottom", 
+        #legend.title.align = -0.5, 
+        axis.line = element_line(), 
+        panel.grid.major = element_line(color = "grey88"), 
+        panel.grid.minor = element_line(color = "grey88"), 
+        strip.background = element_rect(fill="grey95"))
+ggsave(filename = "compatibility_plot_23.jpg", height = 8, width = 10, 
+       units = "in", dpi = 300, bg = "white")
+
+#------------------------------------------------------------------------------#
+
+# CHECK OF SENTIVITY TO SD OF INITIAL PRIOR
+
+sd0 <- load('data/sd_sensitivity/sd_sens_0.RData')
+sd1 <- load('data/sd_sensitivity/sd_sens_1.RData')
+sd2 <- load('data/sd_sensitivity/sd_sens_2.RData')
+#-----------------------------------------#
+
+sd_df <-  data.frame(
+  b_c = rep(c(0, 1, 2), each = 12),
+  b_h = rep(c(0, 1, 2), each = 12),
+  alpha = rep(c(0.1, 0.5, 1), ),
+  prior_sd  = rep(rep(c(1, 100, 1, 2), each = 3), 3), 
+  prior_mean  = rep(rep(c(0, 0, 1, 1), each = 3), 3), 
+  post_bias_det95 = NA
+)
+
+## b=0
+# N(0, 1)
+sd_df$post_bias_det95[1] <- p_0_1[[1]][[1]][[8]]
+sd_df$post_bias_det95[2] <- p_0_1[[2]][[1]][[8]]
+sd_df$post_bias_det95[3] <- p_0_1[[3]][[1]][[8]]
+# N(0, 100)
+sd_df$post_bias_det95[4] <- p_0_2[[1]][[1]][[8]]
+sd_df$post_bias_det95[5] <- p_0_2[[2]][[1]][[8]]
+sd_df$post_bias_det95[6] <- p_0_2[[3]][[1]][[8]]
+# N(1, 1)
+sd_df$post_bias_det95[7] <- p_0_3[[1]][[1]][[8]]
+sd_df$post_bias_det95[8] <- p_0_3[[2]][[1]][[8]]
+sd_df$post_bias_det95[9] <- p_0_3[[3]][[1]][[8]]
+# N(1, 2)
+sd_df$post_bias_det95[10] <- p_0_4[[1]][[1]][[8]]
+sd_df$post_bias_det95[11] <- p_0_4[[2]][[1]][[8]]
+sd_df$post_bias_det95[12] <- p_0_4[[3]][[1]][[8]]
+
+## b=1
+# N(0, 1)
+sd_df$post_bias_det95[13] <- p_1_1[[1]][[1]][[8]]
+sd_df$post_bias_det95[14] <- p_1_1[[2]][[1]][[8]]
+sd_df$post_bias_det95[15] <- p_1_1[[3]][[1]][[8]]
+# N(0, 100)
+sd_df$post_bias_det95[16] <- p_1_2[[1]][[1]][[8]]
+sd_df$post_bias_det95[17] <- p_1_2[[2]][[1]][[8]]
+sd_df$post_bias_det95[18] <- p_1_2[[3]][[1]][[8]]
+# N(1, 1)
+sd_df$post_bias_det95[19] <- p_1_3[[1]][[1]][[8]]
+sd_df$post_bias_det95[20] <- p_1_3[[2]][[1]][[8]]
+sd_df$post_bias_det95[21] <- p_1_3[[3]][[1]][[8]]
+# N(1, 2)
+sd_df$post_bias_det95[22] <- p_1_4[[1]][[1]][[8]]
+sd_df$post_bias_det95[23] <- p_1_4[[2]][[1]][[8]]
+sd_df$post_bias_det95[24] <- p_1_4[[3]][[1]][[8]]
+
+## b=2
+# N(0, 1)
+sd_df$post_bias_det95[25] <- p_2_1[[1]][[1]][[8]]
+sd_df$post_bias_det95[26] <- p_2_1[[2]][[1]][[8]]
+sd_df$post_bias_det95[27] <- p_2_1[[3]][[1]][[8]]
+# N(0, 100)
+sd_df$post_bias_det95[28] <- p_2_2[[1]][[1]][[8]]
+sd_df$post_bias_det95[29] <- p_2_2[[2]][[1]][[8]]
+sd_df$post_bias_det95[30] <- p_2_2[[3]][[1]][[8]]
+# N(1, 1)
+sd_df$post_bias_det95[31] <- p_2_3[[1]][[1]][[8]]
+sd_df$post_bias_det95[32] <- p_2_3[[2]][[1]][[8]]
+sd_df$post_bias_det95[33] <- p_2_3[[3]][[1]][[8]]
+# N(1, 2)
+sd_df$post_bias_det95[34] <- p_2_4[[1]][[1]][[8]]
+sd_df$post_bias_det95[35] <- p_2_4[[2]][[1]][[8]]
+sd_df$post_bias_det95[36] <- p_2_4[[3]][[1]][[8]]
+
+
+sd_df_0 <- sd_df %>% filter(prior_mean==0)
+sd_df_0  
+
+
+# get data for n(0, 2) case (in the main paper)
+comp_comb_2 <- comp_comb %>% filter(b_c %in% c(0, 1, 2),
+                                    n_strike %in% c(10), n_h ==3) %>% 
+  dplyr::select(b_c, b_h, alpha.val, post_bias_det95 )
+
+comp_comb_2$prior_sd <- 2
+comp_comb_2$prior_mean <- 0
+
+comp_comb_2 <- comp_comb_2 %>% dplyr::select(b_c, b_h, alpha.val,prior_sd, 
+                                             prior_mean, post_bias_det95)
+names(comp_comb_2)[3]<-"alpha"
+sd_df_comb <- rbind(sd_df_0, comp_comb_2)
+
+sd_df_comb$alpha <- as.factor(sd_df_comb$alpha)
+sd_df_comb$prior_sd <- as.factor(sd_df_comb$prior_sd)
+
+ggplot(data = sd_df_comb , aes(x = b_h, y = post_bias_det95, 
+                               lty = prior_sd, color = prior_sd))+
+  geom_line(alpha = 0.9, lwd = 1.05)+
+  geom_point(size = 3)+
+  scale_linetype_manual("SD of Initial Prior", 
+                        values = c(1, 2, 3))+
+  scale_color_manual("SD of Initial Prior", 
+                     values = rev(c("grey0", "grey35", "grey75")))+
+  facet_grid(~alpha)+
+  theme_half_open()+
+  xlab("Bias")+
+  ylab("Bias Detection Rate")+
+  theme(axis.text = element_text(size = 12), 
+        axis.title = element_text(size = 14), 
+        panel.grid.major = element_line(color = "grey92"), 
+        panel.grid.minor = element_line(color = "grey92"),
+        legend.position = "bottom", 
+        legend.key.size = unit(3, 'cm'))
+ggsave(filename = "SD_sensitivity_23.jpg",
+       height = 6, width = 8, bg = "white",
+       units = "in", dpi = 300)
+
+#-----------------------------------------#
+
+sd_df <-  data.frame(
+  b_c = rep(c(0, 1, 2), each = 12),
+  b_h = rep(c(0, 1, 2), each = 12),
+  alpha = rep(c(0.1, 0.5, 1), ),
+  prior_sd  = rep(rep(c(1, 100, 1, 2), each = 3), 3), 
+  prior_mean  = rep(rep(c(0, 0, 1, 1), each = 3), 3), 
+  post_sd = NA
+)
+
+## b=0
+# N(0, 1)
+sd_df$post_sd[1] <- p_0_1[[1]][[1]][[2]]
+sd_df$post_sd[2] <- p_0_1[[2]][[1]][[2]]
+sd_df$post_sd[3] <- p_0_1[[3]][[1]][[2]]
+# N(0, 100)
+sd_df$post_sd[4] <- p_0_2[[1]][[1]][[2]]
+sd_df$post_sd[5] <- p_0_2[[2]][[1]][[2]]
+sd_df$post_sd[6] <- p_0_2[[3]][[1]][[2]]
+# N(1, 1)
+sd_df$post_sd[7] <- p_0_3[[1]][[1]][[2]]
+sd_df$post_sd[8] <- p_0_3[[2]][[1]][[2]]
+sd_df$post_sd[9] <- p_0_3[[3]][[1]][[2]]
+# N(1, 2)
+sd_df$post_sd[10] <- p_0_4[[1]][[1]][[2]]
+sd_df$post_sd[11] <- p_0_4[[2]][[1]][[2]]
+sd_df$post_sd[12] <- p_0_4[[3]][[1]][[2]]
+
+## b=1
+# N(0, 1)
+sd_df$post_sd[13] <- p_1_1[[1]][[1]][[2]]
+sd_df$post_sd[14] <- p_1_1[[2]][[1]][[2]]
+sd_df$post_sd[15] <- p_1_1[[3]][[1]][[2]]
+# N(0, 100)
+sd_df$post_sd[16] <- p_1_2[[1]][[1]][[2]]
+sd_df$post_sd[17] <- p_1_2[[2]][[1]][[2]]
+sd_df$post_sd[18] <- p_1_2[[3]][[1]][[2]]
+# N(1, 1)
+sd_df$post_sd[19] <- p_1_3[[1]][[1]][[2]]
+sd_df$post_sd[20] <- p_1_3[[2]][[1]][[2]]
+sd_df$post_sd[21] <- p_1_3[[3]][[1]][[2]]
+# N(1, 2)
+sd_df$post_sd[22] <- p_1_4[[1]][[1]][[2]]
+sd_df$post_sd[23] <- p_1_4[[2]][[1]][[2]]
+sd_df$post_sd[24] <- p_1_4[[3]][[1]][[2]]
+
+## b=2
+# N(0, 1)
+sd_df$post_sd[25] <- p_2_1[[1]][[1]][[2]]
+sd_df$post_sd[26] <- p_2_1[[2]][[1]][[2]]
+sd_df$post_sd[27] <- p_2_1[[3]][[1]][[2]]
+# N(0, 100)
+sd_df$post_sd[28] <- p_2_2[[1]][[1]][[2]]
+sd_df$post_sd[29] <- p_2_2[[2]][[1]][[2]]
+sd_df$post_sd[30] <- p_2_2[[3]][[1]][[2]]
+# N(1, 1)
+sd_df$post_sd[31] <- p_2_3[[1]][[1]][[2]]
+sd_df$post_sd[32] <- p_2_3[[2]][[1]][[2]]
+sd_df$post_sd[33] <- p_2_3[[3]][[1]][[2]]
+# N(1, 2)
+sd_df$post_sd[34] <- p_2_4[[1]][[1]][[2]]
+sd_df$post_sd[35] <- p_2_4[[2]][[1]][[2]]
+sd_df$post_sd[36] <- p_2_4[[3]][[1]][[2]]
+
+
+sd_df$alpha <- as.factor(sd_df$alpha)
+sd_df$prior_sd <- as.factor(sd_df$prior_sd)
+sd_df %>% filter(prior_mean==0) %>%
+  ggplot(data = ., aes(x = b_h, y = post_sd, 
+                       color=alpha, lty = prior_sd))+
+  geom_line(alpha = 0.9, lwd = 1.05)+
+  geom_abline(intercept = 0, slope = 1)+
+  geom_point(size = 3)+
+  xlab("Bias")+
+  ylab("Post Mean")+
+  theme_classic()+
+  theme(axis.text = element_text(size = 12), 
+        axis.title = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title.align = -0.5)
+
+
+#-----------------------------------------#
+
+sd_df <-  data.frame(
+  b_c = rep(c(0, 1, 2), each = 12),
+  b_h = rep(c(0, 1, 2), each = 12),
+  alpha = rep(c(0.1, 0.5, 1), ),
+  prior_sd  = rep(rep(c(1, 100, 1, 2), each = 3), 3), 
+  prior_mean  = rep(rep(c(0, 0, 1, 1), each = 3), 3), 
+  post_sd = NA
+)
+
+## b=0
+# N(0, 1)
+sd_df$post_sd[1] <- p_0_1[[1]][[1]][[1]]
+sd_df$post_sd[2] <- p_0_1[[2]][[1]][[1]]
+sd_df$post_sd[3] <- p_0_1[[3]][[1]][[1]]
+# N(0, 100)
+sd_df$post_sd[4] <- p_0_2[[1]][[1]][[1]]
+sd_df$post_sd[5] <- p_0_2[[2]][[1]][[1]]
+sd_df$post_sd[6] <- p_0_2[[3]][[1]][[1]]
+# N(1, 1)
+sd_df$post_sd[7] <- p_0_3[[1]][[1]][[1]]
+sd_df$post_sd[8] <- p_0_3[[2]][[1]][[1]]
+sd_df$post_sd[9] <- p_0_3[[3]][[1]][[1]]
+# N(1, 2)
+sd_df$post_sd[10] <- p_0_4[[1]][[1]][[1]]
+sd_df$post_sd[11] <- p_0_4[[2]][[1]][[1]]
+sd_df$post_sd[12] <- p_0_4[[3]][[1]][[1]]
+
+## b=1
+# N(0, 1)
+sd_df$post_sd[13] <- p_1_1[[1]][[1]][[1]]
+sd_df$post_sd[14] <- p_1_1[[2]][[1]][[1]]
+sd_df$post_sd[15] <- p_1_1[[3]][[1]][[1]]
+# N(0, 100)
+sd_df$post_sd[16] <- p_1_2[[1]][[1]][[1]]
+sd_df$post_sd[17] <- p_1_2[[2]][[1]][[1]]
+sd_df$post_sd[18] <- p_1_2[[3]][[1]][[1]]
+# N(1, 1)
+sd_df$post_sd[19] <- p_1_3[[1]][[1]][[1]]
+sd_df$post_sd[20] <- p_1_3[[2]][[1]][[1]]
+sd_df$post_sd[21] <- p_1_3[[3]][[1]][[1]]
+# N(1, 2)
+sd_df$post_sd[22] <- p_1_4[[1]][[1]][[1]]
+sd_df$post_sd[23] <- p_1_4[[2]][[1]][[1]]
+sd_df$post_sd[24] <- p_1_4[[3]][[1]][[1]]
+
+## b=2
+# N(0, 1)
+sd_df$post_sd[25] <- p_2_1[[1]][[1]][[1]]
+sd_df$post_sd[26] <- p_2_1[[2]][[1]][[1]]
+sd_df$post_sd[27] <- p_2_1[[3]][[1]][[1]]
+# N(0, 100)
+sd_df$post_sd[28] <- p_2_2[[1]][[1]][[1]]
+sd_df$post_sd[29] <- p_2_2[[2]][[1]][[1]]
+sd_df$post_sd[30] <- p_2_2[[3]][[1]][[1]]
+# N(1, 1)
+sd_df$post_sd[31] <- p_2_3[[1]][[1]][[1]]
+sd_df$post_sd[32] <- p_2_3[[2]][[1]][[1]]
+sd_df$post_sd[33] <- p_2_3[[3]][[1]][[1]]
+# N(1, 2)
+sd_df$post_sd[34] <- p_2_4[[1]][[1]][[1]]
+sd_df$post_sd[35] <- p_2_4[[2]][[1]][[1]]
+sd_df$post_sd[36] <- p_2_4[[3]][[1]][[1]]
+
+
+sd_df$alpha <- as.factor(sd_df$alpha)
+sd_df$prior_sd <- as.factor(sd_df$prior_sd)
+sd_df %>% filter(prior_mean==0) %>%
+  ggplot(data = ., aes(x = b_h, y = post_sd, 
+                       color=alpha, lty = prior_sd))+
+  geom_line(alpha = 0.9, lwd = 1.05)+
+  #geom_abline(intercept = 0, slope = 1)+
+  geom_point(size = 3)+
+  xlab("Bias")+
+  ylab("Post Bias")+
+  theme_classic()+
+  theme(axis.text = element_text(size = 12), 
+        axis.title = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title.align = -0.5)

@@ -86,7 +86,26 @@ Thank you for catching that. We have revised the paper accordingly.
 
 _Both Fig. 4 (and the surrounding discussion) and the discussion on p. 21, indicate that when there is high incompatibility between the historical and current data, the detections may well be erroneous. This is especially important in the situation where bcurr =0, i.e. no evidence of bias in the challenges in the present case. It is difficult for this reviewer to believe that judges would seriously entertain a Batson challenge, even if historical discrimination had occurred, when the data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal. Of course, a defendant could raise a Batson challenge if they noticed that minorities with a certain characteristic were being challenged but majority members with same characteristic were not. Comparative evidence, rather than statistical, would be the basis of the ultimate decision on the Batson claim. Perhaps the discussion on p. 21 could discuss this further; especially as the reverse situation (serious bias in the current trial but little historically) is also important._
 
-Thank you for this comment.  We have revised the Discussion to discuss this further. [TBD].  
+We took this comment to have two possible intended meanings.
 
-We take this comment to posit that a judge is unlikely to find ("seriously entertain") even a _Batson_ prima facie case if the posterior estimate of $b$ with $\alpha = 0$ detects no illegal bias against the cognizable class (e.g. Black prospective jurors), because $b = 0$ falls within the credible interval, even if the posterior estimate of $b$ given some set of non-zero values of $\alpha$ detects illegal bias, i.e., $b = 0$ falls outside the credible interval.  This might occur, for example, where an attorney is motivated to strike Black prospective jurors because they are Black _only_ in cases with Black defendants; all that attorney's past trials involved Black defendants; but the current trial has a White defendant. In this extreme scenario, we agree that a judge might properly worry about high incompatibility and not find a _Batson_ prima facie case for that reason, even though no one can directly observe or know with complete certainty whether this is a case where $b_curr = 0$ and $b_hist >> 0$. Or the judge may still find enough for a prima face case, but downweight the historical data when ultimately deciding whether illegal bias likely occurred. In the reverse extreme situation, the posterior estimate of $b$ with $\alpha = 0$ detects illegal bias but does not detect illegal bias when $\alpha > 0$. Here, too, we agree that a judge might properly worry about high incompatibility, except that down-weighting the historical data here increases the support for finding at least enough a _Batson_ prima facie case.
+First, we read this comment to posit that judge is unlikely to find ("seriously entertain") even a _Batson_ prima facie case where "data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal." However, in some cases, bias can be detected even if equal strikes _rates_.  To illustrate, consider the following hypothetical patterns of strikes by a prosecutor:
+
+```{r}
+
+round <- c(1:10)
+num_cog <- c(7.6,5,4,3,2,2,2,2,2)
+total <- c(30,28,26,24,22,20,18,16,14,12)
+cog <- c(1,1,1,1,1,0,0,0,0,0)
+
+df <- data.frame(round, num_cog, total, cog)
+
+knitr::kable(df)
+
+
+```
+
+
+Here, the strike rates for the cognizable class and the non-cognizable class are equal (5 out of 10).  However, the 95% credible interval for the posterior estimate of $b$ is excludes zero, thus indicating illegal bias. 
+
+Second, we took this comment to posit that a judge is unlikely to find even a _Batson_ prima facie case if the posterior estimate of $b$ with $\alpha = 0$ detects no illegal bias against the cognizable class (e.g. Black prospective jurors), even if the posterior estimate of $b$ given some set of non-zero values of $\alpha$ detects illegal bias.  This might occur, for example, where an attorney is motivated to strike Black prospective jurors because they are Black _only_ in cases with Black defendants; all that attorney's past trials involved Black defendants; but the current trial has a White defendant. In this extreme scenario, we agree that a judge might properly worry about high incompatibility and not find a _Batson_ prima facie case for that reason, even though no one can directly observe or know with complete certainty whether this is a case where $b_curr = 0$ and $b_hist >> 0$. Or the judge may still find enough for a prima face case, but downweight the historical data when ultimately deciding whether illegal bias likely occurred. In the reverse extreme situation, the posterior estimate of $b$ with $\alpha = 0$ detects illegal bias but does not detect illegal bias when $\alpha > 0$. Here, too, we agree that a judge might properly worry about high incompatibility, except that down-weighting the historical data here increases the support for at least enough a _Batson_ prima facie case.
 

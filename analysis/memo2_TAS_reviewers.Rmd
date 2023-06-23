@@ -32,11 +32,11 @@ We have edited accordingly.
 
 _Are all Figures 2-4 necessary in the paper or can one/two of them be moved to the supplement?_
 
-We have moved Figure 3 to the supplement.
+We have moved what was previously Figure 3 to the supplement.
 
 _On all figures, please make sure axes and labels are readable. For example, on your current Fig. 7, $b_cur \approx b$ is difficult to read, (and you use b_curr in the paper, not b_cur)._
 
-We have revised the figures accordingly.  To make the labels more readable, we used a lighter color for them.  We also fixed the reference to $b_curr$.
+We have revised the figures accordingly.  To make the labels more readable, we used a lighter color for them.  We also fixed the reference to $b_{curr}$.
 
 _On your next revision, please submit the paper and supplement as separate files. Refer to figures in the supplement by using Figure S1, Figure S2, and so on. Include author information in the supplement file._
 
@@ -44,43 +44,59 @@ We have revised accordingly.
 
 _The referee has suggested that the analysis of a real data set could be put in the supplement (free of space concerns), noting that this could be helpful for instructors of Bayesian methods in the classroom. I will leave that up to you._
 
-See below.
+Section 3.2 of the paper and the related Supplementary Material illustrates our approach using our prototype software application and a _real_ data set of historical strike data. For details on this dataset, see section 2.1 of the Supplementary Material. Given our likelihood function (see Equation (3)), there is no closed-form solution for the posterior distribution of $b$. This is why we used our prototype software application to show how the posterior estimate of $b$ changes (see Figures 7 and S8). 
 
-## Associate Editor
+We have made the app available to the public as a R package that includes the underlying dataset of historical strike data. We hope this will help statistics instructors in the way the TAS Associate Editor has in mind. However, because of time constraints, we are simply unable to provide in the paper's Supplement a complete tutorial tailored for classroom instruction by teachers of Bayesian statistics. On an introduction to a Bayesian approach to estimating illegal strike bias (albeit without historical strike data), we recommend @Kadane2018a and @Kadane2018b.
+
+# Associate Editor
 
 _(page 1, lines 21-23) The authors include the ‘real time’ use of the application in the abstract but this isn’t fully demonstrated in the manuscript as written. I would like the authors to link to the application (perhaps they were waiting because the link is identifying). I also would like to see some step by step use of the application, noting the authors do provide screenshots in Figure 8 that probably give enough information for the manuscript._
 
-We have now provided links to the app as well as the code used to generate the simulation results. Instructions for using the app are now provided not only in section 3.2 of the paper and the Supplemental Materials, but also a vignette in the app itself [TBD]. 
+The paper now contains links to the app as well as the code we used to generate the simulation results. We intend section 3.2 of the paper (and related Supplementary Material) as instructions for using the app. Those links are identifying, which is why we omitted them from the last draft of the paper.
 
 _(page 5, lines 20-25) I think the point here can be made more convincingly for a statistical audience. That is, the problem I had with my initial reading was the bias shown in modeling that could be used against attorneys. However, with the clarifications this methodology is helpful for alerting about potentially biased strikes. These issues, if brought to the judge, are fully explored as explored on page 2 (lines 25-38). That is, errors of Type I are okay and errors of Type II can lead to missed bias. This thought process helped me reorient my initial reading of the paper._
 
-We have revised the paper in paragraph 2 to expressly distinguish between "bias" as the illegal strike bias (the parameter to be estimated) from "bias" in the statistical sense.  We hope this reduces any confusion.[EDITME]
-
+We appreciate this suggestion, but we worry that making this point here in terms of Type I and Type II error might lead to net confusion. The statement that "errors of Type I are okay" is fine if it refers to the idea that at step two of the _Batson_ sequence (whether to find a _prima facie_ case), one should tolerate more Type I error (falsely inferring illegal strike bias), because all it does is lead the judge to force the striking attorney to offer up reasons for the strikes and then have the judge assess the credibility of those reasons along with the other evidence. Type I errors, however, are far less tolerable -- not as okay -- at step four, where the judge has to consider historical strike data along with all the other evidence and ultimately find whether illegal strike bias is more likely than not. And Type I errors are worse still as the judge assigns more relative weight to any inference from historical strike data as compared to other items of evidence.
+  
 _(page 6, lines 2-19) I found this paragraph difficult to read through once and understand. Specifically what is a “cognizable” class? Is it the majority or non-marginalized class? I think moving the (e.g.,) on lines 50-51 up to the first mention would help with this. Further, “the number of cognizable class members subject to strike” can probably be replaced with “number of cognizable class jurors”? Or maybe using nij and mij to connote these are number of jurors and not those struck. This is perhaps a bit too nitpicky, but I wrote it in the margins._
 
-We now introduce the term "cognizable class" later, in section 2. By "cognizable" class, we mean the social category to which the struck juror belongs that is the possible basis of illegal strike bias. For example, if the focus is on strike bias against Black prospective jurors because of their race, the "cognizable" class is "Black prospective jurors". If, however, the focus is on strike bias against Black female prospective jurors because of their race and gender, the "cognizable" class is "Black female prospective jurors."  Because _Batson_ applies without regard to the "majority" or "marginalized" status of struck jurors (e.g., Black prospective jurors _and_ White prospective jurors), we have avoided those terms.
+We have revised the paper to introduce the term "cognizable class" in section 2 instead of the Introduction. By "cognizable class", we mean the social category to which the struck juror belongs that the law accepts as a possible basis of illegal strike bias. For example, if the focus is on strike bias against Black prospective jurors because of their race, the cognizable class is "Black" prospective jurors. If, however, the focus is on strike bias against Black female prospective jurors because of their race and gender, the cognizable class is "Black female" prospective jurors. And if the focus is on illegal strike bias against White prospective jurors because of their race, the cognizable class is "White" prospective jurors. Because _Batson_ law applies without regard to the "majority" or "marginalized" status of prospective jurors, we have avoided such terms.
 
-We use the phrase "cognizable class members subject to strike" instead of "cognizable class jurors", for two reasons. First, at the time any strike occurs, no one is a "juror", because no one has yet been seated onto the jury. Second, at the time any strike occurs, not every prospective juror could have been struck. As we assume in the paper, only a subset of prospective jurors present during jury selection are ever subject to strike at any one time. The size of that subset is usually based on the number of seats of the jury itself plus the total number of strikes that the parties could exercise.
+We use the phrase "cognizable class members subject to strike" instead of "cognizable class jurors" for two reasons. First, at the time any strike occurs, no one is a "juror", because no one has yet been seated onto the jury. Second, at the time any strike occurs, not every prospective juror could have been struck. As we assume in the paper, only a subset of prospective jurors present during jury selection are ever subject to strike at any one time. Although courts vary in practice, the size of that subset is often based on the number of seats of the jury itself plus the total number of strikes that the parties could exercise.
 
 _(page 7, lines 31-54) This is a really good explanation. This may have got me thinking along the lines of comment 2 above._
 
 Thanks!
 
-_(page 9, lines 3-19) I’m still a little unsure exactly how bhist and bcurr are used to generate the data. I’m assuming you’re generating it via the probability model described in Equation (2) given those selected values, is that right?_
+_(page 9, lines 3-19) I’m still a little unsure exactly how b_hist and b_curr are used to generate the data. I’m assuming you’re generating it via the probability model described in Equation (2) given those selected values, is that right?_
 
 Yes, that's correct.
 
-_(page 10, lines 25-29) Does the application allow users to revise the historical data used? That is, should there be guidance about choosing between low $\alpha$ with all the historical data or large α with a subset of the historical data? That is, it seems your approach can be compatible with the stratified approach of Gastwirth and Xu (2014) – would that improve the issue with heterogeneous historical data?_
+_(page 10, lines 25-29) Does the application allow users to revise the historical data used? That is, should there be guidance about choosing between low $\alpha$ with all the historical data or large $\alpha$ with a subset of the historical data? That is, it seems your approach can be compatible with the stratified approach of Gastwirth and Xu (2014) – would that improve the issue with heterogeneous historical data?_
 
-Subsetting the historical data does not necessarily reduce the degree of incompatibility between the historical strike data and the current trial ($b_hist$ - $b_curr$). As we discuss in the paper, it depends on what one assumes about how much the subsetting criteria (e.g., the salient criteria for "similar" cases) changes the degree of incompatibility. We stress "assumes", because the true values of $b_hist$ and $b_curr$ are not directly observable in actual cases. Accordingly, for any subset of the historical strike data one chooses, our guidance for choosing an $\alpha$ value remains the same: Check for how sensitive the posterior estimate of illegal strike bias is to different values of $\alpha$. The current version of the software prototype does not let users subset the historical data by some characteristic (e.g., date, defendant race). However, in principle, it could be modified to add that feature.
+Subsetting the historical data strike does not necessarily reduce incompatibility between the historical strike data and the current trial. Rather, it depends on what one _assumes_ about how much the subsetting criteria (e.g., the salient criteria for "similar" cases) affects incompatibility. We stress "assumes", because the true values of $b_{hist}$ and $b_{curr}$ are not directly observable in actual cases. Accordingly, for any _subset_ of the historical strike data one chooses, our guidance for choosing an $\alpha$ value remains the same: Check for how sensitive the posterior estimate of illegal strike bias is to different values of $\alpha$. The current version of the software prototype does not let users subset the historical data by some trial-level characteristic (e.g., defendant race). However, in principle, it could be modified to add that feature.
 
-## Reviewer 2
+_(page 14, Figure 5) the figure legend makes it challenging to compare between 1 and 2, though one could anticipate 2 is the dashed line._
+
+We have revised that figure legend to better distinguish between the different line types.
+
+_(page 16, line 53-54) 110000 doesn’t have a comma and 10,000 does._
+
+Thank you for catching this.  We have revised accordingly.
+
+_(page 19, Figure 8) This demonstration is very helpful for seeing the utility of the app. This makes me think of two possible improvements: 1. See point three of the other reviewer. This situation presents the opportunity to discuss any disagreements between current and historical data._
+
+We have revised the Discussion accordingly.  See also our reply to other reviewer below.
+
+_I understand the concern about paper length . . . There is value to the general audience for demonstrating posterior changes as the reviewer discusses. While this would make the paper long (and require too many figures), I do believe this would be helpful supplementary material._
+
+See above reply to TAS editor on this point.
+
+# Reviewer 2
 
 _On page 1, where you cite the Washington, Calif. and Conn. Codes stating that that membership in a “cognizable” class was a “factor”, you should also mention that in Miller-El, 545 U.S. the Supreme Court used the expression “significant factor”._
 
-We have revised the paper to mention on page 1 that for _Batson_ challenges, the "ultimate inquiry" is whether the striking party "was motivated in substantial part by discriminatory intent." [@flowers2019, p. 2241]
-
-The phrase "significant factor" does not appear in _Miller-El v. Dretke_, 545 U.S. 231 (2005). At best, the Court wrote: "Comparing his strike with the treatment of panel members who expressed similar views supports a conclusion that race was significant in determining who was challenged and who was not. _Id._ at 252 (footnote omitted).
+Thank you for suggesting this contrast between _Batson_ law and these State laws. We have revised the paper to mention on page 1 that for _Batson_ challenges, the "ultimate inquiry" is whether the striking party "was motivated in substantial part by discriminatory intent." (@flowers2019, p. 2241) We did not use the phrase "significant factor," because it does not appear in _Miller-El v. Dretke_, 545 U.S. 231 (2005). At best, the Court there wrote: "Comparing his strike with the treatment of panel members who expressed similar views supports a conclusion that race was significant in determining who was challenged and who was not. _Id._ at 252 (footnote omitted).
 
 _On page 3, the initial prior given in (5) should be presented before the power prior in (4). Indeed, you state that the initial prior should be specified before the historical data is observed._
 
@@ -88,26 +104,27 @@ Thank you for catching that. We have revised the paper accordingly.
 
 _Both Fig. 4 (and the surrounding discussion) and the discussion on p. 21, indicate that when there is high incompatibility between the historical and current data, the detections may well be erroneous. This is especially important in the situation where bcurr =0, i.e. no evidence of bias in the challenges in the present case. It is difficult for this reviewer to believe that judges would seriously entertain a Batson challenge, even if historical discrimination had occurred, when the data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal. Of course, a defendant could raise a Batson challenge if they noticed that minorities with a certain characteristic were being challenged but majority members with same characteristic were not. Comparative evidence, rather than statistical, would be the basis of the ultimate decision on the Batson claim. Perhaps the discussion on p. 21 could discuss this further; especially as the reverse situation (serious bias in the current trial but little historically) is also important._
 
-We took this comment to have two possible intended meanings.
+We took this comment to have two intended meanings.
 
-First, we read this comment to posit that judge is unlikely to find ("seriously entertain") even a _Batson_ prima facie case where "data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal." However, in some cases, bias can be detected even if there are equal strike _rates_.  To illustrate, consider the following hypothetical pattern of strikes by a prosecutor in a trial with a strike procedure like the one we model in the paper.
+First, we read this comment to posit that a judge is unlikely to find even a _Batson_ prima facie case where "data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal." However, in some cases, illegal strike bias can produce equal strike _rates_.  To illustrate, consider the following hypothetical pattern of strikes by a prosecutor in a trial with a strike procedure like the one we model in the paper.
 
 ```{r}
+#| label: hypodata
+#| echo: false
 
 round <- c(1:10)
-num_cog <- c(7.6,5,4,3,2,2,2,2,2)
+num_cog <- c(7,6,5,4,3,2,2,2,2,2)
 total <- c(30,28,26,24,22,20,18,16,14,12)
 cog <- c(1,1,1,1,1,0,0,0,0,0)
 
 df <- data.frame(round, num_cog, total, cog)
 
-knitr::kable(df)
+knitr::kable(df, caption = "Hypothetical Strikes by Prosecutor")
 
 
 ```
 
+Here, the strike rates for the cognizable class and the non-cognizable class are equal (5 out of 10). However, using the paper's approach and assuming no historical strike data (or $\alpha = 0$), we detect illegal strike bias, i.e., the 95% credible interval for the posterior estimate of $b$ excludes zero.  The reason turns on the relatively few members of the cognizable class that could have struck in each round. Thus, in this hypothetical case, the judge would err by relying on equal strike rates to infer no illegal strike bias.
 
-Here, the strike rates for the cognizable class and the non-cognizable class are equal (5 out of 10). However, the 95% credible interval for the posterior estimate of $b$ is excludes zero, thus indicating illegal bias.  Thus, in this case, the judge would err by relying on the equal strike rates to infer no strike bias.
-
-Second, we took this comment to say that a judge is unlikely to find even a _Batson_ prima facie case if the posterior estimate of $b$ with $\alpha = 0$ detects no illegal bias (the credible interval includes zero) against some cognizable class (e.g. Black prospective jurors), even if the posterior estimate of $b$ given some set of non-zero values of $\alpha$ detects illegal bias (the credible interval excludes zero).  This might occur, for example, where an attorney is motivated to strike Black prospective jurors because they are Black _only_ in cases with Black defendants; all that attorney's past trials involved Black defendants; but the current trial has a White defendant. In this extreme scenario, we agree that a judge might properly worry about high incompatibility and not find a _Batson_ prima facie case for that reason, even though no one can directly observe or know with complete certainty whether this is a case where $b_curr = 0$ and $b_hist >> 0$. Or the judge may still find enough for a prima face case, but downweight the historical data when ultimately deciding whether illegal bias likely occurred. In the reverse extreme situation, the posterior estimate of $b$ with $\alpha = 0$ detects illegal bias but does not detect illegal bias when $\alpha > 0$. Here, too, we agree that a judge might properly worry about high incompatibility, except that down-weighting the historical data here increases the support for at least enough a _Batson_ prima facie case.
-
+Second, we took this comment to say that a judge is unlikely to find even a _Batson_ prima facie case if the posterior estimate of $b$ with $\alpha = 0$ detects no illegal strike bias (the credible interval includes zero), even if the posterior estimate of $b$ given some set of non-zero values of $\alpha$ detects illegal strike bias (the credible interval excludes zero). 
+We have revised the Discussion to further address high incompatibility. As we observe there, because no one can directly observe $b_{curr}$ and $b_{hist}$, they cannot know for sure whether their case involves high incompatibility. Nonetheless, if the posterior estimate of $b$ is highly sensitive to the choice of $alpha$ -- something one can observe -- then we agree that a judge might properly worry about erroneously detecting strike bias due to high incompatibility. As for what a judge might do in this situation, a judge might not find a _Batson_ prima facie case for that reason. Or the judge may still find enough for a prima face case, but down-weight the historical data (by selecting an $\alpha$ value less than 1) when ultimately deciding whether illegal strike bias likely occurred. In the reverse situation of high incompatibility, the posterior estimate of $b$ with $\alpha = 0$ detects illegal bias but (erroneously) does not detect illegal bias when $\alpha > 0$. Here, we agree that a judge should worry about erroneously failing to detect strike bias due to high incompatibility. Down-weighting the historical data here increases the support for a finding that illegal strike bias likely occurred.

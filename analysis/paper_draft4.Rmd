@@ -180,7 +180,7 @@ Bias detection will also be sensitive to the choice of the standard deviation of
 
 #   Bias was equal in current and historical trials and three levels were selected 0 , 1, and 2."
 
-load_path <- here::here("figures","SD_sensitivity.jpg")
+load_path <- here::here("figures","SD_sensitivity_rev.jpg")
 knitr::include_graphics(load_path)
 
 ```
@@ -189,7 +189,7 @@ Figure \@ref(fig:figsdprior) depicts how assigning different values for the init
 
 ```{r figcmptbly, out.width = "85%", fig.cap = "Bias detection under compatibility scenarios (equal bias in current and historical trials) for different numbers of strikes (columns), sizes of historical data (rows) and levels of alpha (shapes). As the weight applied to historical data increases (higher alpha), bias detection increases. Bias detection rates also increase as the number of strikes and historical datasets increase.", fig.align='center'}
 
-load_path <- here::here("figures","compatibility_plot.jpg")
+load_path <- here::here("figures","compatibility_plot_rev.jpg")
 knitr::include_graphics(load_path)
 
 ```
@@ -204,7 +204,7 @@ To test this premise, we conducted the following simulation study. We first gene
 
 ```{r fig-simul, out.width = "75%", fig.cap="Simulation results for simultaneous strikes example. Columns correspond to values of bias ($b_{curr}$) used to simulate data. Points and horizontal lines denote estimated posterior mean and 95 pct. credible interval for bias parameter. Vertical dashed lines denote true value of $b_{curr}$ in the simulations.", fig.align='center'}
 
-load_path <- here::here("figures","simultaneous_sims_plot.jpg")
+load_path <- here::here("figures","simultaneous_sims_plot_rev.jpg")
 knitr::include_graphics(load_path)
 
 ```

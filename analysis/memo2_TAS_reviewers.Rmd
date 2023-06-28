@@ -19,10 +19,10 @@ date: "`r format(Sys.Date(), '%B %d, %Y')`"
 memorandum: true
 graphics: false
 width: .3
-bibliography: references.bib
+#bibliography: references.bib
 ---
 
-This memorandum replies to comments received in May 2023 from the TAS editor, a TAS associate editor, and an anonymous reviewer.
+This memorandum replies to comments received in May 2023 from the TAS editor, a TAS associate editor, and an anonymous reviewer (Reviewer 2).
 
 # TAS Editor
 
@@ -46,17 +46,20 @@ _The referee has suggested that the analysis of a real data set could be put in 
 
 Section 3.2 of the paper and the related Supplementary Material illustrates our approach using our prototype software application and a _real_ data set of historical strike data. For details on this dataset, see section 2.1 of the Supplementary Material. Given our likelihood function (see Equation (3)), there is no closed-form solution for the posterior distribution of $b$. This is why we used our prototype software application to show how the posterior estimate of $b$ changes (see Figures 7 and S8). 
 
-We have made the app available to the public as a R package that includes the underlying dataset of historical strike data. We hope this will help statistics instructors in the way the TAS Associate Editor has in mind. However, because of time constraints, we are simply unable to provide in the paper's Supplement a complete tutorial tailored for classroom instruction by teachers of Bayesian statistics. On an introduction to a Bayesian approach to estimating illegal strike bias (albeit without historical strike data), we recommend @Kadane2018a and @Kadane2018b.
+We are ready to make the app available to the public as a R package that includes a de-identified version of the dataset of real historical strike data. (The link to the Github repository for the app identifies one of the authors. Accordingly, to preserve the anonymity that TAS requires, we have not yet put that link in the paper itself.) We hope this will help statistics instructors in the way the TAS Associate Editor has in mind. However, because of time constraints, we are simply unable to provide in the paper's supplement a complete tutorial tailored for classroom instruction by teachers of Bayesian statistics. 
+
+<!--
+On an introduction to a Bayesian approach to estimating illegal strike bias (albeit without historical strike data), we recommend @Kadane2018a and @Kadane2018b.-->
 
 # Associate Editor
 
 _(page 1, lines 21-23) The authors include the ‘real time’ use of the application in the abstract but this isn’t fully demonstrated in the manuscript as written. I would like the authors to link to the application (perhaps they were waiting because the link is identifying). I also would like to see some step by step use of the application, noting the authors do provide screenshots in Figure 8 that probably give enough information for the manuscript._
 
-The paper now contains links to the app as well as the code we used to generate the simulation results. We intend section 3.2 of the paper (and related Supplementary Material) as instructions for using the app. Those links are identifying, which is why we omitted them from the last draft of the paper.
+We intended section 3.2 of the paper (and related Supplementary Material) as instructions for using the app. Only because they are identifying, we have thus far omitted hyperlinks to the Github repositories for the app (ready to be available as an R package) as well as the code we used to generate the simulation results. When the TAS editor indicates it is appropriate, we will gladly add those links to the paper manuscript.
 
 _(page 5, lines 20-25) I think the point here can be made more convincingly for a statistical audience. That is, the problem I had with my initial reading was the bias shown in modeling that could be used against attorneys. However, with the clarifications this methodology is helpful for alerting about potentially biased strikes. These issues, if brought to the judge, are fully explored as explored on page 2 (lines 25-38). That is, errors of Type I are okay and errors of Type II can lead to missed bias. This thought process helped me reorient my initial reading of the paper._
 
-We appreciate this suggestion, but we worry that making this point here in terms of Type I and Type II error might lead to net confusion. The statement that "errors of Type I are okay" is fine if it refers to the idea that at step two of the _Batson_ sequence (whether to find a _prima facie_ case), one should tolerate more Type I error (falsely inferring illegal strike bias), because all it does is lead the judge to force the striking attorney to offer up reasons for the strikes and then have the judge assess the credibility of those reasons along with the other evidence. Type I errors, however, are far less tolerable -- not as okay -- at step four, where the judge has to consider historical strike data along with all the other evidence and ultimately find whether illegal strike bias is more likely than not. And Type I errors are worse still as the judge assigns more relative weight to any inference from historical strike data as compared to other items of evidence. 
+We appreciate this suggestion, but we worry that making this point here in terms of Type I and Type II error might lead to net confusion. The statement that "errors of Type I are okay" is fine if it refers to the idea that at step two of the _Batson_ sequence (whether to find a _prima facie_ case), one should tolerate more false positives (false inferences of illegal strike bias, because all it does is lead the judge to force the striking attorney to offer up reasons for the strikes and then have the judge assess the credibility of those reasons along with the other evidence. Such errors, however, are far less tolerable -- not as okay -- at step four, where the judge has to consider historical strike data along with all the other evidence and ultimately find whether illegal strike bias is more likely than not. And such errors are worse still as the judge assigns more relative weight to the inference from historical strike data as compared to other items of evidence. 
 
 
 _(page 6, lines 2-19) I found this paragraph difficult to read through once and understand. Specifically what is a “cognizable” class? Is it the majority or non-marginalized class? I think moving the (e.g.,) on lines 50-51 up to the first mention would help with this. Further, “the number of cognizable class members subject to strike” can probably be replaced with “number of cognizable class jurors”? Or maybe using nij and mij to connote these are number of jurors and not those struck. This is perhaps a bit too nitpicky, but I wrote it in the margins._
@@ -75,7 +78,7 @@ Yes, that's correct.
 
 _(page 10, lines 25-29) Does the application allow users to revise the historical data used? That is, should there be guidance about choosing between low $\alpha$ with all the historical data or large $\alpha$ with a subset of the historical data? That is, it seems your approach can be compatible with the stratified approach of Gastwirth and Xu (2014) – would that improve the issue with heterogeneous historical data?_
 
-Subsetting the historical data strike does not necessarily reduce incompatibility between the historical strike data and the current trial. Rather, it depends on what one _assumes_ about how much the subsetting criteria (e.g., the salient criteria for "similar" cases) affects incompatibility. We stress "assumes", because the true values of $b_{hist}$ and $b_{curr}$ are not directly observable in actual cases. Accordingly, for any _subset_ of the historical strike data one chooses, our guidance for choosing an $\alpha$ value remains the same: Check for how sensitive the posterior estimate of illegal strike bias is to different values of $\alpha$. The current version of the software prototype does not let users subset the historical data by some trial-level characteristic (e.g., defendant race). However, in principle, it could be modified to add that feature.
+Subsetting the historical data strike does not necessarily reduce incompatibility between the historical strike data and the current trial. Rather, it depends on what one _assumes_ about how much the subsetting criteria (e.g., the salient criteria for "similar" cases) affects incompatibility. We stress "assumes", because the true values of $b_{hist}$ and $b_{curr}$ are not directly observable in actual cases. Accordingly, for any subset of the historical strike data one chooses, our guidance for choosing an $\alpha$ value remains the same: Check for how sensitive the posterior estimate of illegal strike bias is to different values of $\alpha$. The current version of the software app does not let users subset the historical data by some trial-level characteristic (e.g., defendant race, courthouse location). However, in principle, it could be modified to add that feature.
 
 _(page 14, Figure 5) the figure legend makes it challenging to compare between 1 and 2, though one could anticipate 2 is the dashed line._
 
@@ -87,7 +90,7 @@ Thank you for catching this.  We have revised accordingly.
 
 _(page 19, Figure 8) This demonstration is very helpful for seeing the utility of the app. This makes me think of two possible improvements: 1. See point three of the other reviewer. This situation presents the opportunity to discuss any disagreements between current and historical data._
 
-We have revised the Discussion accordingly.  See also our reply to other reviewer below.
+We have revised the Discussion accordingly.  See also our reply to Reviewer 2 below.
 
 _I understand the concern about paper length . . . There is value to the general audience for demonstrating posterior changes as the reviewer discusses. While this would make the paper long (and require too many figures), I do believe this would be helpful supplementary material._
 
@@ -109,9 +112,7 @@ We took this comment to have two intended meanings.
 
 First, we read this comment to posit that a judge is unlikely to find even a _Batson_ prima facie case where "data in the present case indicated the removal rates of protected and unprotected members of the venire were (essentially) equal." However, in some cases, illegal strike bias can produce equal strike _rates_.  To illustrate, consider the following hypothetical pattern of strikes by a prosecutor in a trial with a strike procedure like the one we model in the paper.
 
-```{r}
-#| label: hypodata
-#| echo: false
+```{r, echo = FALSE}
 
 round <- c(1:10)
 num_cog <- c(7,6,5,4,3,2,2,2,2,2)
@@ -134,3 +135,4 @@ We have revised the Discussion to further address high incompatibility. As we ob
 A judge might respond to this situation, in two ways.  First, a judge might not find a _Batson_ prima facie case for that reason. Second, the judge may still find enough for a prima face case, but down-weight the historical data (by selecting an $\alpha$ value less than 1) when ultimately deciding whether illegal strike bias likely occurred. 
 
 In the reverse situation of high incompatibility, the posterior estimate of $b$ with $\alpha = 0$ detects illegal bias but (erroneously) does not detect illegal bias when $\alpha > 0$. Here, we agree that a judge should worry about erroneously failing to detect strike bias due to high incompatibility. Down-weighting the historical data here, however, increases the support for a finding that illegal strike bias likely occurred, all else equal.
+

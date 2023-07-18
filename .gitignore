@@ -5,6 +5,7 @@
 debug.log
 analysis/_output/*
 analysis/draft_archive/*
+analysis/TAS_memo/*
 nul
 *.log
 *.gz

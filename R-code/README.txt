@@ -1,6 +1,8 @@
 This folder contains code and data necessary to: 
 1. generate data for simulations in Rstan.
-2. Generate plots of simulations for 'OG' and simultaneous scenarios.
+2. Generate plots of simulations for 'OG'/original model, as well simultaneous scenarios.
+
+More details on model specifications are provided in the TAS manuscript. The key code for running the analyses can be found in: data_generation.R, model.R, and simultaneous_sims.R. All other code is used for cleaning and visualizing the data. Note that data is presented in this repo. The extra/ folder contains some anciliary code not necessary for replicating the results in the manuscript. 
 
 
 Code				Function

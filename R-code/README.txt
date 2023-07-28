@@ -10,4 +10,4 @@ simulation_plots_full.R		Generate plots for simulated data from 'model.R'
 simulation_plots_reduced.R	Generate plots for simulated data used in paper
 simultaneous_sims.R		Run simulations for simultaneous strike scenario
 simultaneous_plots.R		Generate plot for simulated data from simultaneous strike scenario
-				from 'simultaneous_rcode.R'
+				from 'simultaneous_sims.R'

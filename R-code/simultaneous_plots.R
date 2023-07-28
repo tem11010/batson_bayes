@@ -1,6 +1,6 @@
 
 # Code for generating plots of simultaneous strike data
-# output from the 'simultaneous.R' script. 
+# output from the 'simultaneous_sims.R' script. 
 #-----------------------------------------------------------------#
 
 library(dplyr)

@@ -1,7 +1,7 @@
 ---
 title: Supplementary Material for "Bayesian Detection of Bias in Peremptory Challenges Using Historical Strike Data"
 date: "`r Sys.Date()`"
-blinded: 0
+blinded: 1
 authors:
 - name: "[Sachin S. Pandya](https://orcid.org/0000-0001-7387-1307)"
   affiliation: University of Connecticut

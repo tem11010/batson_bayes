@@ -11,3 +11,5 @@ nul
 *.gz
 *.pdf
 figures/*.txt
+tests/*
+app/*

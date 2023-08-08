@@ -1,0 +1,40 @@
+{
+    "description": "<p>This repository stores the code for \"Bayesian Detection of Bias in Peremptory Challenges Using Historical Strike Data,\" The American Statistician (in press).</p>", 
+    "license": "other-open", 
+    "title": "tem11010/batson_bayes: Bayesian Detection of Bias in Peremptory Challenges", 
+    "version": "v1.0.0", 
+    "upload_type": "software", 
+    "publication_date": "2023-08-02", 
+    "creators": [
+        {
+            "affiliation": "University of Connecticut", 
+            "name": "Sachin S. Pandya"
+        }, 
+        {
+            "affiliation": "University of Connecticut", 
+            "name": "Xiaomeng Li"
+        }, 
+        {
+            "affiliation": "University of Connecticut", 
+            "name": "Eric Baron"
+        }, 
+        {
+            "affiliation": "University of Connecticut", 
+            "name": "Timothy E. Moore"
+        }, 
+        
+    ], 
+    "access_right": "open", 
+    "related_identifiers": [
+        {
+            "scheme": "url", 
+            "identifier": "https://github.com/tem11010/batson_bayes/tree/v1.0.0", 
+            "relation": "isSupplementTo"
+        }, 
+        {
+            "scheme": "doi", 
+            "identifier": "10.5281/zenodo.8209028", 
+            "relation": "isVersionOf"
+        }
+    ]
+}
